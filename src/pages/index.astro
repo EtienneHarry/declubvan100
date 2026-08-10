@@ -1,7 +1,104 @@
 ---
 import Basis from '../layouts/Basis.astro';
+import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import barPouring from '../assets/photo/bar-pouring.jpg';
+import ploegDrie from '../assets/photo/ploeg-drie.jpg';
+import vuurZonsondergang from '../assets/photo/vuur-zonsondergang.jpg';
+
+/*
+ * Home.
+ *
+ * De klant noemt zelf jongensvandebar.nl als referentie: een splitscreen met
+ * twee deuren. Die twee deuren staan hier direct onder de hero, met de
+ * knopteksten uit de microcopy-tabel — "Ik zoek personeel" en "Ik wil bij
+ * jullie werken", niet "Meer informatie" en "Solliciteer nu".
+ *
+ * Alle tekst komt uit bron/. De hero is de enige display-xl en de enige <h1>
+ * op deze pagina, en de grote schicht staat er één keer. Achtergrond is overal
+ * inkt: meer dan één donkere achtergrond per pagina is volgens het design
+ * system een fout, en roet is een verhoogd vlak binnen een sectie, geen tweede
+ * sectieachtergrond.
+ */
+
+const secties: Sectie[] = [
+  {
+    type: 'hero',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-l',
+    breedte: 'basis',
+    bovenkop: 'In en rond Groningen',
+    kop: 'Een van de 100',
+    tekst:
+      'Geen uitzendbureau, maar een selectie van honderd horeca- en eventprofessionals in en rond Groningen.',
+    schicht: true,
+  },
+  {
+    type: 'splitscreen',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    deuren: [
+      {
+        bovenkop: 'Opdrachtgevers',
+        kop: 'Jij hebt een avond te draaien',
+        tekst:
+          'Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe een tap onder druk werkt.',
+        knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+        beeld: { bron: barPouring.src, alt: 'Bartender schenkt een glas in bij warm binnenlicht' },
+      },
+      {
+        bovenkop: 'Professionals',
+        kop: 'Honderd plekken',
+        tekst: 'Niet iedereen komt erdoor.',
+        knop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+        beeld: { bron: ploegDrie.src, alt: 'Drie collega’s achter de tap' },
+      },
+    ],
+  },
+  {
+    type: 'beeld-tekst',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    bovenkop: 'Waarom we bestaan',
+    kop: 'Mensen die er uitspringen',
+    // Hun eigen missietekst, letterlijk overgenomen uit bron/design-system.md.
+    tekst:
+      'Wij misten een plek waar mensen die veel ervaring hebben in de horeca en events samen komen. Geen standaard uitzendkrachten, maar mensen die er uitspringen.',
+    beeld: {
+      bron: vuurZonsondergang.src,
+      alt: 'Vuurkorf op het festivalterrein in tegenlicht',
+    },
+    beeldPositie: 'rechts',
+  },
+  {
+    type: 'citaten',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    bovenkop: 'Wat opdrachtgevers zeggen',
+    // Uit bron/citaten.md, letterlijk. Toeschrijving op bedrijfsnaam, geen
+    // persoonsnamen en geen logo's van derden.
+    items: [
+      {
+        citaat:
+          '"Zeker een leuke avond gehad en top mensen hebben jullie gestuurd. Ze hebben het fantastisch gedaan."',
+        naam: 'De Speld',
+      },
+    ],
+  },
+  {
+    type: 'oproep',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-l',
+    breedte: 'basis',
+    kop: 'Wij regelen de mensen.',
+    knop: { label: 'Ik zoek personeel', href: '/contact' },
+    tweedeKnop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+  },
+];
 ---
 
 <Basis titel="De Club van 100">
-  <h1 class="mx-auto max-w-basis px-marge py-sectie-l text-display-xl">Een van de 100</h1>
+  {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
 </Basis>
