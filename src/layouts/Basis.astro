@@ -12,7 +12,7 @@ import { getImage } from 'astro:assets';
 
 import '../styles/global.css';
 import tokensCss from '../styles/tokens.css?raw';
-import deelbeeldBron from '../assets/photo/proost-tap.png';
+import deelbeeldBron from '../assets/photo/proost-tap.jpg';
 import { basisUrl } from '../lib/site';
 import LogoHorizontaal from '../components/logo/LogoHorizontaal.astro';
 
@@ -49,7 +49,7 @@ const {
 const basis = basisUrl(Astro.site, Astro.url.origin);
 const paginaUrl = new URL(Astro.url.pathname, basis);
 
-// Sociale kaart op precies 1200x630. proost-tap.png is 1745x1164, dus dit
+// Sociale kaart op precies 1200x630. proost-tap.jpg is 1745x1164, dus dit
 // snijdt bij en schaalt omlaag — nooit omhoog.
 const deelbeeld = await getImage({
   src: deelbeeldBron,
