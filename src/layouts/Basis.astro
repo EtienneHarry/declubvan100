@@ -166,18 +166,34 @@ const jaar = new Date().getFullYear();
         <div class="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <span class="block [&>svg]:h-14 [&>svg]:w-auto"><LogoHorizontaal /></span>
-            <p class="mt-6 text-lopend-m text-tekst-zacht">
-              <a href="mailto:info@declubvan.nl">info@declubvan.nl</a>
+            <!-- Staat op zichzelf en is geen link middenin een zin, dus hij
+                 krijgt dezelfde hitzone als de rest. De mt gaat van 6 naar 4:
+                 min-h-11 zet 8,8px lucht boven de tekst en samen is dat weer
+                 de 24px van hiervoor. -->
+            <p class="mt-4 text-lopend-m text-tekst-zacht">
+              <a href="mailto:info@declubvan.nl" class="inline-flex min-h-11 items-center"
+                >info@declubvan.nl</a
+              >
             </p>
           </div>
           {
             voetkolommen.map((kolom) => (
               <div>
-                <h2 class="mb-4 text-bovenkop uppercase text-tekst-stil">{kolom.kop}</h2>
-                <ul class="flex list-none flex-col gap-3 p-0">
+                {/*
+                  De hitzone van 44px die het design system op elke
+                  navigatielink zet. De links waren 17px hoog met 12px ertussen,
+                  dus hart-op-hart 38px; met min-h-11 en zonder gat wordt dat 44
+                  en groeit een kolom van drie links met 17px. De kopmarge gaat
+                  van 4 naar 2 omdat min-h-11 er zelf 8,8px lucht boven zet.
+                */}
+                <h2 class="mb-2 text-bovenkop uppercase text-tekst-stil">{kolom.kop}</h2>
+                <ul class="flex list-none flex-col p-0">
                   {kolom.items.map((item) => (
                     <li>
-                      <a href={item.href} class="text-tekst-zacht no-underline hover:text-krijt hover:underline">
+                      <a
+                        href={item.href}
+                        class="inline-flex min-h-11 items-center text-tekst-zacht no-underline hover:text-krijt hover:underline"
+                      >
                         {item.label}
                       </a>
                     </li>
