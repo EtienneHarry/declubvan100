@@ -25,9 +25,18 @@ const secties: Sectie[] = [
     type: 'hero',
     achtergrond: 'papier',
     ruimte: 'sectie-l',
-    breedte: 'smal',
+    // De hero staat op basis en niet op smal. Smal geeft 640px inhoud, en
+    // "voorwaarden" is op display-xl breder dan dat: gemeten brak het woord op
+    // 1024 en 1440 middenin. De lopende tekst eronder blijft wel op smal.
+    breedte: 'basis',
     bovenkop: 'Voorwaarden',
-    kop: 'Algemene voorwaarden',
+    // Zachte afbreekstreep in "voorwaarden". Op 375px is de tekstkolom 335px
+    // en is dat woord op display-xl 413px breed: het moet wel breken. Hero zet
+    // hyphens-auto, maar dat leunt op een afbreekwoordenboek dat er niet altijd
+    // is — in de preview-Chromium ontbreekt het Nederlandse, en dan hakt de
+    // browser het woord op een willekeurig punt af ("voorwaard|en", gemeten).
+    // Deze streep legt de plek vast zonder de tekst te veranderen.
+    kop: 'Algemene voor­waarden',
     tekst: 'Deze pagina wacht op de definitieve tekst.',
   },
   {

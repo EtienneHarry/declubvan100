@@ -63,7 +63,18 @@ export default function Hero({
   const inhoud = (
     <>
       {bovenkop?.trim() ? <Bovenkop>{bovenkop}</Bovenkop> : null}
-      <h1 className="mt-4 text-display-xl text-balance break-words first:mt-0">{kop}</h1>
+      {/*
+        hyphens-auto vóór break-words. display-xl loopt tot 128px en de smalste
+        kolom is 335px op een telefoon; een woord als "voorwaarden" past daar in
+        geen enkele container. break-words alleen hakt dat woord dan op een
+        willekeurig punt af — gemeten: vier regelvakken voor twee woorden. Met
+        afbreken op lettergreep (de pagina staat op lang="nl") wordt dat een
+        nette streep, en break-words blijft eronder liggen voor wat zelfs dan
+        niet past.
+      */}
+      <h1 className="mt-4 text-display-xl text-balance hyphens-auto break-words first:mt-0">
+        {kop}
+      </h1>
       {tekst?.trim() ? (
         <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
           {tekst}
@@ -111,14 +122,15 @@ export default function Hero({
         overflow-hidden hierboven vangt dat op zodat er geen horizontale
         schuifbalk ontstaat.
 
-        Pas vanaf md. Daaronder is de sectie zo breed als de tekstkolom, en dan
-        staat de schicht niet achter de tekst maar erdoorheen — precies wat de
-        richtlijn verbiedt.
+        Pas vanaf lg. Op md bleek de schicht 26 tot 42px in de lopende tekst te
+        happen — gemeten op 768. Vanaf 1024 raakt hij alleen nog de bovenkop en
+        de displaykop, en dat is precies wat de richtlijn voor deze rol
+        toestaat: achter de tekst, niet in de tekstkolom.
       */}
       {toontSchicht ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 justify-end text-tekst md:flex"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 justify-end text-tekst lg:flex"
         >
           <Bliksem rol="groot" />
         </span>
