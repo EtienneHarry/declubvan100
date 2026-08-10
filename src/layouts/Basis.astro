@@ -85,7 +85,12 @@ const voetkolommen = [
   },
 ];
 
-const huidig = Astro.url.pathname;
+// Astro levert het pad van een voorgerenderde route mét slotslash
+// (/opdrachtgevers/), de navigatie hierboven staat zonder. Zonder deze
+// normalisatie viel aria-current alleen op de home, want daar zijn ze allebei
+// "/" — gemeten: op de vier andere pagina's stond nergens aria-current.
+const zonderSlotslash = (pad: string) => (pad.length > 1 && pad.endsWith('/') ? pad.slice(0, -1) : pad);
+const huidig = zonderSlotslash(Astro.url.pathname);
 const jaar = new Date().getFullYear();
 ---
 
@@ -139,7 +144,7 @@ const jaar = new Date().getFullYear();
                 <li>
                   <a
                     href={item.href}
-                    aria-current={huidig === item.href ? 'page' : undefined}
+                    aria-current={huidig === zonderSlotslash(item.href) ? 'page' : undefined}
                     class="inline-flex min-h-11 items-center px-4 font-semibold text-tekst-zacht no-underline hover:text-krijt aria-[current=page]:text-krijt"
                   >
                     {item.label}

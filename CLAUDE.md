@@ -215,6 +215,27 @@ kwamen waren geen van alle zichtbaar op een screenshot; ze kwamen uit
 viewport slaat: met een klassieke scrollbar is een venster van 768 een viewport
 van 753, en dan vuurt `md:` niet.
 
+## De vijf pagina's
+
+`index.astro`, `opdrachtgevers.astro`, `de-100.astro`, `contact.astro` en
+`voorwaarden.astro`. Elke pagina is één lijst `Sectie[]` die door
+`SectionRenderer` gaat — geen losse opmaak in de pagina zelf. In B4 verhuist
+precies die lijst naar het CMS.
+
+Alle tekst komt uit `bron/`. Wat daar niet staat, staat hier ook niet; er is
+niets bijverzonnen. Drie plekken wachten daardoor op de klant:
+
+| Plek | Wat ontbreekt |
+|---|---|
+| `contact.astro` | Het adres van het externe aanmeldformulier. De knop wijst zolang naar mailto. |
+| `voorwaarden.astro` | De voorwaardentekst zelf. De pdf is buiten de repo gehouden. |
+| `de-100.astro` | Een zin bij Enthousiast, Ervaren en Trots. Bron levert alleen de drie woorden. |
+
+Achtergronden per pagina: de vier donkere pagina's staan overal op `inkt`,
+voorwaarden overal op `papier`. Meer dan één lichte en één donkere achtergrond
+per pagina is volgens het design system een fout; `roet` en `mist` zijn
+verhoogde vlakken bínnen een sectie (`Kaart`), geen tweede sectieachtergrond.
+
 ## Wat er nog niet staat
 
 **De mobiele navigatie landt in B4.** Het design system wil onder 900px een
