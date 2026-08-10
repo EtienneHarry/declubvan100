@@ -1,0 +1,64 @@
+---
+import Basis from '../layouts/Basis.astro';
+import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+
+/*
+ * Contact.
+ *
+ * Geen formulier. Aanmelden loopt volgens de scope van fase 1 via een extern
+ * formulier, en dat adres is er nog niet — een eigen backend bouwen zou die
+ * afspraak omzeilen. De aanmeldsectie hieronder is de plaatshouder: zodra het
+ * adres er is, gaat de href van die knop van mailto naar het formulier en kan
+ * de zin over "staat nog niet online" weg.
+ *
+ * PLAATSHOUDER — externe formulier-URL ontbreekt. Zie de oproep onderaan.
+ *
+ * Wat er aan contactgegevens ligt is info@declubvan.nl en het werkgebied. Een
+ * telefoonnummer, een adres en een KvK-nummer staan niet in bron; het nummer
+ * dat in de UI kit van het design system stond is daar expliciet als
+ * plaatshouder aangemerkt en is hier dus niet overgenomen.
+ */
+
+const MAIL = 'info@declubvan.nl';
+
+const secties: Sectie[] = [
+  {
+    type: 'hero',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-l',
+    breedte: 'basis',
+    bovenkop: 'Contact',
+    kop: 'Zeg het maar.',
+    tekst: 'Mail ons wat je nodig hebt. Je hoort binnen een dag van ons.',
+    schicht: true,
+  },
+  {
+    type: 'drie-kolommen',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    kop: 'Zo bereik je ons',
+    items: [
+      { nummer: '01', kop: 'Mail', tekst: MAIL, href: `mailto:${MAIL}` },
+      { nummer: '02', kop: 'Werkgebied', tekst: 'In en rond Groningen.' },
+    ],
+  },
+  {
+    type: 'oproep',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-l',
+    breedte: 'basis',
+    bovenkop: 'Aanmelden',
+    kop: 'Aanmelden loopt via een formulier.',
+    tekst: 'Dat formulier staat nog niet online. Mail ons tot die tijd, dan hoor je binnen een dag van ons.',
+    knop: { label: 'Ik wil bij jullie werken', href: `mailto:${MAIL}` },
+  },
+];
+---
+
+<Basis
+  titel="Contact — De Club van 100"
+  beschrijving="Mail De Club van 100 op info@declubvan.nl. Wij regelen horeca- en eventpersoneel in en rond Groningen."
+>
+  {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
+</Basis>
