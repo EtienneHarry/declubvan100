@@ -1,40 +1,64 @@
 ---
+import Basis from '../layouts/Basis.astro';
 import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
-import '../styles/global.css';
+import foto from '../assets/photo/proost-tap.png';
 
 /*
  * Beheerbaarheidstest.
  *
- * Rendert elke sectie vier keer, onder de vier omstandigheden waar een sjabloon
- * normaal op stukloopt: een te lange kop, een lege tekst, twee items en acht
- * items. Item-aantallen gelden alleen voor KaartenRij; bij KopTekst en
- * BeeldTekst variëren die twee gevallen de hoeveelheid tekst.
+ * Elk van de zeven sectietypes vier keer, onder de omstandigheden waar een
+ * sjabloon normaal op stukloopt: een te lange kop, een lege tekst, weinig items
+ * en veel items. Bij beeld-tekst en splitscreen komt op de vierde plek een
+ * ontbrekende afbeelding in plaats van veel items.
  *
- * BeeldTekst heeft daarnaast een eigen vierde variant: het laatste geval laat
- * het beeld weg, zodat te zien is dat de sectie dan over de volle breedte
- * doorloopt in plaats van een leeg vlak achter te laten.
+ * Niet elk type heeft items. Bij kop-tekst, beeld-tekst en oproep vertalen
+ * "weinig" en "veel" zich naar de hoeveelheid tekst en het aantal optionele
+ * onderdelen — dat is daar het equivalent van een leeg of overvol blok.
  *
- * De achtergrond-, ruimte- en breedtetokens wisselen per geval, zodat je
- * meteen ziet of secties in willekeurige volgorde naast elkaar blijven kloppen.
+ * De achtergrondtokens wisselen per geval, zodat zichtbaar wordt of secties in
+ * willekeurige volgorde naast elkaar blijven kloppen en of het lichte thema
+ * meekantelt.
+ *
+ * Onderaan staat een vijfde blok dat geen variant is maar een regressietest:
+ * één splitscreen met een extreem lange kop, die de overflow-bug in Beeldvlak
+ * moet blootleggen zodra iemand daar grid-cols-1 of w-full weghaalt.
  */
 
 const LANGE_KOP =
-  'Een kop die bewust veel te lang is gemaakt om te zien of hij netjes afbreekt over meerdere regels in plaats van uit zijn sectie te lopen';
-
-const KORTE_KOP = 'Een gewone kop';
+  'Een kop die bewust veel te lang is gemaakt om te zien of hij netjes over meerdere regels afbreekt in plaats van uit zijn sectie te lopen of het raster op te rekken';
 
 const LOPENDE_TEKST =
-  'Een alinea van gemiddelde lengte, zodat de regelafstand en de leesbreedte te beoordelen zijn.';
+  'Iedereen die hier staat, heeft honderd avonden achter een bar gestaan. Wij regelen de mensen, jij regelt de rest.';
 
-const LANGE_TEKST = `${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST}`;
+const LANGE_TEKST = `${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST}`;
 
-/** Decoratief, dus een lege alt. Vervang per klant door echt beeld. */
-const PLAATSHOUDER = { bron: '/plaatshouder.svg', alt: '' };
+const BEELD = { bron: foto.src, alt: 'Twee mensen proosten aan de buitenbar' };
 
-function kaarten(aantal: number, metTekst = true) {
+/*
+ * Regressie. Beeldvlak sneed inhoud af zolang het een vaste verhouding met
+ * absoluut gepositioneerde tekst was: op 375px verdween hier 309px kop en tekst
+ * boven de rand. De reparatie hangt aan grid-cols-1 en w-full in Beeldvlak, en
+ * die zien er allebei weglaatbaar uit.
+ *
+ * Deze kop is expres extreem. Op 375px moet hij het vlak laten meegroeien —
+ * niets afgesneden, niets buiten de viewport.
+ */
+const REGRESSIE_KOP =
+  'Een kop die zo lang is dat hij op een telefoon acht of negen regels beslaat en daarmee ver voorbij de zestien-negen-verhouding van het beeldvlak groeit, wat precies de situatie is waarin de inhoud vroeger stilzwijgend werd weggeknipt in plaats van het vlak te laten meegroeien';
+
+function kolommen(aantal: number, metTekst = true) {
   return Array.from({ length: aantal }, (_, index) => ({
+    nummer: String(index + 1).padStart(2, '0'),
     kop: `Kaart ${index + 1}`,
-    tekst: metTekst ? 'Korte omschrijving bij deze kaart.' : '',
+    tekst: metTekst ? 'Tappen onder druk, cocktails, opbouw en afbouw.' : '',
+  }));
+}
+
+function citaten(aantal: number) {
+  return Array.from({ length: aantal }, (_, index) => ({
+    citaat: `Ze stonden er op tijd en ze wisten wat ze deden. Citaat ${index + 1}.`,
+    naam: `Opdrachtgever ${index + 1}`,
+    rol: 'Festivalorganisatie',
   }));
 }
 
@@ -43,29 +67,81 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     naam: 'te lange kop',
     secties: [
       {
-        type: 'kop-tekst',
-        achtergrond: 'vlak',
-        ruimte: 'normaal',
+        type: 'splitscreen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
         breedte: 'basis',
-        kop: LANGE_KOP,
-        tekst: LOPENDE_TEKST,
+        deuren: [
+          {
+            bovenkop: 'Opdrachtgevers',
+            kop: LANGE_KOP,
+            tekst: LOPENDE_TEKST,
+            knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+            beeld: BEELD,
+          },
+          {
+            bovenkop: 'Professionals',
+            kop: LANGE_KOP,
+            tekst: LOPENDE_TEKST,
+            knop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+            beeld: BEELD,
+          },
+        ],
       },
       {
-        type: 'kaarten-rij',
-        achtergrond: 'zacht',
-        ruimte: 'normaal',
-        breedte: 'breed',
+        type: 'kop-tekst',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Over ons',
         kop: LANGE_KOP,
-        items: kaarten(3),
+        tekst: LOPENDE_TEKST,
       },
       {
         type: 'beeld-tekst',
-        achtergrond: 'vlak',
-        ruimte: 'normaal',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Werkwijze',
+        kop: LANGE_KOP,
+        tekst: LOPENDE_TEKST,
+        beeld: BEELD,
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'papier',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        kop: LANGE_KOP,
+        items: kolommen(3),
+      },
+      {
+        type: 'citaten',
+        achtergrond: 'mist',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Wat ze zeggen',
+        items: [{ citaat: LANGE_KOP, naam: 'Een opdrachtgever', rol: 'Horeca' }],
+      },
+      {
+        type: 'oproep',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
         breedte: 'basis',
         kop: LANGE_KOP,
         tekst: LOPENDE_TEKST,
-        beeld: PLAATSHOUDER,
+        knop: { label: 'Ik zoek personeel', href: '/contact' },
+      },
+      {
+        type: 'rijke-tekst',
+        achtergrond: 'papier',
+        ruimte: 'sectie-m',
+        breedte: 'smal',
+        kop: LANGE_KOP,
+        blokken: [
+          { soort: 'kop', tekst: LANGE_KOP },
+          { soort: 'alinea', tekst: LOPENDE_TEKST },
+        ],
       },
     ],
   },
@@ -73,115 +149,261 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     naam: 'lege tekst',
     secties: [
       {
-        type: 'kop-tekst',
-        achtergrond: 'zacht',
-        ruimte: 'compact',
-        breedte: 'smal',
-        kop: KORTE_KOP,
-        tekst: '',
+        type: 'splitscreen',
+        achtergrond: 'roet',
+        ruimte: 'sectie-s',
+        breedte: 'breed',
+        deuren: [
+          { kop: 'Opdrachtgevers', tekst: '', beeld: BEELD },
+          { kop: 'Professionals', tekst: '', beeld: BEELD },
+        ],
       },
       {
-        type: 'kaarten-rij',
-        achtergrond: 'vlak',
-        ruimte: 'compact',
-        breedte: 'basis',
-        items: kaarten(3, false),
+        type: 'kop-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-s',
+        breedte: 'smal',
+        kop: 'Een gewone kop',
+        tekst: '',
       },
       {
         type: 'beeld-tekst',
-        achtergrond: 'omgekeerd',
-        ruimte: 'compact',
+        achtergrond: 'mist',
+        ruimte: 'sectie-s',
         breedte: 'basis',
-        kop: KORTE_KOP,
+        kop: 'Een gewone kop',
         tekst: '',
-        beeld: PLAATSHOUDER,
+        beeld: BEELD,
         beeldPositie: 'rechts',
       },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-s',
+        breedte: 'basis',
+        items: kolommen(3, false),
+      },
+      {
+        type: 'citaten',
+        achtergrond: 'papier',
+        ruimte: 'sectie-s',
+        breedte: 'basis',
+        items: [{ citaat: 'Ze stonden er op tijd.' }],
+      },
+      {
+        type: 'oproep',
+        achtergrond: 'roet',
+        ruimte: 'sectie-s',
+        breedte: 'basis',
+        kop: 'Een gewone kop',
+        tekst: '',
+        knop: { label: 'Stuur maar', href: '/contact' },
+      },
+      {
+        type: 'rijke-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-s',
+        breedte: 'smal',
+        blokken: [{ soort: 'alinea', tekst: '' }],
+      },
     ],
   },
   {
-    naam: 'twee items',
+    naam: 'weinig items',
     secties: [
       {
-        type: 'kop-tekst',
-        achtergrond: 'diep',
-        ruimte: 'ruim',
-        breedte: 'smal',
-        kop: KORTE_KOP,
-        tekst: LOPENDE_TEKST,
+        type: 'splitscreen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        deuren: [
+          {
+            kop: 'Eén enkele deur',
+            tekst: LOPENDE_TEKST,
+            knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+            beeld: BEELD,
+          },
+        ],
       },
       {
-        type: 'kaarten-rij',
-        achtergrond: 'vlak',
-        ruimte: 'ruim',
-        breedte: 'basis',
-        kop: 'Twee kaarten',
-        items: kaarten(2),
+        type: 'kop-tekst',
+        achtergrond: 'papier',
+        ruimte: 'sectie-l',
+        breedte: 'smal',
+        kop: 'Alleen een kop',
       },
       {
         type: 'beeld-tekst',
-        achtergrond: 'zacht',
-        ruimte: 'ruim',
-        breedte: 'breed',
-        kop: KORTE_KOP,
-        tekst: LOPENDE_TEKST,
-        beeld: PLAATSHOUDER,
+        achtergrond: 'roet',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        kop: 'Alleen een kop en beeld',
+        beeld: BEELD,
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        bovenkop: 'Diensten',
+        kop: 'Twee kaarten',
+        items: kolommen(2),
+      },
+      {
+        type: 'citaten',
+        achtergrond: 'mist',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        items: citaten(1),
+      },
+      {
+        type: 'oproep',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        kop: 'Alleen een kop en een knop',
+        knop: { label: 'Stuur maar', href: '/contact' },
+      },
+      {
+        type: 'rijke-tekst',
+        achtergrond: 'papier',
+        ruimte: 'sectie-l',
+        breedte: 'smal',
+        kop: 'Voorwaarden',
+        blokken: [
+          { soort: 'alinea', tekst: LOPENDE_TEKST },
+          { soort: 'lijst', items: ['Eerste punt', 'Tweede punt'] },
+        ],
       },
     ],
   },
   {
-    naam: 'acht items · ontbrekend beeld',
+    naam: 'veel items · ontbrekend beeld',
     secties: [
       {
-        type: 'kop-tekst',
-        achtergrond: 'omgekeerd',
-        ruimte: 'normaal',
+        type: 'splitscreen',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
         breedte: 'breed',
-        kop: KORTE_KOP,
+        deuren: [
+          {
+            bovenkop: 'Opdrachtgevers',
+            kop: 'Zonder beeld',
+            tekst: LOPENDE_TEKST,
+            knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+          },
+          {
+            bovenkop: 'Professionals',
+            kop: 'Ook zonder beeld',
+            tekst: LOPENDE_TEKST,
+            knop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+          },
+        ],
+      },
+      {
+        type: 'kop-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Veel tekst',
+        kop: 'Een gewone kop',
         tekst: LANGE_TEKST,
       },
       {
-        type: 'kaarten-rij',
-        achtergrond: 'zacht',
-        ruimte: 'normaal',
+        type: 'beeld-tekst',
+        achtergrond: 'papier',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Zonder beeld',
+        kop: 'De beeldkolom valt weg',
+        tekst: LANGE_TEKST,
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
         breedte: 'breed',
         kop: 'Acht kaarten',
-        items: kaarten(8),
+        items: kolommen(8),
       },
       {
-        type: 'beeld-tekst',
-        achtergrond: 'vlak',
-        ruimte: 'normaal',
+        type: 'citaten',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'breed',
+        bovenkop: 'Wat ze zeggen',
+        items: citaten(6),
+      },
+      {
+        type: 'oproep',
+        achtergrond: 'mist',
+        ruimte: 'sectie-m',
         breedte: 'basis',
-        kop: KORTE_KOP,
+        bovenkop: 'Aan de slag',
+        kop: 'Twee acties naast elkaar',
         tekst: LANGE_TEKST,
-        beeldPositie: 'rechts',
+        knop: { label: 'Ik zoek personeel', href: '/contact' },
+        tweedeKnop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+      },
+      {
+        type: 'rijke-tekst',
+        achtergrond: 'papier',
+        ruimte: 'sectie-m',
+        breedte: 'smal',
+        kop: 'Algemene voorwaarden',
+        schichtLijst: true,
+        blokken: [
+          { soort: 'alinea', tekst: LANGE_TEKST },
+          { soort: 'kop', tekst: 'Artikel 1 — Wie we zijn' },
+          { soort: 'alinea', tekst: LANGE_TEKST },
+          { soort: 'lijst', items: ['Eerste punt', 'Tweede punt', 'Derde punt', 'Vierde punt'] },
+          { soort: 'kop', tekst: 'Artikel 2 — Wat je krijgt' },
+          { soort: 'alinea', tekst: LANGE_TEKST },
+        ],
+      },
+    ],
+  },
+  {
+    naam: 'regressie · extreem lange kop in splitscreen',
+    secties: [
+      {
+        type: 'splitscreen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        deuren: [
+          {
+            bovenkop: 'Opdrachtgevers',
+            kop: REGRESSIE_KOP,
+            tekst: LANGE_TEKST,
+            knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+            beeld: BEELD,
+          },
+          {
+            bovenkop: 'Professionals',
+            kop: REGRESSIE_KOP,
+            tekst: LANGE_TEKST,
+            knop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+            beeld: BEELD,
+          },
+        ],
       },
     ],
   },
 ];
 ---
 
-<!doctype html>
-<html lang="nl">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Sectieoverzicht — beheerbaarheidstest</title>
-  </head>
-  <body class="bg-vlak font-basis text-tekst">
-    {
-      gevallen.map((geval) => (
-        <>
-          <p class="mx-auto max-w-breed px-6 pt-compact font-kop text-klein text-tekst-zacht">
-            {geval.naam}
-          </p>
-          {geval.secties.map((sectie) => (
-            <SectionRenderer sectie={sectie} />
-          ))}
-        </>
-      ))
-    }
-  </body>
-</html>
+<Basis titel="Sectieoverzicht — De Club van 100" noindex>
+  {
+    gevallen.map((geval) => (
+      <>
+        <p class="mx-auto max-w-breed px-marge pt-sectie-s text-bovenkop text-tekst-stil uppercase">
+          {geval.naam}
+        </p>
+        {geval.secties.map((sectie) => (
+          <SectionRenderer sectie={sectie} />
+        ))}
+      </>
+    ))
+  }
+</Basis>

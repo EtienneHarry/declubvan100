@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// Bewaakt de tokenregel: in src/ horen geen rauwe hexkleuren en geen losse
-// px-waarden. Kleuren en maten komen uit het design system, via var(--token).
-// Enige uitzondering is het bestand waar de tokens zelf gedefinieerd staan.
+// Bewaakt de tokenregel: in src/ horen geen rauwe hexkleuren, geen losse
+// px-waarden en geen letterlijke lettertypenamen. Kleur, maat en font komen uit
+// het design system, via var(--token) of een tokenklasse. Enige uitzondering is
+// het bestand waar de tokens zelf gedefinieerd staan.
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
@@ -17,6 +18,42 @@ const GELDIGE_HEX_LENGTES = new Set([3, 6, 8]);
 
 // 12px, 1.5px. Niet 0px, en niet middenin een woord.
 const PX = /(?<![\w.])(\d+(?:\.\d+)?)px(?![\w-])/g;
+
+/*
+ * Font-family. Drie plekken waar een letterlijke familienaam kan binnenkomen:
+ *
+ *   1. een font-family-declaratie in CSS of in een stijlblok
+ *   2. een Tailwind-utility met een vrije waarde: font-[Arial]
+ *   3. een van Tailwinds ingebouwde familieklassen: font-sans/serif/mono
+ *
+ * Let op dat `font-` in Tailwind dubbel bezet is: font-semibold en font-[600]
+ * zijn gewichten, geen families. Daarom kijken we bij 2 alleen naar waardes die
+ * geen var() en geen getal zijn, en bij 3 naar precies drie namen.
+ */
+const FONT_DECLARATIE = /font-family\s*:\s*([^;{}"]+)/g;
+const FONT_VRIJE_WAARDE = /\bfont-\[([^\]]+)\]/g;
+const FONT_FAMILIEKLASSE = /\bfont-(sans|serif|mono)\b/g;
+
+// Alleen var(--font-…) telt als tokenverwijzing.
+const FONT_VAR = /^\s*var\(\s*--font-[a-z0-9-]+\s*\)\s*$/i;
+// CSS-brede sleutelwoorden bakken geen familie in.
+const CSS_SLEUTELWOORDEN = new Set(['inherit', 'initial', 'unset', 'revert', 'revert-layer']);
+
+/**
+ * Leest welke fontfamilies het design system kent, uit de tokenlaag zelf.
+ * `--font-sans` levert de klasse `font-sans`. Zo blijft deze controle kloppen
+ * zodra er een fonttoken bij komt of verdwijnt.
+ *
+ * De koppeling staat bewust niet in src/lib/tokens.ts: dat bestand koppelt
+ * achtergrond, ruimte, breedte en leesbreedte, en heeft geen fontgroep.
+ */
+function leesFontFamilies() {
+  if (!existsSync(UITZONDERING)) return new Set();
+  const bron = readFileSync(UITZONDERING, 'utf8');
+  return new Set([...bron.matchAll(/--font-([a-z0-9-]+)\s*:/gi)].map((m) => m[1].toLowerCase()));
+}
+
+const TOEGESTANE_FAMILIES = leesFontFamilies();
 
 /**
  * Vervangt commentaar door spaties, zodat regelnummers en kolommen kloppen.
@@ -128,6 +165,44 @@ function controleer(pad) {
       if (Number.parseFloat(match[1]) === 0) continue;
       gevonden.push({ pad, regel: index + 1, kolom: match.index + 1, waarde: match[0] });
     }
+
+    for (const match of regel.matchAll(FONT_DECLARATIE)) {
+      const waarde = match[1].trim();
+      if (FONT_VAR.test(waarde)) continue;
+      if (CSS_SLEUTELWOORDEN.has(waarde.toLowerCase())) continue;
+      gevonden.push({
+        pad,
+        regel: index + 1,
+        kolom: match.index + 1,
+        waarde: `font-family: ${waarde}`,
+        reden: 'alleen var(--font-…)',
+      });
+    }
+
+    for (const match of regel.matchAll(FONT_VRIJE_WAARDE)) {
+      const inhoud = match[1].trim();
+      if (inhoud.startsWith('var(')) continue;
+      // font-[600] en font-[1.5] zijn gewichten, geen families.
+      if (/^[\d.]+$/.test(inhoud)) continue;
+      gevonden.push({
+        pad,
+        regel: index + 1,
+        kolom: match.index + 1,
+        waarde: match[0],
+        reden: 'alleen var(--font-…)',
+      });
+    }
+
+    for (const match of regel.matchAll(FONT_FAMILIEKLASSE)) {
+      if (TOEGESTANE_FAMILIES.has(match[1])) continue;
+      gevonden.push({
+        pad,
+        regel: index + 1,
+        kolom: match.index + 1,
+        waarde: match[0],
+        reden: `geen --font-${match[1]} in ${UITZONDERING}`,
+      });
+    }
   });
 
   return gevonden;
@@ -143,13 +218,13 @@ const overtredingen = verzamelBestanden(SRC)
   .sort((a, b) => a.pad.localeCompare(b.pad) || a.regel - b.regel || a.kolom - b.kolom);
 
 if (overtredingen.length > 0) {
-  for (const { pad, regel, kolom, waarde } of overtredingen) {
-    console.error(`${pad}:${regel}:${kolom}  ${waarde}`);
+  for (const { pad, regel, kolom, waarde, reden } of overtredingen) {
+    console.error(`${pad}:${regel}:${kolom}  ${waarde}${reden ? `  — ${reden}` : ''}`);
   }
   console.error(
-    `\n${overtredingen.length} rauwe waarde(n) gevonden. Gebruik een design-system-token via var(--token); alleen ${UITZONDERING} mag ze letterlijk bevatten.`,
+    `\n${overtredingen.length} rauwe waarde(n) gevonden. Gebruik een design-system-token; alleen ${UITZONDERING} mag ze letterlijk bevatten.`,
   );
   process.exit(1);
 }
 
-console.log('check-tokens: geen rauwe hexkleuren of px-waarden in src/.');
+console.log('check-tokens: geen rauwe hexkleuren, px-waarden of lettertypenamen in src/.');

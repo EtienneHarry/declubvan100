@@ -20,14 +20,8 @@ uitwerking ervan. Werk pas daarna de tokens bij, en bouw dan de pagina's.
 |---|---|
 | `design-system.md` | Invullen: kleur, typografie, ruimte, grid, radius, diepte, componenten, motion, beeld, voice |
 | `src/styles/tokens.css` | De waardes. **Niet de tokennamen** — die zijn de afspraak met de rest van de code |
-| `public/plaatshouder.svg` | Vervangen door echt beeld |
 | `src/pages/index.astro` | De eigenlijke site |
 | `package.json` | De `name` |
-
-`src/pages/secties.astro` blijft staan: dat is de beheerbaarheidstest, waarin
-elke sectie vier keer onder lastige omstandigheden gerenderd wordt. De pagina
-is `noindex` en staat in `public/robots.txt`. Haal hem pas weg als je hem echt
-niet meer wilt.
 
 ## Commando's
 

@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2723.04 2723.04" fill="currentColor" role="img" aria-label="De Club van 100">
+<!-- Favicon. Aparte kopie van src/assets/logo/merkteken-vierkant.svg met de
+     kleuren ingebakken: het component houdt currentColor, dit bestand niet.
+     Vlak = --inkt, merkteken = --krijt, overgenomen uit src/styles/tokens.css.
+     Wijzigen die tokens, pas dit bestand dan mee aan. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2723.04 2723.04" fill="#ffffff" role="img" aria-label="De Club van 100">
   <title>De Club van 100</title>
+  <rect width="2723.04" height="2723.04" fill="#0b0b0b" />
   <g transform="translate(887.5,263.5)">
   <g transform="translate(0.000000,2196.000000) scale(0.100000,-0.100000)">
     <path d="M8997 21941 c-3 -14 -15 -21 -38 -23 -30 -3 -35 -7 -39 -38 -4 -31

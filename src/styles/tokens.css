@@ -1,65 +1,363 @@
 /*
- * Tokenlaag van het sjabloon.
+ * De Club van 100 — tokenlaag.
  *
- * Alle waardes hieronder zijn neutrale plaatshouders. Ze horen bij geen enkele
- * huisstijl en zijn bedoeld om per klant vervangen te worden. De tokennamen
- * blijven daarbij gelijk — die zijn de afspraak tussen dit bestand,
- * src/lib/tokens.ts en de secties.
+ * Dit is het enige bestand in src/ waar letterlijke waardes mogen staan;
+ * scripts/check-tokens.mjs slaat het over. Overal anders komen kleur en maat
+ * via een tokennaam binnen.
  *
- * Dit is het enige bestand waar rauwe hexkleuren en px-waardes mogen staan;
- * scripts/check-tokens.mjs slaat het over. Overal anders in src/ komen kleuren
- * en maten via een tokennaam binnen.
+ * Het design system splitst de tokens over zeven bestanden (fonts, colors,
+ * typography, spacing, radius-depth, motion, base). Die zijn hier platgeslagen,
+ * in vier lagen:
+ *
+ *   1. Primitieven      — de rauwe waardes, één keer, in :root
+ *   2. Semantische laag — aliassen die per thema herbonden worden
+ *   3. @theme inline    — wat Tailwind tot utilities maakt
+ *   4. Basis            — reset, links, focus, breedte-as, beweging
+ *
+ * Laag 2 en 4 kunnen geen @theme-tokens zijn: een alias die onder
+ * [data-thema="licht"] iets anders betekent, en een CSS-reset, passen niet in
+ * een themablok. Ze staan daarom bewust buiten @theme, in ditzelfde bestand.
+ *
+ * Monochroom, geen accentkleur. Vier achtergronden en niet meer. De
+ * contrastverhoudingen achter deze waardes staan in het contrasthoofdstuk van
+ * design-system.md; wijk er niet van af zonder daar na te rekenen.
  */
 
+/* ---------------------------------------------------------------------------
+   1. Primitieven
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* De vier achtergronden. Meer dan één lichte en één donkere per pagina is
+     een fout. */
+  --inkt: #0b0b0b; /* dominant, standaard achtergrond van het merk */
+  --roet: #191919; /* verhoogd vlak op inkt: kaart, invoerveld, sticky balk */
+  --papier: #fafaf8; /* lichte pagina: voorwaarden, formulieren, print */
+  --mist: #e4e4e1; /* rustig vlak op papier: kaart, tabelrij, uitgeschakeld veld */
+
+  /* Tekst. krijt-stil mag nooit op papier of mist — dat haalt 2,9:1. */
+  --krijt: #ffffff;
+  --krijt-zacht: #c9c9c6;
+  --krijt-stil: #8a8a87;
+  --grafiet: #5c5c59;
+
+  /* Lijnen. De sterke variant is de enige die AA haalt voor een UI-rand. */
+  --lijn-donker: rgb(255 255 255 / 0.16);
+  --lijn-donker-sterk: rgb(255 255 255 / 0.34);
+  --lijn-licht: rgb(11 11 11 / 0.16);
+  --lijn-licht-sterk: rgb(11 11 11 / 0.38);
+
+  /* Sluiers. Verplicht onder elke tekst op foto. */
+  --sluier: rgb(11 11 11 / 0.62);
+  --sluier-onder: linear-gradient(
+    to top,
+    rgb(11 11 11 / 0.92) 0%,
+    rgb(11 11 11 / 0.72) 38%,
+    rgb(11 11 11 / 0) 100%
+  );
+  --sluier-zij: linear-gradient(
+    to right,
+    rgb(11 11 11 / 0.94) 0%,
+    rgb(11 11 11 / 0.7) 46%,
+    rgb(11 11 11 / 0) 100%
+  );
+
+  /* Functioneel, gedempt. Bestaat altijd in een paar: licht voor donkere
+     achtergrond, donker voor lichte. Geen tweede merkkleur. */
+  --fout: #e4665c;
+  --fout-donker: #a3231a;
+  --letop: #d9a441;
+  --letop-donker: #8a6412;
+  --goed: #7fb08a;
+  --goed-donker: #2f6b41;
+
+  /* Lijndikte en leesbreedte */
+  --lijn-dikte: 1px;
+  --lijn-dikte-sterk: 2px;
+  --maat-regel: 66ch; /* lopende tekst op licht */
+  --maat-regel-donker: 60ch; /* op zwart korter houden */
+
+  /* Beweging. Kort en zakelijk; geen bounce, geen veer, geen parallax. */
+  --duur-1: 120ms; /* kleur- en lijnwissel: hover, focus */
+  --duur-2: 180ms; /* knopindruk, kleine verschuiving */
+  --duur-3: 280ms; /* paneel, accordeon, dialoog */
+  --duur-4: 520ms; /* beeldonthulling, sectie in beeld */
+  --soepel-uit: cubic-bezier(0.2, 0, 0, 1);
+  --soepel-in: cubic-bezier(0.4, 0, 1, 1);
+  --soepel-inuit: cubic-bezier(0.65, 0, 0.35, 1);
+  --verschuif: 8px; /* standaard intree-afstand */
+  --indruk: 0.985; /* scale bij :active */
+}
+
+/* ---------------------------------------------------------------------------
+   2. Semantische laag — donker is de standaard
+   --------------------------------------------------------------------------- */
+
+:root {
+  --vlak: var(--inkt);
+  --vlak-verhoogd: var(--roet);
+  --tekst: var(--krijt);
+  --tekst-zacht: var(--krijt-zacht);
+  --tekst-stil: var(--krijt-stil);
+  --lijn: var(--lijn-donker);
+  --lijn-sterk: var(--lijn-donker-sterk);
+  --tekst-fout: var(--fout);
+  --focus-ring: var(--krijt);
+
+  /* De sticky navigatie is de enige plek met transparantie en blur. Verder
+     nergens: glasmorfisme past niet bij een merk dat hard wil zijn. */
+  --vlak-nav: color-mix(in srgb, var(--vlak) 88%, transparent);
+}
+
+/* Lichte omgeving. Zet [data-thema="licht"] op een sectie of op <html>. */
+[data-thema='licht'] {
+  --vlak: var(--papier);
+  --vlak-verhoogd: var(--mist);
+  --tekst: var(--inkt);
+  --tekst-zacht: var(--grafiet);
+  --tekst-stil: var(--grafiet); /* krijt-stil zakt op licht onder 3:1 */
+  --lijn: var(--lijn-licht);
+  --lijn-sterk: var(--lijn-licht-sterk);
+  --tekst-fout: var(--fout-donker);
+  --focus-ring: var(--inkt);
+}
+
+/* Diepte. Op zwart bestaat schaduw niet: diepte is een verhoogd vlak plus een
+   lijn. Op papier en mist mag wél een korte, lichte schaduw. */
+:root {
+  --diepte-0: none;
+  --diepte-1: inset 0 0 0 1px var(--lijn);
+  --diepte-2: inset 0 0 0 1px var(--lijn-sterk);
+  --diepte-3: 0 24px 64px rgb(0 0 0 / 0.72), inset 0 0 0 1px var(--lijn-sterk);
+}
+
+/* ---------------------------------------------------------------------------
+   3. @theme inline — wat Tailwind tot utilities maakt
+   --------------------------------------------------------------------------- */
+
 @theme inline {
-  /* Kleur — per klant vervangen door de palet-waardes uit de huisstijl.
-     De rollen blijven: vlak/zacht/diep zijn oplopend contrasterende
-     achtergronden, omgekeerd is het donkere vlak met lichte tekst. */
-  --color-vlak: #ffffff;
-  --color-vlak-zacht: #f5f5f5;
-  --color-vlak-diep: #e8e8e8;
-  --color-omgekeerd: #1a1a1a;
-  --color-tekst: #1a1a1a;
-  --color-tekst-zacht: #5c5c5c;
-  --color-tekst-omgekeerd: #fafafa;
-  --color-lijn: #d4d4d4;
-  --color-accent: #737373;
+  /* Lettertype. Archivo Variable wordt zelf gehost via @fontsource-variable. */
+  --font-sans: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Typografie — per klant vervangen door de huisstijlfonts en de
-     bijbehorende schaal. De trapjes zelf (kop-l tot klein) blijven bestaan. */
-  --font-kop: ui-sans-serif, system-ui, sans-serif;
-  --font-basis: ui-sans-serif, system-ui, sans-serif;
+  /* Kleur: de vier achtergronden */
+  --color-inkt: var(--inkt);
+  --color-roet: var(--roet);
+  --color-papier: var(--papier);
+  --color-mist: var(--mist);
 
-  --text-kop-l: 2.5rem;
+  /* Kleur: tekst */
+  --color-krijt: var(--krijt);
+  --color-krijt-zacht: var(--krijt-zacht);
+  --color-krijt-stil: var(--krijt-stil);
+  --color-grafiet: var(--grafiet);
+
+  /* Kleur: functioneel */
+  --color-fout: var(--fout);
+  --color-fout-donker: var(--fout-donker);
+  --color-letop: var(--letop);
+  --color-letop-donker: var(--letop-donker);
+  --color-goed: var(--goed);
+  --color-goed-donker: var(--goed-donker);
+
+  /* Kleur: semantisch, volgt [data-thema] */
+  --color-vlak: var(--vlak);
+  --color-vlak-verhoogd: var(--vlak-verhoogd);
+  --color-tekst: var(--tekst);
+  --color-tekst-zacht: var(--tekst-zacht);
+  --color-tekst-stil: var(--tekst-stil);
+  --color-lijn: var(--lijn);
+  --color-lijn-sterk: var(--lijn-sterk);
+  --color-vlak-nav: var(--vlak-nav);
+
+  /* Blur, alleen voor de sticky navigatie */
+  --blur-nav: 14px;
+
+  /* Typografische schaal. De wdth-as staat in laag 4: Tailwind kent geen
+     namespace voor font-variation-settings. */
+  --text-display-xl: clamp(3.5rem, 9vw, 8rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--font-weight: 800;
+  --text-display-l: clamp(2.5rem, 6vw, 5rem);
+  --text-display-l--line-height: 0.95;
+  --text-display-l--letter-spacing: -0.02em;
+  --text-display-l--font-weight: 800;
+  --text-kop-l: clamp(1.75rem, 3.2vw, 2.75rem);
   --text-kop-l--line-height: 1.1;
-  --text-kop-m: 1.75rem;
-  --text-kop-m--line-height: 1.2;
-  --text-kop-s: 1.25rem;
-  --text-kop-s--line-height: 1.3;
-  --text-lopend: 1rem;
-  --text-lopend--line-height: 1.6;
-  --text-klein: 0.875rem;
-  --text-klein--line-height: 1.5;
+  --text-kop-l--letter-spacing: -0.01em;
+  --text-kop-l--font-weight: 700;
+  --text-kop-m: clamp(1.25rem, 2vw, 1.625rem);
+  --text-kop-m--line-height: 1.25;
+  --text-kop-m--font-weight: 700;
+  --text-kop-s: 1.125rem;
+  --text-kop-s--line-height: 1.35;
+  --text-kop-s--font-weight: 600;
+  --text-bovenkop: 0.875rem;
+  --text-bovenkop--line-height: 1.2;
+  --text-bovenkop--letter-spacing: 0.14em;
+  --text-bovenkop--font-weight: 600;
+  --text-lopend-l: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  --text-lopend-l--line-height: 1.6;
+  --text-lopend-l--font-weight: 400;
+  --text-lopend-m: 1rem;
+  --text-lopend-m--line-height: 1.65;
+  --text-lopend-m--font-weight: 400;
+  --text-lopend-s: 0.875rem;
+  --text-lopend-s--line-height: 1.55;
+  --text-lopend-s--font-weight: 400;
+  --text-knop: 1.0625rem;
+  --text-knop--line-height: 1;
+  --text-knop--letter-spacing: 0.02em;
+  --text-knop--font-weight: 700;
 
-  /* Ruimte — de verticale maat van een sectie. Per klant ruimer of krapper,
-     maar altijd drie stappen: compact, normaal, ruim. */
-  --spacing-compact: 2rem;
-  --spacing-normaal: 4rem;
-  --spacing-ruim: 6rem;
+  /* Ruimte. Basiseenheid 4px, dus p-6 is 24px. */
+  --spacing: 4px;
+  --spacing-sectie-s: clamp(40px, 6vw, 64px);
+  --spacing-sectie-m: clamp(64px, 9vw, 112px);
+  --spacing-sectie-l: clamp(96px, 14vw, 176px);
+  --spacing-marge: clamp(20px, 5vw, 64px);
 
-  /* Containerbreedte — per klant breder of smaller. Bepaalt hoe ver de inhoud
-     binnen een sectie mag uitlopen. */
-  --container-smal: 40rem;
-  --container-basis: 64rem;
-  --container-breed: 80rem;
+  /* Container en breekpunten */
+  --container-smal: 768px;
+  --container-basis: 1280px;
+  --container-breed: 1600px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1600px;
 
-  /* Radius — per klant scherper of ronder. Zet beide op 0rem voor een strak
-     sjabloon zonder afgeronde hoeken. */
-  --radius-zacht: 0.25rem;
-  --radius-rond: 0.75rem;
+  /* Radius. Het merk is hard: 0 is de standaard, ronding is functioneel. */
+  --radius-none: 0;
+  --radius-veld: 2px; /* invoervelden, selects, kleine controls */
+  --radius-overlay: 4px; /* dialoog, tooltip, melding */
+  --radius-vol: 999px; /* ronde iconknop en telbadge */
 
-  /* Diepte — per klant subtieler of steviger. Twee niveaus is genoeg:
-     1 voor rustende vlakken, 2 voor wat eruit springt. */
-  --shadow-diepte-1: 0 1px 2px rgb(0 0 0 / 0.06);
-  --shadow-diepte-2: 0 4px 12px rgb(0 0 0 / 0.1);
+  /* Diepte */
+  --shadow-licht-1: 0 1px 2px rgb(11 11 11 / 0.1);
+  --shadow-licht-2: 0 8px 24px rgb(11 11 11 / 0.12);
+  --shadow-licht-3: 0 24px 56px rgb(11 11 11 / 0.18);
+  --shadow-dialoog: 0 24px 64px rgb(0 0 0 / 0.72);
+
+  /* Beweging */
+  --ease-uit: var(--soepel-uit);
+  --ease-in: var(--soepel-in);
+  --ease-inuit: var(--soepel-inuit);
+  --animate-duur-1: var(--duur-1);
+  --animate-duur-2: var(--duur-2);
+  --animate-duur-3: var(--duur-3);
+  --animate-duur-4: var(--duur-4);
+}
+
+/* ---------------------------------------------------------------------------
+   4. Basis
+   --------------------------------------------------------------------------- */
+
+/* De breedte-as, alleen op displayniveaus. Zodra wdth in lopende tekst
+   verschijnt, verliest de pagina zijn ritme. */
+.text-display-xl {
+  font-variation-settings: 'wdth' 118;
+}
+
+.text-display-l {
+  font-variation-settings: 'wdth' 112;
+}
+
+/* In @layer base, niet ongelaagd. Ongelaagde CSS wint van Tailwinds
+   @layer utilities, en dan kan een utility als no-underline de linkstijl
+   hieronder niet meer overschrijven. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+  margin: 0;
+  background: var(--vlak);
+  color: var(--tekst);
+  font-family: var(--font-sans);
+  font-size: var(--text-lopend-m);
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  figure {
+    margin: 0;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: var(--tekst);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: var(--lijn-dikte);
+    text-decoration-color: var(--lijn-sterk);
+    transition:
+      text-decoration-color var(--duur-1) var(--soepel-uit),
+      color var(--duur-1) var(--soepel-uit);
+  }
+
+  a:hover {
+    text-decoration-color: currentcolor;
+  }
+
+  a:active {
+    opacity: 0.7;
+  }
+
+  :focus-visible {
+    outline: var(--lijn-dikte-sterk) solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 0;
+  }
+
+  ::selection {
+    background: var(--krijt);
+    color: var(--inkt);
+  }
+
+  [data-thema='licht'] ::selection {
+    background: var(--inkt);
+    color: var(--papier);
+  }
+}
+
+/* Bij gereduceerde beweging gaat alles naar 1ms en verdwijnt elke
+   verschuiving. Geldt globaal, niet per component. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duur-1: 1ms;
+    --duur-2: 1ms;
+    --duur-3: 1ms;
+    --duur-4: 1ms;
+    --verschuif: 0px;
+    --indruk: 1;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }

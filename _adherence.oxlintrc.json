@@ -1,18 +1,24 @@
 {
-  // Overgenomen uit het Kick&Work design system.
+  // Samengevoegd uit twee bronnen: de adherence-config van De Club van 100
+  // (het design system van deze klant) en wat hier stond uit het
+  // Kick&Work-sjabloon.
   //
-  // Twee blokken uit het bronbestand staan hier niet:
-  // - "no-restricted-syntax" (19 regels voor hex-kleuren, px-waarden,
-  //   fonts en component-props). oxlint kent die regel niet; hij staat
-  //   niet in configuration_schema.json en oxlint >= 1.50 weigert de
-  //   config ermee. Oudere oxlint-versies laden hem wel, maar negeren
-  //   hem stilzwijgend — dat geeft een groene lint zonder handhaving.
-  // - "x-omelette" (metadata voor de design-system-tooling, geen
-  //   oxlint-veld). oxlint >= 1.50 weigert onbekende velden.
-  "plugins": [
-    "react",
-    "import"
-  ],
+  // Twee blokken uit de bronbestanden staan hier NIET, en dat is geen keuze:
+  // oxlint 1.77 weigert de hele config als ze erin staan.
+  //
+  // - "no-restricted-syntax" — 19 selectors voor hexkleuren, px-waarden,
+  //   font-family en de propscontracten per component.
+  //     x Rule 'no-restricted-syntax' not found in plugin 'eslint'
+  //   Niet stilzwijgend genegeerd dus, maar een harde parse-fout.
+  //
+  // - "x-omelette" — metadata voor de design-system-tooling, geen oxlint-veld.
+  //     x unknown field `x-omelette`
+  //
+  // Wat daardoor wegvalt en wie het opvangt:
+  //   kleur en maat        -> scripts/check-tokens.mjs
+  //   propscontracten      -> TypeScript, via astro check
+  //   font-family          -> niemand; zie CLAUDE.md
+  "plugins": ["react", "import"],
   "rules": {
     "react/forbid-elements": [
       "warn",
@@ -25,7 +31,18 @@
       {
         "patterns": [
           {
+            // De eerste zes groepen komen uit het design system van De Club van
+            // 100 en volgen zijn mapindeling. De vijf Engelse groepen daaronder
+            // komen uit het Kick&Work-sjabloon; die mappen bestaan in dit
+            // project niet, maar ze staan hier omdat de configs zijn
+            // samengevoegd en ze niets kapotmaken.
             "group": [
+              "components/basis/**",
+              "components/beeld/**",
+              "components/feedback/**",
+              "components/formulier/**",
+              "components/merk/**",
+              "components/navigatie/**",
               "components/brand/**",
               "components/core/**",
               "components/data/**",
@@ -41,9 +58,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/index.js"
-      ],
+      "files": ["**/index.js"],
       "rules": {
         "no-restricted-imports": "off"
       }

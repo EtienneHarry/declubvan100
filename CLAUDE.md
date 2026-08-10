@@ -1,101 +1,238 @@
-# Werkinstructie — De Club van 100
+# declubvan100
 
-Deze repo bevat één klantsite: declubvan.nl, bemiddeling van horeca- en
-eventpersoneel. Vijf pagina's, Keystatic als CMS, Vercel als hosting.
+De site van De Club van 100. Astro 6 met React 19, Tailwind 4 en TypeScript in
+strict-modus. Deployt naar Vercel: alles wordt vooraf gerenderd, een losse route
+draait op verzoek met `export const prerender = false;`.
 
-`design-system.md` in de root is bindend. Staat een waarde daar niet in, verzin hem
-dan niet: meld het en wacht op antwoord.
+`security.csp` staat aan. Astro zet daardoor bij elke build een
+`content-security-policy`-meta met sha256-hashes per script uit. Gevolgen om te
+onthouden:
 
-## Het merk in drie regels
+- **Inline stijl wordt geblokkeerd.** `style-src` staat op `'self'` plus hashes,
+  zonder `'unsafe-inline'`. Een `style`-attribuut belandt wel in de DOM maar
+  wordt niet toegepast. De regel "geen `style`-attribuut" wordt dus afgedwongen,
+  niet alleen afgesproken.
+- CSP werkt in `build` en `preview`, niet in `dev`.
+- Geen `<ClientRouter />`-viewtransities en geen Shiki-syntaxkleuring;
+  `markdown.syntaxHighlight` staat daarom uit.
 
-De Club van 100 is geen uitzendbureau maar een selectie van honderd professionals.
-Een uitzendbureau werft, deze club selecteert. Alles in de site — toon, ruimte,
-zwart — moet dat verschil dragen.
+`design-system.md` beschrijft hoe het design system van de klant hier is
+uitgewerkt, inclusief de afwijkingen. De bron zelf is het design system van De
+Club van 100 en staat buiten deze repo.
 
 ## Vaste regels
 
-**Tokens zijn de enige bron.** Elke visuele waarde komt uit `src/styles/tokens.css`.
-Geen losse hexcodes, geen losse pixelwaardes, nergens anders. `npm run check` breekt
-hierop en dat is de bedoeling.
-
-**Secties zijn componenten.** Een pagina is een reeks secties, geen eigen opmaak per
-pagina. Elke sectie haalt achtergrond, verticale ruimte en breedte als tokennaam op
-en werkt met wisselende hoeveelheden inhoud, in elke volgorde.
-
-**Geen `className` van buitenaf, geen `style`-attribuut, geen spread-attributen op
-componenten.** Zodra een sectie opmaak van buiten accepteert, is de tokenregel een
-suggestie geworden. Spread-attributen zijn bovendien onderwerp van een openstaande
-Astro-advisory; los daarvan wil je ze hier niet.
-
-**Rijke tekst is kaal.** Alleen H2, H3, vet, cursief, link en lijsten. Geen kleuren,
-geen inline opmaak, geen H1 — die hoort bij de paginatitel.
-
-**Alt-tekst is verplicht**, met validatie in het schema. Label: "Wat staat er op de
-foto".
-
-**Tekst op foto krijgt altijd een sluier.** Gebruik het `Beeldvlak`-component, dat
-dwingt het af. Zonder sluier haal je de contrasteis niet.
-
-**Beweging respecteert `prefers-reduced-motion`.** Zonder uitzondering.
-
-## Koppelbestanden
-
-Er zijn er precies twee, en er komen er geen bij:
-
-- `src/lib/tokens.ts` — tokennaam naar Tailwind-klasse
-- `src/lib/SectionRenderer.tsx` — sectietype naar component
-
-Een nieuwe sectie landt altijd op drie plekken: het component zelf,
-`SectionRenderer.tsx`, en `src/pages/secties.astro` met de vier randgevallen.
-
-## Kwaliteitsbewaking
-
-- `scripts/check-tokens.mjs` bewaakt de tokenregel: hexcodes en losse px-waardes
-  buiten `tokens.css`. Dit vervangt het `no-restricted-syntax`-blok dat oxlint niet
-  kan draaien.
-- oxlint bewaakt de codekwaliteit.
-- `npm run check` draait beide plus `astro check` en de build. Draai hem vóór elke
-  commit.
-- `src/pages/secties.astro` is de beheerbaarheidstest: elke sectie met een te lange
-  kop, een lege tekst, weinig items, veel items, en bij beeldsecties een ontbrekende
-  afbeelding.
-
-## Taal en tekst
-
-Alle zichtbare tekst en alle CMS-labels in het Nederlands, geschreven vanuit de
-redacteur. "Wat staat er op de foto", niet "Alt attribute". "Weergave", niet
-"Section settings".
-
-Jij en wij, nooit u. Geen emoji, nergens. Geen uitroeptekens. Verplichte velden
-krijgen geen sterretje; optionele velden krijgen "— mag je overslaan".
-
-Hoofdstuk 2 van `design-system.md` bevat de volledige microcopy. Gebruik die
-formuleringen letterlijk, verzin geen eigen knopteksten.
-
-## Typografie
-
-Archivo Variable, één familie. Import is `@fontsource-variable/archivo/wdth.css` en
-niet de standaardimport: die laat de breedte-as weg en dan doen de displaykoppen
-niets. De breedte-as blijft op 100 buiten `display-xl` en `display-l`.
-
-## Deze site
-
-Pagina's: home (splitscreen met twee deuren), opdrachtgevers, de 100, contact,
-voorwaarden.
-
-Niet bouwen: filters, meertaligheid, webshop, reserverings- of betaalfunctionaliteit,
-inschrijfformulier met eigen backend. Aanmelden loopt via een extern formulier.
+1. Kleuren en maten komen uit een token, nooit rauw in de code.
+   `src/styles/tokens.css` is de enige plek waar letterlijke waardes mogen
+   staan.
+2. Tokennamen zijn de afspraak tussen `tokens.css`, `tokens.ts` en de secties.
+   Verander waardes, geen namen.
+3. Secties krijgen achtergrond, verticale ruimte en breedte als tokennaam en
+   halen de klasse uit `tokens.ts`. Geen `className`-prop van buitenaf, geen
+   `style`-attribuut, geen spread-attributen.
+4. Een sectie werkt met wisselende hoeveelheden inhoud en in elke volgorde. Ze
+   schildert haar eigen achtergrond en ruimte en gaat niet uit van buren.
+5. `npm run check` moet groen zijn voor je commit.
+6. Verzin geen huisstijl. Staat iets niet in het design system, vraag het.
 
 ## Werkwijze
 
-- Eén commit per stap, boodschap in het Nederlands.
-- Per sessie een eigen branch, aan het eind een pull request.
-- Bouw niets wat niet gevraagd is. Geen extra pagina's, geen extra componenten, geen
-  bibliotheken erbij zonder overleg.
-- Loopt het contextvenster vol of wissel je van onderwerp: sluit af met een korte
-  overdracht, wat staat er en wat is de volgende stap.
+Eén commit per stap, met een beschrijvende boodschap in het Nederlands. Elke
+commit staat op zichzelf: `npm run check` slaagt erop. Loopt de volgorde van een
+opdracht daarmee in de knoop — een bestand dat een ander bestand importeert dat
+er nog niet is — dan wissel je de stappen om en zeg je erbij dat je dat gedaan
+hebt.
 
-## Stack
+## Controles
 
-Astro 6, React-eilanden, Tailwind 4 met `@theme inline`, TypeScript strict, oxlint,
-Keystatic, Vercel. `security.csp` staat aan.
+`npm run check` draait de hele poort en stopt bij de eerste stap die faalt:
+
+```
+oxlint  →  check-tokens  →  astro check  →  astro build
+```
+
+Dezelfde `check` draait in GitHub Actions bij elke push en pull request.
+
+Wie bewaakt wat:
+
+| Onderwerp | Bewaker |
+|---|---|
+| Hexkleuren en px-waarden | `scripts/check-tokens.mjs` |
+| Letterlijke lettertypenamen | `scripts/check-tokens.mjs` |
+| Propnamen en propwaarden van componenten | TypeScript, via `astro check` |
+| Geen `className` of `style` van buitenaf | TypeScript |
+| Import via `index.js` | oxlint, `no-restricted-imports` |
+| Onbekende tokennaam | TypeScript, via de union-types in `tokens.ts` |
+
+`_adherence.oxlintrc.json` is samengevoegd uit de adherence-config van De Club
+van 100 en die van het Kick&Work-sjabloon. Twee blokken uit die bronnen konden
+niet mee, en dat is geen keuze: oxlint 1.77 weigert de hele config zodra ze
+erin staan.
+
+- `no-restricted-syntax` — 19 selectors voor kleur, maat, font-family en de
+  propscontracten per component. Levert
+  `Rule 'no-restricted-syntax' not found in plugin 'eslint'`.
+- `x-omelette` — metadata voor de design-system-tooling. Levert
+  `unknown field`.
+
+Kleur, maat én font-family worden opgevangen door `check-tokens`, de
+propscontracten door TypeScript. Er blijft van die 19 selectors dus niets
+onbewaakt.
+
+## De tokenregel
+
+`scripts/check-tokens.mjs` scant `src/` op `.astro`, `.tsx`, `.ts` en `.css` en
+faalt met exit 1 op:
+
+- hexkleuren in de vorm `#abc`, `#aabbcc` of `#aabbccdd`
+- losse px-waarden, bijvoorbeeld `16px`
+- letterlijke lettertypenamen
+
+Niet gemeld: commentaar (`//`, `/* */`, `<!-- -->`), `0px`, HTML-entities als
+`&#123;` en andere hexlengtes dan 3, 6 of 8. `//` telt niet als commentaar in
+CSS en ook niet direct na een dubbele punt, zodat `https://…` intact blijft.
+
+De fontcontrole kijkt op drie plekken: een `font-family`-declaratie, een
+Tailwind-utility met een vrije waarde (`font-[Arial]`), en Tailwinds ingebouwde
+familieklassen `font-sans`, `font-serif` en `font-mono`. Toegestaan zijn alleen
+`var(--font-…)`, de CSS-brede sleutelwoorden (`inherit` en verwanten), en een
+familieklasse waarvoor een `--font-*`-token in `tokens.css` bestaat. Die lijst
+wordt uit `tokens.css` gelezen, dus een nieuw fonttoken werkt meteen.
+
+`font-` is in Tailwind dubbel bezet. `font-semibold`, `font-bold` en `font-[600]`
+zijn gewichten en worden niet gemeld; alleen vrije waardes die geen `var()` en
+geen getal zijn tellen als familienaam.
+
+Enige uitzondering is `src/styles/tokens.css` — daar mogen de waardes letterlijk
+staan, want daar worden de tokens gedefinieerd.
+
+## Tokens
+
+`src/styles/tokens.css` is de tokenlaag, in vier lagen in één bestand:
+
+1. **Primitieven** — de rauwe waardes, één keer, in `:root`.
+2. **Semantische laag** — aliassen die onder `[data-thema="licht"]` kantelen.
+3. **`@theme inline`** — wat Tailwind tot utilities maakt.
+4. **Basis** — reset, links, focus, de breedte-as, gereduceerde beweging.
+
+Laag 2 en 4 staan bewust buiten `@theme`: een alias die per thema iets anders
+betekent en een CSS-reset zijn geen themetokens. Let op dat `@theme inline` de
+`--color-*`- en `--spacing-*`-variabelen niet als CSS-variabele uitstuurt; die
+worden in de utility ingebakken. Handgeschreven CSS leunt daarom op de
+primitieven uit laag 1.
+
+Laag 4 staat in `@layer base`. Ongelaagde CSS wint van Tailwinds
+`@layer utilities`, en dan kan een utility als `no-underline` de linkstijl niet
+meer overschrijven.
+
+## Koppelbestanden
+
+Er zijn er twee. Alles wat een sectie aan iets anders vastknoopt, staat in één
+van deze twee bestanden en nergens anders:
+
+- **`src/lib/tokens.ts`** — tokennaam naar Tailwind-klasse, voor achtergrond,
+  verticale ruimte, containerbreedte en leesbreedte. Elke groep heeft een
+  union-type, dus een tokennaam die niet bestaat is een compileerfout. Alleen
+  klassenamen in dit bestand; een rauwe waarde laat `check-tokens.mjs` de build
+  breken.
+- **`src/lib/SectionRenderer.tsx`** — sectietype naar component. Een onbekend
+  type toont in ontwikkeling een melding met het type erin en rendert in
+  productie niets. De `default`-tak bevat een exhaustiviteitscontrole: een type
+  dat wel in de union staat maar geen `case` heeft, is een compileerfout.
+
+## Componenten
+
+React, want `SectionRenderer.tsx` en de secties zijn dat ook. Ze worden statisch
+voorgerenderd, dus er gaat geen JavaScript naar de browser.
+
+| Component | Map | Waarvoor |
+|---|---|---|
+| `Knop` | `components/basis/` | Elke actie. Varianten `vol`, `lijn`, `kaal`; maten `s`, `m`, `l` |
+| `Kaart` | `components/basis/` | Alles wat in een raster staat |
+| `Bovenkop` | `components/basis/` | Het labeltje boven een sectiekop |
+| `Scheiding` | `components/basis/` | Vervangt de `<hr>`, eventueel met schicht |
+| `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
+| `Bliksem` | `components/merk/` | De schicht, in drie rollen |
+
+De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
+React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
+`fill="currentColor"` en nemen geen props aan.
+
+**Beeldvlak dwingt de sluier af.** Er is geen prop die hem weglaat en geen tak
+die hem overslaat. Zonder behandeling haalt witte tekst op deze fotografie nooit
+betrouwbaar AA, en een foto is geen token: hij wordt vervangen en dan klopt het
+contrast niet meer.
+
+## Sectietypes
+
+Zeven, allemaal in `src/components/sections/` en gekoppeld in
+`SectionRenderer.tsx`:
+
+| Type | Component | Waarvoor |
+|---|---|---|
+| `splitscreen` | `Splitscreen` | Twee deuren: opdrachtgevers en professionals |
+| `kop-tekst` | `KopTekst` | Kop met optionele bovenkop en lopende tekst |
+| `beeld-tekst` | `BeeldTekst` | Beeld naast tekst |
+| `drie-kolommen` | `DrieKolommen` | Raster van kaarten |
+| `citaten` | `Citaten` | Klantquotes |
+| `oproep` | `Oproep` | Afsluitend blok met een actie |
+| `rijke-tekst` | `RijkeTekst` | Lopende tekst met koppen en lijsten |
+
+### Een nieuwe sectie toevoegen
+
+Een nieuwe sectie landt altijd op drie plekken. Sla er één over en je merkt het
+pas laat:
+
+1. `src/components/sections/<Naam>.tsx` — de sectie zelf, volgens regel 3 en 4.
+2. `src/lib/SectionRenderer.tsx` — het type in de union én een `case` in de
+   switch.
+3. `src/pages/secties.astro` — vier keer renderen, onder de omstandigheden waar
+   een sjabloon op stukloopt.
+
+Nieuwe kleuren of maten horen eerst in `tokens.css` en dan in `tokens.ts`, niet
+rechtstreeks in de sectie.
+
+### Het sectieoverzicht
+
+`src/pages/secties.astro` is de beheerbaarheidstest: elk type onder een te lange
+kop, een lege tekst, weinig items en veel items, plus een regressievariant voor
+de overflow-bug in `Beeldvlak`. De pagina routeert zodat je hem kunt bekijken en
+is afgeschermd met een `noindex`-meta plus `Disallow: /secties` in
+`public/robots.txt`.
+
+Meet responsieve fouten, kijk er niet naar. De vier gebreken die in B2 boven
+kwamen waren geen van alle zichtbaar op een screenshot; ze kwamen uit
+`getBoundingClientRect()` in de browser. Let op dat het `md:`-breekpunt op de
+viewport slaat: met een klassieke scrollbar is een venster van 768 een viewport
+van 753, en dan vuurt `md:` niet.
+
+## Wat er nog niet staat
+
+**De mobiele navigatie landt in B4.** Het design system wil onder 900px een
+hamburger met uitklappaneel — `.c100-nav__knop` en `.c100-nav__paneel`, oftewel
+de `Navigatie`-component. Tot die tijd breken de vier links in de header af op
+smalle schermen. Dat haalt de horizontale scroll weg maar is niet de bedoelde
+oplossing. In B4 verhuist de navigatie tegelijk naar het CMS.
+
+## Bekende beperking
+
+`npm audit --omit=dev` meldt zes kwetsbare pakketten (5 high, 1 low). Van de
+acht advisories op `astro` zelf zijn er vijf verholpen door de upgrade naar
+Astro 6; drie blijven staan en die vragen allemaal Astro 7:
+
+| Advisory | Gepatcht vanaf |
+|---|---|
+| XSS via unescaped spread attribute names | 7.0.6 |
+| XSS via `transition:*` op gehydrateerde eilanden | 7.0.4 |
+| Reflected XSS via View Transition-animatieproperties | 7.1.0 |
+
+Daarnaast `esbuild` (low, alleen de dev-server op Windows), `sharp`,
+`path-to-regexp` en `@vercel/routing-utils`.
+
+De drie resterende astro-advisories gaan over View Transitions, `transition:*`
+en spread-attributen. Dit project gebruikt geen van drieën — spread-attributen
+zijn zelfs bij afspraak verboden — dus de blootstelling is nu nul. Dat verandert
+zodra je ze wel inzet.
+
+Niet oplossen met `npm audit fix --force`: dat tilt de repo naar Astro 7 en
+`@astrojs/vercel` 11. Overleg eerst.

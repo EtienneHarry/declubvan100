@@ -9,30 +9,35 @@ import {
   type RuimteToken,
 } from '../../lib/tokens';
 import Bovenkop from '../basis/Bovenkop';
+import Knop from '../basis/Knop';
 
-export interface KopTekstProps {
+export interface OproepProps {
   achtergrond: AchtergrondToken;
   ruimte: RuimteToken;
   breedte: BreedteToken;
   bovenkop?: string;
   kop: string;
   tekst?: string;
+  knop?: { label: string; href: string };
+  tweedeKnop?: { label: string; href: string };
 }
 
 /**
- * Kop met optionele bovenkop en lopende tekst.
+ * Afsluitend blok met een actie.
  *
- * Verdraagt een kop van elke lengte en laat lege delen weg in plaats van er
- * ruimte voor te reserveren.
+ * Eén gevulde knop per blikveld, dus een tweede actie komt er als lijnknop bij.
+ * Ontbreekt de knop, dan blijft het een kop met tekst — de sectie valt niet om.
  */
-export default function KopTekst({
+export default function Oproep({
   achtergrond,
   ruimte,
   breedte,
   bovenkop,
   kop,
   tekst,
-}: KopTekstProps) {
+  knop,
+  tweedeKnop,
+}: OproepProps) {
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
@@ -45,6 +50,20 @@ export default function KopTekst({
           <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
             {tekst}
           </p>
+        ) : null}
+        {knop || tweedeKnop ? (
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            {knop ? (
+              <Knop variant="vol" maat="l" href={knop.href}>
+                {knop.label}
+              </Knop>
+            ) : null}
+            {tweedeKnop ? (
+              <Knop variant="lijn" maat="l" href={tweedeKnop.href}>
+                {tweedeKnop.label}
+              </Knop>
+            ) : null}
+          </div>
         ) : null}
       </div>
     </section>

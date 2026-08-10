@@ -1,0 +1,194 @@
+---
+/**
+ * Basislayout: het frame om elke pagina.
+ *
+ * De navigatie staat hier voorlopig hard in. Die verhuist in B4 naar het CMS;
+ * tot die tijd is dit de enige plek waar de vier pagina's benoemd staan.
+ *
+ * Donker is de standaard. Een lichte pagina — voorwaarden, formulieren — zet
+ * data-thema="licht" op <html>, waarna de semantische aliassen meekantelen.
+ */
+import { getImage } from 'astro:assets';
+
+import '../styles/global.css';
+import tokensCss from '../styles/tokens.css?raw';
+import deelbeeldBron from '../assets/photo/proost-tap.png';
+import { basisUrl } from '../lib/site';
+import LogoHorizontaal from '../components/logo/LogoHorizontaal.astro';
+
+// De merkkleur hoort niet als losse hex in dit bestand, dus lezen we hem bij
+// het bouwen uit de tokenlaag. Verdwijnt of hernoemt --inkt, dan breekt de
+// build hier hard af in plaats van stilletjes een lege theme-color te zetten.
+const merkkleurTreffer = tokensCss.match(/--inkt: *(#[0-9a-fA-F]+) *;/);
+
+if (!merkkleurTreffer) {
+  throw new Error(
+    'Token --inkt niet gevonden in src/styles/tokens.css; theme-color kan niet worden afgeleid.',
+  );
+}
+
+const merkkleur = merkkleurTreffer[1];
+
+interface Props {
+  titel?: string;
+  beschrijving?: string;
+  /** Houdt de pagina uit zoekmachines. Voor het sectieoverzicht. */
+  noindex?: boolean;
+}
+
+const {
+  titel = 'De Club van 100',
+  // Hun eigen woorden, niet verzonnen: het getal is het argument en "wij
+  // regelen de mensen" is de microcopy uit het design system.
+  beschrijving = 'Geen uitzendbureau, maar een selectie van honderd horeca- en eventprofessionals in en rond Groningen. Wij regelen de mensen.',
+  noindex = false,
+}: Props = Astro.props;
+
+// Absolute URL's. Op een preview-deploy wijzen ze naar die deploy zelf, niet
+// naar productie; zie src/lib/site.ts.
+const basis = basisUrl(Astro.site, Astro.url.origin);
+const paginaUrl = new URL(Astro.url.pathname, basis);
+
+// Sociale kaart op precies 1200x630. proost-tap.png is 1745x1164, dus dit
+// snijdt bij en schaalt omlaag — nooit omhoog.
+const deelbeeld = await getImage({
+  src: deelbeeldBron,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  format: 'jpg',
+});
+const deelbeeldUrl = new URL(deelbeeld.src, basis);
+
+const navigatie = [
+  { href: '/', label: 'Home' },
+  { href: '/opdrachtgevers', label: 'Opdrachtgevers' },
+  { href: '/de-100', label: 'De 100' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const voetkolommen = [
+  {
+    kop: 'Site',
+    items: [
+      { label: 'Home', href: '/' },
+      { label: 'Opdrachtgevers', href: '/opdrachtgevers' },
+      { label: 'De 100', href: '/de-100' },
+    ],
+  },
+  {
+    kop: 'Zakelijk',
+    items: [
+      { label: 'Contact', href: '/contact' },
+      { label: 'Voorwaarden', href: '/voorwaarden' },
+    ],
+  },
+];
+
+const huidig = Astro.url.pathname;
+const jaar = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content={merkkleur} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <title>{titel}</title>
+    <meta name="description" content={beschrijving} />
+    {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
+    <link rel="canonical" href={paginaUrl.href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:title" content={titel} />
+    <meta property="og:description" content={beschrijving} />
+    <meta property="og:url" content={paginaUrl.href} />
+    <meta property="og:image" content={deelbeeldUrl.href} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="bg-inkt text-krijt">
+    <a
+      href="#inhoud"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-krijt focus:px-4 focus:py-3 focus:text-inkt"
+    >
+      Naar de inhoud
+    </a>
+
+    <header
+      class="sticky top-0 z-50 border-b border-lijn bg-vlak-nav backdrop-blur-nav"
+    >
+      <!-- Wikkelt af op smalle schermen. Het design system wil hier onder 900px
+           een hamburger met uitklappaneel; dat is de Navigatie-component en die
+           komt in B4, samen met de navigatie uit het CMS. Tot die tijd is
+           afbreken beter dan horizontaal scrollen. -->
+      <div
+        class="mx-auto flex min-h-18 max-w-basis flex-wrap items-center justify-between gap-x-6 gap-y-2 px-marge py-2"
+      >
+        <a href="/" class="flex min-h-11 items-center no-underline" aria-label="De Club van 100, naar de home">
+          <span class="block [&>svg]:h-10 [&>svg]:w-auto"><LogoHorizontaal /></span>
+        </a>
+        <nav aria-label="Hoofdnavigatie">
+          <ul class="flex list-none flex-wrap items-center gap-x-1 p-0">
+            {
+              navigatie.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    aria-current={huidig === item.href ? 'page' : undefined}
+                    class="inline-flex min-h-11 items-center px-4 font-semibold text-tekst-zacht no-underline hover:text-krijt aria-[current=page]:text-krijt"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inhoud">
+      <slot />
+    </main>
+
+    <footer class="border-t border-lijn pt-16 pb-10">
+      <div class="mx-auto max-w-basis px-marge">
+        <div class="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <span class="block [&>svg]:h-14 [&>svg]:w-auto"><LogoHorizontaal /></span>
+            <p class="mt-6 text-lopend-m text-tekst-zacht">
+              <a href="mailto:info@declubvan.nl">info@declubvan.nl</a>
+            </p>
+          </div>
+          {
+            voetkolommen.map((kolom) => (
+              <div>
+                <h2 class="mb-4 text-bovenkop uppercase text-tekst-stil">{kolom.kop}</h2>
+                <ul class="flex list-none flex-col gap-3 p-0">
+                  {kolom.items.map((item) => (
+                    <li>
+                      <a href={item.href} class="text-tekst-zacht no-underline hover:text-krijt hover:underline">
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+        <div
+          class="mt-16 flex flex-wrap justify-between gap-6 border-t border-lijn pt-6 text-lopend-s text-tekst-stil"
+        >
+          <span>De Club van 100</span>
+          <span>&copy; {jaar}</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

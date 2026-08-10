@@ -1,2 +1,5 @@
+/* Archivo Variable, zelf gehost. Bewust wdth.css en niet de standaardimport:
+   die laat de breedte-as weg en dan vallen de displayniveaus terug op 100. */
+@import '@fontsource-variable/archivo/wdth.css';
 @import 'tailwindcss';
 @import './tokens.css';
