@@ -1,0 +1,187 @@
+---
+import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import '../styles/global.css';
+
+/*
+ * Beheerbaarheidstest.
+ *
+ * Rendert elke sectie vier keer, onder de vier omstandigheden waar een sjabloon
+ * normaal op stukloopt: een te lange kop, een lege tekst, twee items en acht
+ * items. Item-aantallen gelden alleen voor KaartenRij; bij KopTekst en
+ * BeeldTekst variëren die twee gevallen de hoeveelheid tekst.
+ *
+ * BeeldTekst heeft daarnaast een eigen vierde variant: het laatste geval laat
+ * het beeld weg, zodat te zien is dat de sectie dan over de volle breedte
+ * doorloopt in plaats van een leeg vlak achter te laten.
+ *
+ * De achtergrond-, ruimte- en breedtetokens wisselen per geval, zodat je
+ * meteen ziet of secties in willekeurige volgorde naast elkaar blijven kloppen.
+ */
+
+const LANGE_KOP =
+  'Een kop die bewust veel te lang is gemaakt om te zien of hij netjes afbreekt over meerdere regels in plaats van uit zijn sectie te lopen';
+
+const KORTE_KOP = 'Een gewone kop';
+
+const LOPENDE_TEKST =
+  'Een alinea van gemiddelde lengte, zodat de regelafstand en de leesbreedte te beoordelen zijn.';
+
+const LANGE_TEKST = `${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST}`;
+
+/** Decoratief, dus een lege alt. Vervang per klant door echt beeld. */
+const PLAATSHOUDER = { bron: '/plaatshouder.svg', alt: '' };
+
+function kaarten(aantal: number, metTekst = true) {
+  return Array.from({ length: aantal }, (_, index) => ({
+    kop: `Kaart ${index + 1}`,
+    tekst: metTekst ? 'Korte omschrijving bij deze kaart.' : '',
+  }));
+}
+
+const gevallen: { naam: string; secties: Sectie[] }[] = [
+  {
+    naam: 'te lange kop',
+    secties: [
+      {
+        type: 'kop-tekst',
+        achtergrond: 'vlak',
+        ruimte: 'normaal',
+        breedte: 'basis',
+        kop: LANGE_KOP,
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'kaarten-rij',
+        achtergrond: 'zacht',
+        ruimte: 'normaal',
+        breedte: 'breed',
+        kop: LANGE_KOP,
+        items: kaarten(3),
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'vlak',
+        ruimte: 'normaal',
+        breedte: 'basis',
+        kop: LANGE_KOP,
+        tekst: LOPENDE_TEKST,
+        beeld: PLAATSHOUDER,
+      },
+    ],
+  },
+  {
+    naam: 'lege tekst',
+    secties: [
+      {
+        type: 'kop-tekst',
+        achtergrond: 'zacht',
+        ruimte: 'compact',
+        breedte: 'smal',
+        kop: KORTE_KOP,
+        tekst: '',
+      },
+      {
+        type: 'kaarten-rij',
+        achtergrond: 'vlak',
+        ruimte: 'compact',
+        breedte: 'basis',
+        items: kaarten(3, false),
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'omgekeerd',
+        ruimte: 'compact',
+        breedte: 'basis',
+        kop: KORTE_KOP,
+        tekst: '',
+        beeld: PLAATSHOUDER,
+        beeldPositie: 'rechts',
+      },
+    ],
+  },
+  {
+    naam: 'twee items',
+    secties: [
+      {
+        type: 'kop-tekst',
+        achtergrond: 'diep',
+        ruimte: 'ruim',
+        breedte: 'smal',
+        kop: KORTE_KOP,
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'kaarten-rij',
+        achtergrond: 'vlak',
+        ruimte: 'ruim',
+        breedte: 'basis',
+        kop: 'Twee kaarten',
+        items: kaarten(2),
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'zacht',
+        ruimte: 'ruim',
+        breedte: 'breed',
+        kop: KORTE_KOP,
+        tekst: LOPENDE_TEKST,
+        beeld: PLAATSHOUDER,
+      },
+    ],
+  },
+  {
+    naam: 'acht items · ontbrekend beeld',
+    secties: [
+      {
+        type: 'kop-tekst',
+        achtergrond: 'omgekeerd',
+        ruimte: 'normaal',
+        breedte: 'breed',
+        kop: KORTE_KOP,
+        tekst: LANGE_TEKST,
+      },
+      {
+        type: 'kaarten-rij',
+        achtergrond: 'zacht',
+        ruimte: 'normaal',
+        breedte: 'breed',
+        kop: 'Acht kaarten',
+        items: kaarten(8),
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'vlak',
+        ruimte: 'normaal',
+        breedte: 'basis',
+        kop: KORTE_KOP,
+        tekst: LANGE_TEKST,
+        beeldPositie: 'rechts',
+      },
+    ],
+  },
+];
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Sectieoverzicht — beheerbaarheidstest</title>
+  </head>
+  <body class="bg-vlak font-basis text-tekst">
+    {
+      gevallen.map((geval) => (
+        <>
+          <p class="mx-auto max-w-breed px-6 pt-compact font-kop text-klein text-tekst-zacht">
+            {geval.naam}
+          </p>
+          {geval.secties.map((sectie) => (
+            <SectionRenderer sectie={sectie} />
+          ))}
+        </>
+      ))
+    }
+  </body>
+</html>

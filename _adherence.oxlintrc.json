@@ -1,0 +1,52 @@
+{
+  // Overgenomen uit het Kick&Work design system.
+  //
+  // Twee blokken uit het bronbestand staan hier niet:
+  // - "no-restricted-syntax" (19 regels voor hex-kleuren, px-waarden,
+  //   fonts en component-props). oxlint kent die regel niet; hij staat
+  //   niet in configuration_schema.json en oxlint >= 1.50 weigert de
+  //   config ermee. Oudere oxlint-versies laden hem wel, maar negeren
+  //   hem stilzwijgend — dat geeft een groene lint zonder handhaving.
+  // - "x-omelette" (metadata voor de design-system-tooling, geen
+  //   oxlint-veld). oxlint >= 1.50 weigert onbekende velden.
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/brand/**",
+              "components/core/**",
+              "components/data/**",
+              "components/forms/**",
+              "components/navigation/**",
+              "ui_kits/website/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
+}

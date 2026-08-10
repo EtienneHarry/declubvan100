@@ -1,0 +1,65 @@
+/*
+ * Tokenlaag van het sjabloon.
+ *
+ * Alle waardes hieronder zijn neutrale plaatshouders. Ze horen bij geen enkele
+ * huisstijl en zijn bedoeld om per klant vervangen te worden. De tokennamen
+ * blijven daarbij gelijk — die zijn de afspraak tussen dit bestand,
+ * src/lib/tokens.ts en de secties.
+ *
+ * Dit is het enige bestand waar rauwe hexkleuren en px-waardes mogen staan;
+ * scripts/check-tokens.mjs slaat het over. Overal anders in src/ komen kleuren
+ * en maten via een tokennaam binnen.
+ */
+
+@theme inline {
+  /* Kleur — per klant vervangen door de palet-waardes uit de huisstijl.
+     De rollen blijven: vlak/zacht/diep zijn oplopend contrasterende
+     achtergronden, omgekeerd is het donkere vlak met lichte tekst. */
+  --color-vlak: #ffffff;
+  --color-vlak-zacht: #f5f5f5;
+  --color-vlak-diep: #e8e8e8;
+  --color-omgekeerd: #1a1a1a;
+  --color-tekst: #1a1a1a;
+  --color-tekst-zacht: #5c5c5c;
+  --color-tekst-omgekeerd: #fafafa;
+  --color-lijn: #d4d4d4;
+  --color-accent: #737373;
+
+  /* Typografie — per klant vervangen door de huisstijlfonts en de
+     bijbehorende schaal. De trapjes zelf (kop-l tot klein) blijven bestaan. */
+  --font-kop: ui-sans-serif, system-ui, sans-serif;
+  --font-basis: ui-sans-serif, system-ui, sans-serif;
+
+  --text-kop-l: 2.5rem;
+  --text-kop-l--line-height: 1.1;
+  --text-kop-m: 1.75rem;
+  --text-kop-m--line-height: 1.2;
+  --text-kop-s: 1.25rem;
+  --text-kop-s--line-height: 1.3;
+  --text-lopend: 1rem;
+  --text-lopend--line-height: 1.6;
+  --text-klein: 0.875rem;
+  --text-klein--line-height: 1.5;
+
+  /* Ruimte — de verticale maat van een sectie. Per klant ruimer of krapper,
+     maar altijd drie stappen: compact, normaal, ruim. */
+  --spacing-compact: 2rem;
+  --spacing-normaal: 4rem;
+  --spacing-ruim: 6rem;
+
+  /* Containerbreedte — per klant breder of smaller. Bepaalt hoe ver de inhoud
+     binnen een sectie mag uitlopen. */
+  --container-smal: 40rem;
+  --container-basis: 64rem;
+  --container-breed: 80rem;
+
+  /* Radius — per klant scherper of ronder. Zet beide op 0rem voor een strak
+     sjabloon zonder afgeronde hoeken. */
+  --radius-zacht: 0.25rem;
+  --radius-rond: 0.75rem;
+
+  /* Diepte — per klant subtieler of steviger. Twee niveaus is genoeg:
+     1 voor rustende vlakken, 2 voor wat eruit springt. */
+  --shadow-diepte-1: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-diepte-2: 0 4px 12px rgb(0 0 0 / 0.1);
+}
