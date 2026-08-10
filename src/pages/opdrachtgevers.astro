@@ -1,0 +1,106 @@
+---
+import Basis from '../layouts/Basis.astro';
+import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import bedieningBuiten from '../assets/photo/bediening-buiten.jpg';
+
+/*
+ * Opdrachtgevers.
+ *
+ * Toon: rustig en zeker. Jij hebt een avond te draaien en wij zorgen dat er
+ * niets misgaat. Nadruk op wat je niet hoeft te regelen; geen enthousiasme dat
+ * om een gunst vraagt.
+ *
+ * bediening-buiten is het lichtste beeld dat we hebben en haalt witte tekst
+ * niet met de sluier van 62%. Daarom staat het in beeld-tekst, waar de tekst
+ * ernaast staat en niet erop.
+ */
+
+const secties: Sectie[] = [
+  {
+    type: 'hero',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-l',
+    breedte: 'basis',
+    bovenkop: 'Opdrachtgevers',
+    kop: 'Jij hebt een avond te draaien',
+    tekst: 'Wij regelen de mensen en zorgen dat er niets misgaat.',
+    schicht: true,
+  },
+  {
+    type: 'drie-kolommen',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    kop: 'Wat je krijgt',
+    items: [
+      {
+        nummer: '01',
+        kop: 'Honderd avonden ervaring',
+        tekst: 'Iedereen die hier staat, heeft honderd avonden achter een bar gestaan.',
+      },
+      {
+        nummer: '02',
+        kop: 'Geen willekeurige invalkracht',
+        tekst: 'Je krijgt iemand die weet hoe een tap onder druk werkt.',
+      },
+      {
+        nummer: '03',
+        kop: 'Honderd is de grens',
+        tekst: 'Honderd is geen willekeurig getal. Je hoort erbij of je hoort er niet bij.',
+      },
+    ],
+  },
+  {
+    type: 'beeld-tekst',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    bovenkop: 'Waarom geen uitzendbureau',
+    kop: 'Een uitzendbureau werft. Deze club selecteert.',
+    tekst:
+      'Wij zeggen niet dat we goed zijn. We laten merken dat niet iedereen mee mag doen. Dat is het hele verschil met een uitzendbureau: geen standaard uitzendkrachten, maar mensen die er uitspringen.',
+    beeld: {
+      bron: bedieningBuiten.src,
+      alt: 'Bediening aan tafel, daglicht onder de bomen',
+    },
+    beeldPositie: 'links',
+  },
+  {
+    type: 'citaten',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-m',
+    breedte: 'basis',
+    bovenkop: 'Wat opdrachtgevers zeggen',
+    // Uit bron/citaten.md, letterlijk. Toeschrijving op bedrijfsnaam, geen
+    // persoonsnamen en geen logo's van derden.
+    items: [
+      {
+        citaat:
+          '"Zeker een leuke avond gehad en top mensen hebben jullie gestuurd. Ze hebben het fantastisch gedaan."',
+        naam: 'De Speld',
+      },
+      {
+        citaat: '"Leuke mensen, harde werkers"',
+        naam: 'Stadslab Groningen',
+      },
+    ],
+  },
+  {
+    type: 'oproep',
+    achtergrond: 'inkt',
+    ruimte: 'sectie-l',
+    breedte: 'basis',
+    bovenkop: 'Aan de slag',
+    kop: 'Vertel wat je nodig hebt.',
+    tekst: 'Mail wat het is en wanneer. Je hoort binnen een dag van ons.',
+    knop: { label: 'Ik zoek personeel', href: '/contact' },
+  },
+];
+---
+
+<Basis
+  titel="Opdrachtgevers — De Club van 100"
+  beschrijving="Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe een tap onder druk werkt. Wij regelen de mensen in en rond Groningen."
+>
+  {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
+</Basis>
