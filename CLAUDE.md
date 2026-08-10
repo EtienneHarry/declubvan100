@@ -165,11 +165,12 @@ contrast niet meer.
 
 ## Sectietypes
 
-Zeven, allemaal in `src/components/sections/` en gekoppeld in
+Acht, allemaal in `src/components/sections/` en gekoppeld in
 `SectionRenderer.tsx`:
 
 | Type | Component | Waarvoor |
 |---|---|---|
+| `hero` | `Hero` | De openingssectie. Enige `<h1>`, enige `display-xl` |
 | `splitscreen` | `Splitscreen` | Twee deuren: opdrachtgevers en professionals |
 | `kop-tekst` | `KopTekst` | Kop met optionele bovenkop en lopende tekst |
 | `beeld-tekst` | `BeeldTekst` | Beeld naast tekst |
@@ -177,6 +178,14 @@ Zeven, allemaal in `src/components/sections/` en gekoppeld in
 | `citaten` | `Citaten` | Klantquotes |
 | `oproep` | `Oproep` | Afsluitend blok met een actie |
 | `rijke-tekst` | `RijkeTekst` | Lopende tekst met koppen en lijsten |
+
+**`hero` is de enige sectie met een `<h1>`.** Alle andere openen op `<h2>`.
+Zolang een pagina precies één hero heeft, kloppen de koppenvolgorde en de regel
+"één `display-xl` per pagina" vanzelf; twee heroes op één pagina breken allebei.
+
+Met beeld loopt de kop door `Beeldvlak` en vervalt de schicht. De grote schicht
+is een uitgesneden vlak op een egale achtergrond — over een foto is dat geen
+van de drie toegestane rollen, en de sluier zou hem toch opeten.
 
 ### Een nieuwe sectie toevoegen
 

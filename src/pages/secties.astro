@@ -67,6 +67,18 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     naam: 'te lange kop',
     secties: [
       {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        bovenkop: 'Een bovenkop die ook al aan de lange kant is',
+        kop: LANGE_KOP,
+        tekst: LOPENDE_TEKST,
+        knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+        tweedeKnop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+        schicht: true,
+      },
+      {
         type: 'splitscreen',
         achtergrond: 'inkt',
         ruimte: 'sectie-m',
@@ -149,6 +161,18 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     naam: 'lege tekst',
     secties: [
       {
+        // Met beeld loopt de kop door Beeldvlak. schicht staat hier expres aan:
+        // beeld wint, de schicht hoort dan niet te verschijnen.
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-s',
+        breedte: 'basis',
+        kop: 'Een van de 100',
+        tekst: '',
+        beeld: BEELD,
+        schicht: true,
+      },
+      {
         type: 'splitscreen',
         achtergrond: 'roet',
         ruimte: 'sectie-s',
@@ -211,6 +235,13 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   {
     naam: 'weinig items',
     secties: [
+      {
+        type: 'hero',
+        achtergrond: 'papier',
+        ruimte: 'sectie-l',
+        breedte: 'smal',
+        kop: 'Alleen een kop',
+      },
       {
         type: 'splitscreen',
         achtergrond: 'inkt',
@@ -280,6 +311,20 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   {
     naam: 'veel items · ontbrekend beeld',
     secties: [
+      {
+        // Lege bron: geen gebroken afbeelding, geen leeg kader. De hero valt
+        // terug op het egale vlak en de schicht mag dan wél verschijnen.
+        type: 'hero',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'breed',
+        bovenkop: 'Zonder beeld',
+        kop: 'Een van de 100',
+        tekst: LANGE_TEKST,
+        knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+        beeld: { bron: '', alt: '' },
+        schicht: true,
+      },
       {
         type: 'splitscreen',
         achtergrond: 'roet',

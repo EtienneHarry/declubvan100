@@ -1,6 +1,7 @@
 import BeeldTekst, { type BeeldTekstProps } from '../components/sections/BeeldTekst';
 import Citaten, { type CitatenProps } from '../components/sections/Citaten';
 import DrieKolommen, { type DrieKolommenProps } from '../components/sections/DrieKolommen';
+import Hero, { type HeroProps } from '../components/sections/Hero';
 import KopTekst, { type KopTekstProps } from '../components/sections/KopTekst';
 import Oproep, { type OproepProps } from '../components/sections/Oproep';
 import RijkeTekst, { type RijkeTekstProps } from '../components/sections/RijkeTekst';
@@ -16,6 +17,7 @@ import Splitscreen, { type SplitscreenProps } from '../components/sections/Split
  */
 
 export type Sectie =
+  | ({ type: 'hero' } & HeroProps)
   | ({ type: 'splitscreen' } & SplitscreenProps)
   | ({ type: 'kop-tekst' } & KopTekstProps)
   | ({ type: 'beeld-tekst' } & BeeldTekstProps)
@@ -48,6 +50,10 @@ function OnbekendType({ type }: { type: string }) {
 
 export default function SectionRenderer({ sectie }: { sectie: Sectie }) {
   switch (sectie.type) {
+    case 'hero': {
+      const { type: _type, ...props } = sectie;
+      return <Hero {...props} />;
+    }
     case 'splitscreen': {
       const { type: _type, ...props } = sectie;
       return <Splitscreen {...props} />;
