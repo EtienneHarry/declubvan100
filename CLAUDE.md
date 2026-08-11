@@ -263,10 +263,10 @@ drie dingen die geen van alle in het huidige fundament zitten:
    er al naar. **Het formulier mag niet live voordat die verklaring er staat en
    punt 6 ernaartoe linkt.**
 
-Openstaand daarbij: de site toont overal `info@declubvan.nl` — in de voettekst,
-op contact en in de knoppen. De inzending gaat naar `contact@declubvan.nl`. Twee
-adressen voor dezelfde club is een vraag aan de klant, geen aanname om zelf op
-te lossen.
+Eén adres, overal: **`contact@declubvan.nl`**. Dat is het adres dat de klant
+heeft opgegeven, en het is ook waar de inzending van het formulier heen gaat.
+`info@declubvan.nl` kwam uit de UI kit van het design system en was daar een
+plaatshouder; dat adres staat nergens meer in `src/`.
 
 **De mobiele navigatie landt in B4.** Het design system wil onder 900px een
 hamburger met uitklappaneel — `.c100-nav__knop` en `.c100-nav__paneel`, oftewel

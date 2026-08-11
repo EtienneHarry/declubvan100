@@ -18,7 +18,7 @@ import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
  * captcha, en een privacyverklaring die nog niet bestaat. Zie CLAUDE.md,
  * "Wat er nog niet staat". Zonder die verklaring mag het formulier niet live.
  *
- * Wat er aan contactgegevens ligt is info@declubvan.nl en het werkgebied. Een
+ * Wat er aan contactgegevens ligt is contact@declubvan.nl en het werkgebied. Een
  * telefoonnummer, een adres en een KvK-nummer staan niet in bron; het nummer
  * dat in de UI kit van het design system stond is daar expliciet als
  * plaatshouder aangemerkt en is hier dus niet overgenomen.
@@ -29,7 +29,9 @@ import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
  * Uit bron komen alleen de knopteksten en "Je hoort binnen een dag van ons."
  */
 
-const MAIL = 'info@declubvan.nl';
+// Door de klant opgegeven. info@declubvan.nl kwam uit de UI kit van het design
+// system en was daar een plaatshouder; dat adres staat nergens meer.
+const MAIL = 'contact@declubvan.nl';
 
 const secties: Sectie[] = [
   {
@@ -71,7 +73,7 @@ const secties: Sectie[] = [
 
 <Basis
   titel="Contact — De Club van 100"
-  beschrijving="Mail De Club van 100 op info@declubvan.nl. Wij regelen horeca- en eventpersoneel in en rond Groningen."
+  beschrijving="Mail De Club van 100 op contact@declubvan.nl. Wij regelen horeca- en eventpersoneel in en rond Groningen."
 >
   {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
 </Basis>
