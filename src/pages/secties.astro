@@ -1,6 +1,8 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import Markdoc from '@markdoc/markdoc';
+
 import foto from '../assets/photo/proost-tap.jpg';
 
 /*
@@ -160,10 +162,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         ruimte: 'sectie-m',
         breedte: 'smal',
         kop: LANGE_KOP,
-        blokken: [
-          { soort: 'kop', tekst: LANGE_KOP },
-          { soort: 'alinea', tekst: LOPENDE_TEKST },
-        ],
+        inhoud: Markdoc.parse(`## ${LANGE_KOP}\n\n${LOPENDE_TEKST}`),
       },
     ],
   },
@@ -238,7 +237,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         achtergrond: 'inkt',
         ruimte: 'sectie-s',
         breedte: 'smal',
-        blokken: [{ soort: 'alinea', tekst: '' }],
+        inhoud: Markdoc.parse(''),
       },
     ],
   },
@@ -313,11 +312,9 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         achtergrond: 'papier',
         ruimte: 'sectie-l',
         breedte: 'smal',
-        blokken: [
-          { soort: 'kop', tekst: 'Zonder sectiekop erboven' },
-          { soort: 'alinea', tekst: LOPENDE_TEKST },
-          { soort: 'lijst', items: ['Eerste punt', 'Tweede punt'] },
-        ],
+        inhoud: Markdoc.parse(
+          `## Zonder sectiekop erboven\n\n${LOPENDE_TEKST}\n\n- Eerste punt\n- Tweede punt`,
+        ),
       },
     ],
   },
@@ -410,14 +407,11 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         breedte: 'smal',
         kop: 'Algemene voorwaarden',
         schichtLijst: true,
-        blokken: [
-          { soort: 'alinea', tekst: LANGE_TEKST },
-          { soort: 'kop', tekst: 'Artikel 1 — Wie we zijn' },
-          { soort: 'alinea', tekst: LANGE_TEKST },
-          { soort: 'lijst', items: ['Eerste punt', 'Tweede punt', 'Derde punt', 'Vierde punt'] },
-          { soort: 'kop', tekst: 'Artikel 2 — Wat je krijgt' },
-          { soort: 'alinea', tekst: LANGE_TEKST },
-        ],
+        // Ook de inline-opmaak die het schema toelaat: vet, cursief en een
+        // link. Zonder dit blijft die tak van de renderer ongetest.
+        inhoud: Markdoc.parse(
+          `${LANGE_TEKST}\n\n## Artikel 1 — Wie we zijn\n\n${LANGE_TEKST}\n\n- Eerste punt\n- Tweede punt\n- Derde punt\n- Vierde punt\n\n### Een kop een niveau dieper\n\n**Vet**, *cursief* en een [link naar contact](/contact).`,
+        ),
       },
     ],
   },

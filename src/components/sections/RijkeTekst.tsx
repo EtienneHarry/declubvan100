@@ -1,3 +1,6 @@
+import Markdoc, { type Node, type RenderableTreeNode } from '@markdoc/markdoc';
+import type { ReactNode } from 'react';
+
 import {
   achtergrondKlasse,
   breedteKlasse,
@@ -10,17 +13,13 @@ import {
 } from '../../lib/tokens';
 import Bliksem from '../merk/Bliksem';
 
-export type RijkBlok =
-  | { soort: 'kop'; tekst: string }
-  | { soort: 'alinea'; tekst: string }
-  | { soort: 'lijst'; items: string[] };
-
 export interface RijkeTekstProps {
   achtergrond: AchtergrondToken;
   ruimte: RuimteToken;
   breedte: BreedteToken;
   kop?: string;
-  blokken: RijkBlok[];
+  /** De tekst als markdoc-boom. In het CMS is dit een markdoc.inline-veld. */
+  inhoud: Node;
   /**
    * Zet de bliksemschicht als opsommingsteken. Alleen voor lijsten die over de
    * 100 of de selectie gaan — een lijst met openingstijden krijgt hem niet.
@@ -31,36 +30,119 @@ export interface RijkeTekstProps {
 /*
  * Lopende tekst met koppen en lijsten, voor de voorwaardenpagina.
  *
- * Bewust een lijst van getypeerde blokken en geen losse HTML-string: zo staat
- * vast welke elementen er kunnen ontstaan, en er hoeft geen ongecontroleerde
- * HTML de pagina in. Wanneer dit in B4 uit een CMS komt, mapt de bron op deze
- * drie soorten.
+ * De inhoud komt als markdoc binnen en blijft daarmee leesbare markdown in de
+ * repo, ook als je het CMS nooit opent. Er gaat geen ongecontroleerde HTML de
+ * pagina in: hieronder staat precies welke elementen er kunnen ontstaan, en
+ * alles wat markdoc verder kent valt terug op enkel zijn tekst.
+ *
+ * Het kopniveau hangt af van de sectiekop erboven. Heeft de sectie een eigen
+ * kop, dan is dat de <h2> en zakken de koppen in de tekst een niveau. Heeft ze
+ * er geen, dan zijn de koppen in de tekst zelf het bovenste niveau — anders
+ * springt de pagina van de <h1> van de hero rechtstreeks naar <h3>.
  */
+
+/** De koppen die de redacteur kan zetten, en waar ze op uitkomen. */
+const KOP_KLASSE: Record<2 | 3 | 4, string> = {
+  2: 'mt-10 text-kop-m',
+  3: 'mt-8 text-kop-s',
+  4: 'mt-6 text-kop-s',
+};
+
 export default function RijkeTekst({
   achtergrond,
   ruimte,
   breedte,
   kop,
-  blokken,
+  inhoud,
   schichtLijst = false,
 }: RijkeTekstProps) {
   const maat = maatRegelKlasse[achtergrond];
-
-  /*
-   * Het niveau van een kopblok hangt af van de sectiekop erboven.
-   *
-   * Heeft de sectie een eigen kop, dan is dat de <h2> en hangen de kopblokken
-   * daaronder als <h3>. Heeft ze er geen, dan zijn de kopblokken zelf het
-   * bovenste niveau binnen de sectie en horen ze <h2> te zijn — anders springt
-   * de pagina van de <h1> van de hero rechtstreeks naar <h3>.
-   *
-   * Afgeleid en niet als prop: zo kan het niet verkeerd gezet worden. Een prop
-   * die op 2 staat terwijl er een sectiekop is, levert twee keer <h2> op en
-   * breekt precies de volgorde die dit moet bewaken.
-   */
   const heeftSectieKop = Boolean(kop?.trim());
-  const KopBlok = heeftSectieKop ? 'h3' : 'h2';
-  const kopBlokKlasse = heeftSectieKop ? 'text-kop-s' : 'text-kop-m';
+  const verschuiving = heeftSectieKop ? 1 : 0;
+
+  const boom = Markdoc.transform(inhoud);
+
+  function render(knoop: RenderableTreeNode, sleutel: string): ReactNode {
+    if (knoop === null || knoop === undefined || typeof knoop === 'boolean') return null;
+    if (typeof knoop === 'string' || typeof knoop === 'number') return knoop;
+
+    if (Array.isArray(knoop)) {
+      return knoop.map((kind, index) => render(kind, `${sleutel}-${index}`));
+    }
+
+    // isTag is de enige betrouwbare test. Een gewoon object met een `name` kan
+    // ook een attributenbundel zijn, en dan bestaat `children` niet.
+    if (!Markdoc.Tag.isTag(knoop)) return null;
+
+    const naam = String(knoop.name);
+    const attributen = (knoop.attributes ?? {}) as Record<string, unknown>;
+    const kinderen = (knoop.children ?? []).map((kind, index) =>
+      render(kind, `${sleutel}-${index}`),
+    );
+
+    // Koppen. h1 kan hier niet ontstaan: het schema laat alleen 2 en 3 toe, en
+    // h1 hoort bij de openingssectie.
+    const kopTreffer = /^h([1-6])$/.exec(naam);
+    if (kopTreffer) {
+      const bron = Number(kopTreffer[1]);
+      const niveau = Math.min(Math.max(bron + verschuiving, 2), 4) as 2 | 3 | 4;
+      const Tag = `h${niveau}` as 'h2' | 'h3' | 'h4';
+
+      return (
+        <Tag key={sleutel} className={`${KOP_KLASSE[niveau]} text-balance break-words ${maat}`}>
+          {kinderen}
+        </Tag>
+      );
+    }
+
+    if (naam === 'p') {
+      return (
+        <p key={sleutel} className={`mt-4 text-lopend-m text-tekst-zacht ${maat}`}>
+          {kinderen}
+        </p>
+      );
+    }
+
+    if (naam === 'ul' || naam === 'ol') {
+      const Tag = naam;
+      return (
+        <Tag key={sleutel} className={`mt-4 flex list-none flex-col gap-3 p-0 ${maat}`}>
+          {kinderen}
+        </Tag>
+      );
+    }
+
+    if (naam === 'li') {
+      return (
+        <li key={sleutel} className="flex items-start gap-3">
+          {schichtLijst ? (
+            <span className="mt-1 flex text-tekst-zacht">
+              <Bliksem rol="opsomming" />
+            </span>
+          ) : (
+            <span aria-hidden="true" className="mt-2 block size-1 shrink-0 bg-tekst-stil" />
+          )}
+          <span className="text-lopend-m text-tekst-zacht">{kinderen}</span>
+        </li>
+      );
+    }
+
+    if (naam === 'strong') return <strong key={sleutel}>{kinderen}</strong>;
+    if (naam === 'em') return <em key={sleutel}>{kinderen}</em>;
+
+    if (naam === 'a') {
+      const href = typeof attributen['href'] === 'string' ? attributen['href'] : undefined;
+      return (
+        <a key={sleutel} href={href}>
+          {kinderen}
+        </a>
+      );
+    }
+
+    // Alles wat we niet kennen levert alleen zijn tekst op. Zo ontstaat er
+    // nooit een element waar geen stijl voor bestaat.
+    return <span key={sleutel}>{kinderen}</span>;
+  }
 
   return (
     <section
@@ -68,52 +150,8 @@ export default function RijkeTekst({
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
     >
       <div className={breedteKlasse[breedte]}>
-        {kop?.trim() ? (
-          <h2 className="text-kop-l text-balance break-words">{kop}</h2>
-        ) : null}
-        {blokken.map((blok, index) => {
-          // Een leeg blok levert geen leeg element op. Uit een CMS komt zoiets
-          // vaker dan je denkt: een aangemaakte maar nooit ingevulde alinea.
-          if (blok.soort === 'lijst' ? blok.items.length === 0 : !blok.tekst.trim()) {
-            return null;
-          }
-
-          if (blok.soort === 'kop') {
-            return (
-              <KopBlok
-                key={`kop-${index}`}
-                className={`mt-10 ${kopBlokKlasse} text-balance break-words ${maat}`}
-              >
-                {blok.tekst}
-              </KopBlok>
-            );
-          }
-
-          if (blok.soort === 'alinea') {
-            return (
-              <p key={`alinea-${index}`} className={`mt-4 text-lopend-m text-tekst-zacht ${maat}`}>
-                {blok.tekst}
-              </p>
-            );
-          }
-
-          return (
-            <ul key={`lijst-${index}`} className={`mt-4 flex list-none flex-col gap-3 p-0 ${maat}`}>
-              {blok.items.map((item, itemIndex) => (
-                <li key={`${index}-${itemIndex}`} className="flex items-start gap-3">
-                  {schichtLijst ? (
-                    <span className="mt-1 flex text-tekst-zacht">
-                      <Bliksem rol="opsomming" />
-                    </span>
-                  ) : (
-                    <span aria-hidden="true" className="mt-2 block size-1 shrink-0 bg-tekst-stil" />
-                  )}
-                  <span className="text-lopend-m text-tekst-zacht">{item}</span>
-                </li>
-              ))}
-            </ul>
-          );
-        })}
+        {heeftSectieKop ? <h2 className="text-kop-l text-balance break-words">{kop}</h2> : null}
+        {render(boom, 'r')}
       </div>
     </section>
   );
