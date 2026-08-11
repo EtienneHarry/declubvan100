@@ -1,5 +1,5 @@
 import Markdoc, { type Node, type RenderableTreeNode } from '@markdoc/markdoc';
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 
 import {
   achtergrondKlasse,
@@ -80,6 +80,13 @@ export default function RijkeTekst({
       render(kind, `${sleutel}-${index}`),
     );
 
+    /*
+     * De wortel van elke markdoc-boom heet `article`. Die hoort geen element op
+     * te leveren: de sectie zet er zelf al een <div> omheen, en een tweede
+     * omhulsel zou de koppen en lijsten een niveau dieper zetten dan bedoeld.
+     */
+    if (naam === 'article') return <Fragment key={sleutel}>{kinderen}</Fragment>;
+
     // Koppen. h1 kan hier niet ontstaan: het schema laat alleen 2 en 3 toe, en
     // h1 hoort bij de openingssectie.
     const kopTreffer = /^h([1-6])$/.exec(naam);
@@ -143,9 +150,15 @@ export default function RijkeTekst({
       );
     }
 
-    // Alles wat we niet kennen levert alleen zijn tekst op. Zo ontstaat er
-    // nooit een element waar geen stijl voor bestaat.
-    return <span key={sleutel}>{kinderen}</span>;
+    /*
+     * Alles wat we niet kennen levert alleen zijn tekst op, zonder omhulsel.
+     *
+     * Dit stond op <span> en dat was fout: de wortel viel er ook in, dus alle
+     * koppen en lijsten zaten in een span. Een span mag geen blokelementen
+     * bevatten — de pagina rendert wel, maar de HTML is ongeldig en je ziet het
+     * nergens aan. Een fragment kan die fout niet maken.
+     */
+    return <Fragment key={sleutel}>{kinderen}</Fragment>;
   }
 
   return (
