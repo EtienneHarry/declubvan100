@@ -333,6 +333,25 @@ de `Navigatie`-component. Tot die tijd breken de vier links in de header af op
 smalle schermen. Dat haalt de horizontale scroll weg maar is niet de bedoelde
 oplossing. In B4 verhuist de navigatie tegelijk naar het CMS.
 
+## Bekende beperking — de admin is half Nederlands
+
+`keystatic.config.ts` staat op `locale: 'nl-NL'`. Dat helpt, maar niet overal.
+
+Keystatic heeft een eigen woordenboek van 27 strings en die zijn voor `nl-NL`
+allemaal ingevuld — datumnotatie en relatieve tijd komen er goed uit
+("4 seconden geleden"). Wat je daarnaast in het paneel ziet staat niet in dat
+woordenboek maar hard in de componentbibliotheek eromheen, en daar is geen
+taalinstelling voor. Engels blijven dus onder meer: `Add`, `Empty list`,
+`Add the first item to see it here.`, `Unsaved`, `Create` en
+`Restored draft from`.
+
+Alles wat wij zelf schrijven — veldlabels, beschrijvingen, de namen van de
+sectietypes, de tekst in de keuzelijsten — is wel Nederlands.
+
+**Bouw hier geen eigen vertaallaag omheen.** Die zou tegen de UI van een pakket
+aan gaan zitten dat we niet beheren, en bij elke update opnieuw stuk kunnen. Een
+redacteur die een paar keer per jaar inlogt, komt hier langs.
+
 ## Bekende beperking
 
 `npm audit --omit=dev` meldt zes kwetsbare pakketten (5 high, 1 low). Van de

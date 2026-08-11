@@ -460,6 +460,10 @@ function pagina(label: string, map: string) {
 }
 
 export default config({
+  // De omhulling van de admin — knoppen als Add, de lege staat, Unsaved — komt
+  // uit Keystatic zelf en staat standaard op Engels. nl-NL zet die op
+  // Nederlands, zodat het niet half om half wordt met onze eigen labels.
+  locale: 'nl-NL',
   storage: opslag,
   ui: {
     brand: { name: 'De Club van 100' },
