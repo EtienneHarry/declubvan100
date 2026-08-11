@@ -26,7 +26,7 @@ import type { Sectie } from './SectionRenderer';
 
 const reader = createReader(process.cwd(), keystaticConfig);
 
-type PaginaNaam = 'home' | 'opdrachtgevers' | 'de100' | 'contact' | 'voorwaarden';
+type PaginaNaam = 'home' | 'opdrachtgevers' | 'de100' | 'contact' | 'voorwaarden' | 'privacy';
 
 /**
  * De deuren van het splitscreen krijgen hun foto uit de code, op volgorde.

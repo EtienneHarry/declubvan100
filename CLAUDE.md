@@ -274,15 +274,24 @@ kwamen waren geen van alle zichtbaar op een screenshot; ze kwamen uit
 viewport slaat: met een klassieke scrollbar is een venster van 768 een viewport
 van 753, en dan vuurt `md:` niet.
 
-## De vijf pagina's
+## De zes pagina's
 
-`index.astro`, `opdrachtgevers.astro`, `de-100.astro`, `contact.astro` en
-`voorwaarden.astro`. Elke pagina is één lijst `Sectie[]` die door
-`SectionRenderer` gaat — geen losse opmaak in de pagina zelf. In B4 verhuist
-precies die lijst naar het CMS.
+`index.astro`, `opdrachtgevers.astro`, `de-100.astro`, `contact.astro`,
+`voorwaarden.astro` en `privacy.astro`. Elk paginabestand is nog maar een paar
+regels: het leest zijn inhoud met `leesPagina()` uit `src/lib/pagina.ts` en laat
+`SectionRenderer` de secties tekenen.
+
+De inhoud staat als yaml in `src/content/paginas/`, één bestand per pagina, en
+wordt beheerd via Keystatic. Een singleton zonder contentveld schrijft naar
+`<pad>.yaml` — niet naar `<pad>/index.yaml`, dat is een makkelijke misser.
+
+`src/lib/pagina.ts` vertaalt CMS-data naar sectieprops. Drie dingen lopen daar
+uit elkaar: `Weergave` wordt afgevlakt tot losse props, een leeg knopobject
+verdwijnt in plaats van een knop zonder tekst op te leveren, en de deurfoto's
+van het splitscreen komen uit de code omdat ze geen redactionele keuze zijn.
 
 Alle tekst komt uit `bron/`. Wat daar niet staat, staat hier ook niet; er is
-niets bijverzonnen. Drie plekken wachten daardoor op de klant:
+niets bijverzonnen. Deze plek wacht daardoor op de klant:
 
 | Plek | Wat ontbreekt |
 |---|---|
@@ -290,8 +299,8 @@ niets bijverzonnen. Drie plekken wachten daardoor op de klant:
 | `de-100.astro` | Een zin bij Enthousiast, Ervaren en Trots. Bron levert alleen de drie woorden. |
 
 De voorwaardentekst staat er sinds `bron/voorwaarden.md` binnenkwam, letterlijk
-overgenomen. Punt 6 verwijst naar een privacyverklaring die nog niet bestaat en
-staat daarom zonder link — **daarmee mag de site niet live**.
+overgenomen. Punt 6 linkt naar `/privacy`; die pagina staat er sinds
+`bron/privacyverklaring.md` binnenkwam en is daarmee geen blokkade meer.
 
 Achtergronden per pagina: de vier donkere pagina's staan overal op `inkt`,
 voorwaarden overal op `papier`. Meer dan één lichte en één donkere achtergrond
@@ -317,10 +326,11 @@ drie dingen die geen van alle in het huidige fundament zitten:
    op voor precies de mensen die zich willen melden. Let op dat het honeypotveld
    niet met een `style`-attribuut verstopt kan worden — de CSP blokkeert dat —
    dus dat gaat via een klasse.
-3. **Een privacyverklaring.** Die bestaat nog niet. Zodra dit formulier
-   persoonsgegevens verwerkt is ze verplicht, en punt 6 van de voorwaarden wijst
-   er al naar. **Het formulier mag niet live voordat die verklaring er staat en
-   punt 6 ernaartoe linkt.**
+3. **De privacyverklaring staat er al**, op `/privacy`. Ze beschrijft het
+   formulier dat nog gebouwd moet worden: welke velden het verzamelt, hoe lang
+   die bewaard worden, en dat Resend de berichten verstuurt. Wijkt het formulier
+   daarvan af, dan gaat die tekst mee — die verklaring is geen formaliteit maar
+   de belofte waar het formulier zich aan moet houden.
 
 Eén adres, overal: **`contact@declubvan.nl`**. Dat is het adres dat de klant
 heeft opgegeven, en het is ook waar de inzending van het formulier heen gaat.

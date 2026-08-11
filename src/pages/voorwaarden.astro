@@ -10,16 +10,10 @@ import { leesPagina } from '../lib/pagina';
  * van de acht artikelen staat daar als markdown, letterlijk overgenomen uit
  * bron/voorwaarden.md.
  *
- * ===========================================================================
- * NIET LIVE ZETTEN — punt 6 verwijst naar een privacyverklaring die nog niet
- * bestaat. Die verwijzing staat er bewust zonder link: een dode link is erger
- * dan geen link, en beide zijn onacceptabel op een pagina die naar
- * privacywetgeving verwijst. Zeker nu het aanmeldformulier eraan komt en er
- * dus persoonsgegevens verwerkt gaan worden.
- *
- * Voordat deze site live gaat moet er een privacyverklaring zijn en moet punt
- * 6 daarnaartoe wijzen. Zie ook de openstaande punten in CLAUDE.md.
- * ===========================================================================
+ * Punt 6 verwijst naar de privacyverklaring en linkt daar sinds die pagina
+ * bestaat ook naartoe, naar /privacy. Die verwijzing stond een tijd zonder
+ * link omdat de verklaring er nog niet was; dat blokkeerde livegang en is nu
+ * opgelost.
  */
 
 const { titel, beschrijving, secties } = await leesPagina('voorwaarden');

@@ -631,7 +631,7 @@ export default config({
   ui: {
     brand: { name: 'De Club van 100' },
     navigation: {
-      "Pagina's": ['home', 'opdrachtgevers', 'de100', 'contact', 'voorwaarden'],
+      "Pagina's": ['home', 'opdrachtgevers', 'de100', 'contact', 'voorwaarden', 'privacy'],
       'Hele site': ['instellingen'],
     },
   },
@@ -643,5 +643,6 @@ export default config({
     de100: pagina('De 100', 'de-100'),
     contact: pagina('Contact', 'contact'),
     voorwaarden: pagina('Voorwaarden', 'voorwaarden'),
+    privacy: pagina('Privacyverklaring', 'privacy'),
   },
 });

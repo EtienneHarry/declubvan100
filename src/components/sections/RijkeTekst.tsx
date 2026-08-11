@@ -130,6 +130,10 @@ export default function RijkeTekst({
     if (naam === 'strong') return <strong key={sleutel}>{kinderen}</strong>;
     if (naam === 'em') return <em key={sleutel}>{kinderen}</em>;
 
+    // Een harde regelafbreking binnen een alinea. Nodig voor blokjes die op
+    // aparte regels horen maar één alinea zijn, zoals een adres.
+    if (naam === 'br') return <br key={sleutel} />;
+
     if (naam === 'a') {
       const href = typeof attributen['href'] === 'string' ? attributen['href'] : undefined;
       return (
