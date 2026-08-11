@@ -4,35 +4,56 @@ De site van De Club van 100. Astro 6 met React 19, Tailwind 4 en TypeScript in
 strict-modus. Deployt naar Vercel: alles wordt vooraf gerenderd, een losse route
 draait op verzoek met `export const prerender = false;`.
 
-`security.csp` staat aan. Astro zet daardoor bij elke build een
-`content-security-policy`-meta met sha256-hashes per script uit. Gevolgen om te
-onthouden:
+## Het beveiligingsbeleid
 
-- **Inline stijl wordt geblokkeerd.** `style-src` staat op `'self'` plus hashes,
-  zonder `'unsafe-inline'`. Een `style`-attribuut belandt wel in de DOM maar
-  wordt niet toegepast. De regel "geen `style`-attribuut" wordt dus afgedwongen,
-  niet alleen afgesproken.
-- CSP werkt in `build` en `preview`, niet in `dev`.
+**`security.csp` in `astro.config.mjs` staat uit. Het beleid staat per pad in
+`vercel.json`.** Dat is een bewuste verhuizing, geen versoepeling.
+
+De reden is de Keystatic-admin. Astro's CSP is manifest-breed —
+`shouldInjectCspMetaTags` komt uit het manifest en geldt dus voor élke route,
+ook voor de adminroutes die op verzoek draaien. Er is geen manier om er één
+route buiten te houden. En de admin heeft inline stijl nodig: de UI zit in
+`@keystar/ui`, die stijlt met Emotion en levert geen CSS-bestand mee. Gemeten op
+`/keystatic`: **414 `<style>`-elementen met `data-emotion`**, samen het hele
+paneel. Onder `style-src 'self'` blijft daar niets van over.
+
+Eén beleid voor alles betekende dus kiezen tussen een kale admin of
+`'unsafe-inline'` voor de hele site. Per pad hoeft dat niet:
+
+| Pad | `Content-Security-Policy` |
+|---|---|
+| `/keystatic/:path*` | `script-src 'self'; style-src 'self' 'unsafe-inline'` |
+| `/api/keystatic/:path*` | `script-src 'self'; style-src 'self' 'unsafe-inline'` |
+| al het andere | `script-src 'self'; style-src 'self'` |
+
+De site verliest hiermee niets. Astro's meta zette `'self'` plus sha256-hashes
+per inline script; de gebouwde pagina's hebben nul inline scripts, nul inline
+stijlblokken en nul `style`-attributen, dus `'self'` dekt precies hetzelfde af.
+
+Twee dingen om te onthouden:
+
+- **De site-regel moet de adminpaden uitsluiten.** Vercel stopt niet bij de
+  eerste treffer maar past élke matchende header-regel toe. Een site-regel op
+  `/(.*)` zou de admin een tweede CSP-header geven en dan handhaaft de browser
+  de doorsnede — precies het probleem dat deze splitsing oplost. Vandaar de
+  negatieve lookahead in het derde patroon.
+- **`source` is path-to-regexp, geen rauwe regex.** `/keystatic(/(.*))?` wordt
+  geweigerd; `/keystatic/:path*` is de goede vorm.
+
+`scripts/check-csp.mjs` bewaakt dit na elke build: elk pad precies één
+CSP-header, `'unsafe-inline'` alleen op de admin, en geen inline script, stijlblok
+of `style`-attribuut in de gebouwde HTML. Zonder die controle zou een inline
+stijl pas in productie stukgaan — in `dev` en `preview` merk je er niets van,
+want daar zet niemand deze headers.
+
+Verder over CSP:
+
+- **Inline stijl wordt geblokkeerd.** De regel "geen `style`-attribuut" wordt
+  afgedwongen, niet alleen afgesproken.
+- De headers komen van Vercel, dus je ziet ze niet in `dev` en niet in
+  `preview`. `check-csp` is daar de vervanging voor.
 - Geen `<ClientRouter />`-viewtransities en geen Shiki-syntaxkleuring;
   `markdown.syntaxHighlight` staat daarom uit.
-- **De Keystatic-admin botst hierop.** Zie hieronder.
-
-### CSP tegenover de Keystatic-admin
-
-`security.csp` is een manifest-brede vlag in Astro, geen instelling per route:
-`shouldInjectCspMetaTags` komt uit het manifest en geldt dus ook voor de
-adminroutes, die op verzoek draaien.
-
-De admin-UI zit in `@keystar/ui` en die stijlt met Emotion. Gemeten op
-`/keystatic`: **414 `<style>`-elementen met `data-emotion`**, samen alle CSS van
-het paneel. Er wordt geen CSS-bestand meegeleverd. Onder `style-src 'self'`
-zonder `'unsafe-inline'` worden die geblokkeerd en staat de admin er kaal bij.
-
-Nu is dat geen probleem: local mode draait op `npm run dev`, en daar is CSP uit.
-Het wordt er een zodra de GitHub-modus aangaat en de admin op de deploy staat.
-Dat is dan een keuze tussen de CSP versoepelen voor het hele project, of hem uit
-Astro halen en per pad via een header zetten. Niet vooruit oplossen zonder dat
-die keuze gemaakt is.
 
 `design-system.md` beschrijft hoe het design system van de klant hier is
 uitgewerkt, inclusief de afwijkingen. De bron zelf is het design system van De
@@ -66,8 +87,10 @@ hebt.
 `npm run check` draait de hele poort en stopt bij de eerste stap die faalt:
 
 ```
-oxlint  →  check-tokens  →  astro check  →  astro build
+oxlint  →  check-tokens  →  astro check  →  astro build  →  check-csp
 ```
+
+`check-csp` staat achteraan omdat hij de gebouwde HTML leest.
 
 Dezelfde `check` draait in GitHub Actions bij elke push en pull request.
 
@@ -81,6 +104,7 @@ Wie bewaakt wat:
 | Geen `className` of `style` van buitenaf | TypeScript |
 | Import via `index.js` | oxlint, `no-restricted-imports` |
 | Onbekende tokennaam | TypeScript, via de union-types in `tokens.ts` |
+| CSP per pad, en inline script of stijl in de uitvoer | `scripts/check-csp.mjs` |
 
 `_adherence.oxlintrc.json` is samengevoegd uit de adherence-config van De Club
 van 100 en die van het Kick&Work-sjabloon. Twee blokken uit die bronnen konden
