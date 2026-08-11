@@ -227,9 +227,12 @@ niets bijverzonnen. Drie plekken wachten daardoor op de klant:
 
 | Plek | Wat ontbreekt |
 |---|---|
-| `contact.astro` | Het adres van het externe aanmeldformulier. De knop wijst zolang naar mailto. |
-| `voorwaarden.astro` | De voorwaardentekst zelf. De pdf is buiten de repo gehouden. |
+| `contact.astro` | Het aanmeldformulier. Bouwen we zelf; zie hieronder. De knop wijst zolang naar mailto. |
 | `de-100.astro` | Een zin bij Enthousiast, Ervaren en Trots. Bron levert alleen de drie woorden. |
+
+De voorwaardentekst staat er sinds `bron/voorwaarden.md` binnenkwam, letterlijk
+overgenomen. Punt 6 verwijst naar een privacyverklaring die nog niet bestaat en
+staat daarom zonder link — **daarmee mag de site niet live**.
 
 Achtergronden per pagina: de vier donkere pagina's staan overal op `inkt`,
 voorwaarden overal op `papier`. Meer dan één lichte en één donkere achtergrond
@@ -237,6 +240,33 @@ per pagina is volgens het design system een fout; `roet` en `mist` zijn
 verhoogde vlakken bínnen een sectie (`Kaart`), geen tweede sectieachtergrond.
 
 ## Wat er nog niet staat
+
+**Het aanmeldformulier bouwen we zelf.** Dat is veranderd: eerder liep aanmelden
+via een extern formulier waarvan het adres nog moest komen. Dat vervalt. Het
+formulier komt in deze repo en verstuurt naar `contact@declubvan.nl`.
+
+Dit is werk voor een eigen sessie, niet iets om er in B4 bij te doen. Het raakt
+drie dingen die geen van alle in het huidige fundament zitten:
+
+1. **Een route die op verzoek draait.** Alles is nu vooraf gerenderd. De route
+   die de inzending afhandelt krijgt `export const prerender = false;` en is
+   daarmee de eerste in dit project. Let op dat `output: 'static'` blijft staan;
+   losse routes mogen on demand.
+2. **Honeypot plus tijdsdrempel, geen captcha.** Een verborgen veld dat een mens
+   niet invult, en een ondergrens op de tijd tussen laden en versturen. Een
+   captcha komt er niet in: die legt de last bij de bezoeker en werpt een drempel
+   op voor precies de mensen die zich willen melden. Let op dat het honeypotveld
+   niet met een `style`-attribuut verstopt kan worden — de CSP blokkeert dat —
+   dus dat gaat via een klasse.
+3. **Een privacyverklaring.** Die bestaat nog niet. Zodra dit formulier
+   persoonsgegevens verwerkt is ze verplicht, en punt 6 van de voorwaarden wijst
+   er al naar. **Het formulier mag niet live voordat die verklaring er staat en
+   punt 6 ernaartoe linkt.**
+
+Openstaand daarbij: de site toont overal `info@declubvan.nl` — in de voettekst,
+op contact en in de knoppen. De inzending gaat naar `contact@declubvan.nl`. Twee
+adressen voor dezelfde club is een vraag aan de klant, geen aanname om zelf op
+te lossen.
 
 **De mobiele navigatie landt in B4.** Het design system wil onder 900px een
 hamburger met uitklappaneel — `.c100-nav__knop` en `.c100-nav__paneel`, oftewel

@@ -5,13 +5,18 @@ import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
 /*
  * Contact.
  *
- * Geen formulier. Aanmelden loopt volgens de scope van fase 1 via een extern
- * formulier, en dat adres is er nog niet — een eigen backend bouwen zou die
- * afspraak omzeilen. De aanmeldsectie hieronder is de plaatshouder: zodra het
- * adres er is, gaat de href van die knop van mailto naar het formulier en kan
- * de zin over "staat nog niet online" weg.
+ * Nog geen formulier. Dat verandert: het aanmeldformulier komt in deze repo en
+ * verstuurt naar contact@declubvan.nl. Eerder zou aanmelden via een extern
+ * formulier lopen; die afspraak is vervallen.
  *
- * PLAATSHOUDER — externe formulier-URL ontbreekt. Zie de oproep onderaan.
+ * PLAATSHOUDER — de aanmeldsectie onderaan overbrugt de tijd tot dat formulier
+ * er is. Zodra het staat, gaat de href van die knop van mailto naar de
+ * formulierroute en kan de zin over "staat nog niet online" weg.
+ *
+ * Het formulier is werk voor een eigen sessie en heeft drie eisen die hier nog
+ * nergens zitten: een route op verzoek, honeypot plus tijdsdrempel zonder
+ * captcha, en een privacyverklaring die nog niet bestaat. Zie CLAUDE.md,
+ * "Wat er nog niet staat". Zonder die verklaring mag het formulier niet live.
  *
  * Wat er aan contactgegevens ligt is info@declubvan.nl en het werkgebied. Een
  * telefoonnummer, een adres en een KvK-nummer staan niet in bron; het nummer
