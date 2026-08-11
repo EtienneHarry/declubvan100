@@ -13,18 +13,32 @@
  * een compileerfout in plaats van een stille lege klasse.
  */
 
+/*
+ * De tokennamen staan als array, niet als losse union. Dat is met opzet: het
+ * CMS bouwt zijn keuzelijsten uit deze arrays, en een union bestaat alleen
+ * tijdens het compileren. Zo is er één plek waar een tokennaam vandaan komt.
+ *
+ * Een naam toevoegen werkt in één richting: zet hem in de array, en TypeScript
+ * eist meteen de bijbehorende klasse in de Record hieronder. Vergeet je die,
+ * dan valt de build om. Staat de klasse er, dan verschijnt het token vanzelf in
+ * de keuzelijst van de redacteur — daar is verder niets voor te doen.
+ */
+
 /**
  * De vier achtergronden uit het contrasthoofdstuk, en niet meer. Twee donkere
  * en twee lichte. Meer dan één lichte en één donkere achtergrond op dezelfde
  * pagina is volgens het design system een fout.
  */
-export type AchtergrondToken = 'inkt' | 'roet' | 'papier' | 'mist';
+export const ACHTERGROND_TOKENS = ['inkt', 'roet', 'papier', 'mist'] as const;
+export type AchtergrondToken = (typeof ACHTERGROND_TOKENS)[number];
 
 /** Het sectieritme: de verticale lucht boven en onder een sectie. */
-export type RuimteToken = 'sectie-s' | 'sectie-m' | 'sectie-l';
+export const RUIMTE_TOKENS = ['sectie-s', 'sectie-m', 'sectie-l'] as const;
+export type RuimteToken = (typeof RUIMTE_TOKENS)[number];
 
 /** Hoe ver de inhoud binnen een sectie mag uitlopen. */
-export type BreedteToken = 'smal' | 'basis' | 'breed';
+export const BREEDTE_TOKENS = ['smal', 'basis', 'breed'] as const;
+export type BreedteToken = (typeof BREEDTE_TOKENS)[number];
 
 /**
  * Achtergrond levert vlak- én tekstkleur. Die twee horen bij elkaar: op inkt en
