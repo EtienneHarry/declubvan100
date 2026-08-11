@@ -223,6 +223,10 @@
   --container-breed: 1600px;
   --breakpoint-sm: 600px;
   --breakpoint-md: 768px;
+  /* De grens waaronder de navigatie inklapt tot een hamburger. Het design
+     system noemt 900px; dat valt tussen md en lg en heeft dus een eigen naam
+     nodig. Gebruik de variant `nav:`. */
+  --breakpoint-nav: 900px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1600px;

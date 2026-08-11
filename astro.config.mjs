@@ -33,5 +33,16 @@ export default defineConfig({
   integrations: [react(), keystatic()],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Niets inline zetten. Astro bakt een gebundeld script standaard in de
+      // HTML zodra het onder deze grens blijft — het navigatiescript is 891
+      // bytes en verdween er zo in. Onder `script-src 'self'` wordt zo'n inline
+      // script geblokkeerd, en de fout zie je alleen op de deploy.
+      //
+      // Dit geldt ook voor kleine stylesheets en voor assets als data-URI, en
+      // dat is precies de bedoeling: alles komt uit een bestand, dus 'self'
+      // dekt alles. scripts/check-csp.mjs bewaakt het.
+      assetsInlineLimit: 0,
+    },
   },
 });

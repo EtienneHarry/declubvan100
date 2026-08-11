@@ -1,0 +1,35 @@
+naam: De Club van 100
+beschrijving: >-
+  Geen uitzendbureau, maar een selectie van honderd horeca- en
+  eventprofessionals in en rond Groningen. Wij regelen de mensen.
+contact:
+  email: contact@declubvan.nl
+  telefoon: 06 25 33 15 97
+  adres: Neutronstraat 10, 9743 AM Groningen
+  kvk: "93868405"
+  btw: NL005048766B53
+  instagram: declubvanhonderd
+navigatie:
+  - label: Home
+    href: /
+  - label: Opdrachtgevers
+    href: /opdrachtgevers
+  - label: De 100
+    href: /de-100
+  - label: Contact
+    href: /contact
+voettekst:
+  - kop: Site
+    items:
+      - label: Home
+        href: /
+      - label: Opdrachtgevers
+        href: /opdrachtgevers
+      - label: De 100
+        href: /de-100
+  - kop: Zakelijk
+    items:
+      - label: Contact
+        href: /contact
+      - label: Voorwaarden
+        href: /voorwaarden

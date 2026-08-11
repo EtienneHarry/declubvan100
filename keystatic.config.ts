@@ -474,6 +474,129 @@ function pagina(label: string, map: string) {
   });
 }
 
+/* ---------------------------------------------------------------------------
+   Site-instellingen
+
+   Alles wat op élke pagina staat: de kop- en voetregel, en de gegevens waarmee
+   je bereikbaar bent. Dit is het eerste wat de klant bij de overdracht zelf
+   invult, dus de labels leggen uit wat er op de site gebeurt en gaan er niet
+   van uit dat je weet hoe het gebouwd is.
+   --------------------------------------------------------------------------- */
+
+const instellingen = singleton({
+  label: 'Site-instellingen',
+  path: 'src/content/instellingen',
+  format: { data: 'yaml' },
+  schema: {
+    naam: fields.text({
+      label: 'Naam van de site',
+      description:
+        'Staat in het tabblad van de browser en boven het zoekresultaat in Google. Meestal gewoon de bedrijfsnaam.',
+      validation: { length: { min: 1 } },
+    }),
+    beschrijving: fields.text({
+      label: 'Waar de site over gaat',
+      description:
+        'Eén of twee zinnen. Dit is de tekst die Google onder de naam laat zien, en die verschijnt als iemand een link naar de site deelt. Pagina\'s met een eigen omschrijving gebruiken die van zichzelf.',
+      multiline: true,
+      validation: { length: { min: 1 } },
+    }),
+
+    contact: fields.object(
+      {
+        email: fields.text({
+          label: 'E-mailadres',
+          description:
+            'Hier komt de post binnen. Dit adres staat onderaan elke pagina en op de contactpagina, en bezoekers kunnen erop klikken om een mail te beginnen.',
+          validation: { length: { min: 1 } },
+        }),
+        telefoon: fields.text({
+          label: 'Telefoonnummer — mag je overslaan',
+          description:
+            'Laat je dit leeg, dan noemt de site nergens een nummer. Er blijft dan geen lege regel of streepje achter.',
+        }),
+        adres: fields.text({
+          label: 'Adres — mag je overslaan',
+          description: 'Straat, postcode en plaats. Komt onderaan elke pagina te staan.',
+          multiline: true,
+        }),
+        kvk: fields.text({
+          label: 'KvK-nummer — mag je overslaan',
+          description: 'Alleen het nummer. De site zet er zelf "KvK" voor.',
+        }),
+        btw: fields.text({
+          label: 'Btw-nummer — mag je overslaan',
+          description: 'Alleen het nummer. De site zet er zelf "Btw" voor.',
+        }),
+        instagram: fields.text({
+          label: 'Instagram — mag je overslaan',
+          description:
+            'De gebruikersnaam, met of zonder apenstaartje. De site maakt er zelf een link van.',
+        }),
+      },
+      {
+        label: 'Contactgegevens',
+        description:
+          'Wat je hier invult, verschijnt onderaan elke pagina. Wat je leeg laat, blijft weg — er komt geen lege plek voor in de plaats.',
+      },
+    ),
+
+    navigatie: fields.array(
+      fields.object({
+        label: fields.text({
+          label: 'Wat er in het menu staat',
+          description: 'Houd het bij één of twee woorden; het menu staat op één regel.',
+          validation: { length: { min: 1 } },
+        }),
+        href: fields.text({
+          label: 'Naar welke pagina',
+          description: 'Bijvoorbeeld /contact. Begin altijd met een schuine streep.',
+          validation: { length: { min: 1 } },
+        }),
+      }),
+      {
+        label: 'Menu bovenaan',
+        description:
+          'De links in de balk bovenaan elke pagina, in deze volgorde. Op een telefoon klappen ze samen tot een menuknop. Vier of vijf is comfortabel; daarboven wordt de balk vol.',
+        itemLabel: (props) => props.fields.label.value || 'Zonder naam',
+      },
+    ),
+
+    voettekst: fields.array(
+      fields.object({
+        kop: fields.text({
+          label: 'Kopje boven de kolom',
+          description: 'Eén woord werkt het best, bijvoorbeeld Site of Zakelijk.',
+          validation: { length: { min: 1 } },
+        }),
+        items: fields.array(
+          fields.object({
+            label: fields.text({
+              label: 'Wat er staat',
+              validation: { length: { min: 1 } },
+            }),
+            href: fields.text({
+              label: 'Naar welke pagina',
+              description: 'Bijvoorbeeld /voorwaarden.',
+              validation: { length: { min: 1 } },
+            }),
+          }),
+          {
+            label: 'Links in deze kolom',
+            itemLabel: (props) => props.fields.label.value || 'Zonder naam',
+          },
+        ),
+      }),
+      {
+        label: 'Kolommen onderaan',
+        description:
+          'Onderaan elke pagina staan het logo en je contactgegevens, met daarnaast deze kolommen met links. Twee kolommen passen het prettigst naast elkaar.',
+        itemLabel: (props) => props.fields.kop.value || 'Kolom zonder kopje',
+      },
+    ),
+  },
+});
+
 export default config({
   // De omhulling van de admin — knoppen als Add, de lege staat, Unsaved — komt
   // uit Keystatic zelf en staat standaard op Engels. nl-NL zet die op
@@ -484,10 +607,12 @@ export default config({
     brand: { name: 'De Club van 100' },
     navigation: {
       "Pagina's": ['home', 'opdrachtgevers', 'de100', 'contact', 'voorwaarden'],
+      'Hele site': ['instellingen'],
     },
   },
   collections: {},
   singletons: {
+    instellingen,
     home: pagina('Home', 'home'),
     opdrachtgevers: pagina('Opdrachtgevers', 'opdrachtgevers'),
     de100: pagina('De 100', 'de-100'),
