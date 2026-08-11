@@ -1,0 +1,92 @@
+titel: Opdrachtgevers — De Club van 100
+beschrijving: >-
+  Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe een tap
+  onder druk werkt. Wij regelen de mensen in en rond Groningen.
+secties:
+  - discriminant: hero
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: Opdrachtgevers
+      kop: Jij hebt een avond te draaien
+      tekst: Wij regelen de mensen en zorgen dat er niets misgaat.
+      knop:
+        label: ""
+        href: ""
+      tweedeKnop:
+        label: ""
+        href: ""
+      schicht: true
+  - discriminant: drie-kolommen
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: ""
+      kop: Wat je krijgt
+      items:
+        - nummer: "01"
+          kop: Honderd avonden ervaring
+          tekst: Iedereen die hier staat, heeft honderd avonden achter een bar gestaan.
+          href: ""
+        - nummer: "02"
+          kop: Geen willekeurige invalkracht
+          tekst: Je krijgt iemand die weet hoe een tap onder druk werkt.
+          href: ""
+        - nummer: "03"
+          kop: Honderd is de grens
+          tekst: >-
+            Honderd is geen willekeurig getal. Je hoort erbij of je hoort er
+            niet bij.
+          href: ""
+  - discriminant: beeld-tekst
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Waarom geen uitzendbureau
+      kop: Een uitzendbureau werft. Deze club selecteert.
+      tekst: >-
+        Wij zeggen niet dat we goed zijn. We laten merken dat niet iedereen mee
+        mag doen. Dat is het hele verschil met een uitzendbureau: geen standaard
+        uitzendkrachten, maar mensen die er uitspringen.
+      beeld:
+        bron: /beeld/bediening-buiten.jpg
+        alt: Bediening aan tafel, daglicht onder de bomen
+      verhouding: breed
+      beeldPositie: links
+  - discriminant: citaten
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Wat opdrachtgevers zeggen
+      items:
+        - citaat: >-
+            "Zeker een leuke avond gehad en top mensen hebben jullie gestuurd.
+            Ze hebben het fantastisch gedaan."
+          naam: De Speld
+          rol: ""
+        - citaat: '"Leuke mensen, harde werkers"'
+          naam: Stadslab Groningen
+          rol: ""
+  - discriminant: oproep
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: Aan de slag
+      kop: Vertel wat je nodig hebt.
+      tekst: Mail wat het is en wanneer. Je hoort binnen een dag van ons.
+      knop:
+        label: Ik zoek personeel
+        href: /contact
+      tweedeKnop:
+        label: ""
+        href: ""
