@@ -1,0 +1,55 @@
+titel: Contact — De Club van 100
+beschrijving: >-
+  Mail De Club van 100 op contact@declubvan.nl. Wij regelen horeca- en
+  eventpersoneel in en rond Groningen.
+secties:
+  - discriminant: hero
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: Contact
+      kop: Zeg het maar.
+      tekst: Mail ons wat je nodig hebt. Je hoort binnen een dag van ons.
+      knop:
+        label: ""
+        href: ""
+      tweedeKnop:
+        label: ""
+        href: ""
+      schicht: true
+  - discriminant: drie-kolommen
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: ""
+      kop: Zo bereik je ons
+      items:
+        - nummer: "01"
+          kop: Mail
+          tekst: contact@declubvan.nl
+          href: mailto:contact@declubvan.nl
+        - nummer: "02"
+          kop: Werkgebied
+          tekst: In en rond Groningen.
+          href: ""
+  - discriminant: oproep
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: Aanmelden
+      kop: Aanmelden loopt via een formulier.
+      tekst: >-
+        Dat formulier staat nog niet online. Mail ons tot die tijd, dan hoor je
+        binnen een dag van ons.
+      knop:
+        label: Ik wil bij jullie werken
+        href: mailto:contact@declubvan.nl
+      tweedeKnop:
+        label: ""
+        href: ""

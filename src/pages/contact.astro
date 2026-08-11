@@ -1,13 +1,16 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import SectionRenderer from '../lib/SectionRenderer';
+import { leesPagina } from '../lib/pagina';
 
 /*
  * Contact.
  *
- * Nog geen formulier. Dat verandert: het aanmeldformulier komt in deze repo en
- * verstuurt naar contact@declubvan.nl. Eerder zou aanmelden via een extern
- * formulier lopen; die afspraak is vervallen.
+ * De inhoud komt uit het CMS: src/content/paginas/contact.yaml.
+ *
+ * Nog geen formulier. Het aanmeldformulier komt in deze repo en verstuurt naar
+ * contact@declubvan.nl; eerder zou aanmelden via een extern formulier lopen,
+ * die afspraak is vervallen.
  *
  * PLAATSHOUDER — de aanmeldsectie onderaan overbrugt de tijd tot dat formulier
  * er is. Zodra het staat, gaat de href van die knop van mailto naar de
@@ -15,65 +18,16 @@ import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
  *
  * Het formulier is werk voor een eigen sessie en heeft drie eisen die hier nog
  * nergens zitten: een route op verzoek, honeypot plus tijdsdrempel zonder
- * captcha, en een privacyverklaring die nog niet bestaat. Zie CLAUDE.md,
- * "Wat er nog niet staat". Zonder die verklaring mag het formulier niet live.
+ * captcha, en een privacyverklaring. Zie CLAUDE.md, "Wat er nog niet staat".
  *
- * Wat er aan contactgegevens ligt is contact@declubvan.nl en het werkgebied. Een
- * telefoonnummer, een adres en een KvK-nummer staan niet in bron; het nummer
- * dat in de UI kit van het design system stond is daar expliciet als
- * plaatshouder aangemerkt en is hier dus niet overgenomen.
- *
- * MERKSTEM — hieronder staat bij elke regel die niet uit bron komt een
- * markering. Verder op deze pagina in de merkstem geschreven, en dus ook ter
- * review: het sectielabel "Zo bereik je ons" en de tekst bij de aanmeldoproep.
- * Uit bron komen alleen de knopteksten en "Je hoort binnen een dag van ons."
+ * Wat er aan contactgegevens ligt staat in de site-instellingen. Een adres, een
+ * telefoonnummer en een KvK-nummer staan daar; de kaarten op deze pagina tonen
+ * bewust alleen het mailadres en het werkgebied.
  */
 
-// Door de klant opgegeven. info@declubvan.nl kwam uit de UI kit van het design
-// system en was daar een plaatshouder; dat adres staat nergens meer.
-const MAIL = 'contact@declubvan.nl';
-
-const secties: Sectie[] = [
-  {
-    type: 'hero',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-l',
-    breedte: 'basis',
-    bovenkop: 'Contact',
-    // MERKSTEM — deze kop is in de merkstem geschreven, niet uit bron.
-    kop: 'Zeg het maar.',
-    // Tweede zin letterlijk uit de microcopy-tabel, eerste zin merkstem.
-    tekst: 'Mail ons wat je nodig hebt. Je hoort binnen een dag van ons.',
-    schicht: true,
-  },
-  {
-    type: 'drie-kolommen',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-m',
-    breedte: 'basis',
-    kop: 'Zo bereik je ons',
-    items: [
-      { nummer: '01', kop: 'Mail', tekst: MAIL, href: `mailto:${MAIL}` },
-      { nummer: '02', kop: 'Werkgebied', tekst: 'In en rond Groningen.' },
-    ],
-  },
-  {
-    type: 'oproep',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-l',
-    breedte: 'basis',
-    bovenkop: 'Aanmelden',
-    // MERKSTEM — deze oproepkop is in de merkstem geschreven, niet uit bron.
-    kop: 'Aanmelden loopt via een formulier.',
-    tekst: 'Dat formulier staat nog niet online. Mail ons tot die tijd, dan hoor je binnen een dag van ons.',
-    knop: { label: 'Ik wil bij jullie werken', href: `mailto:${MAIL}` },
-  },
-];
+const { titel, beschrijving, secties } = await leesPagina('contact');
 ---
 
-<Basis
-  titel="Contact — De Club van 100"
-  beschrijving="Mail De Club van 100 op contact@declubvan.nl. Wij regelen horeca- en eventpersoneel in en rond Groningen."
->
+<Basis titel={titel} beschrijving={beschrijving}>
   {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
 </Basis>
