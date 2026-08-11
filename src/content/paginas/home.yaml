@@ -1,0 +1,92 @@
+titel: De Club van 100
+# Stond niet op de pagina zelf: home leunde op de standaard uit de layout, en
+# die komt uit de site-instellingen. Hier letterlijk overgenomen, anders
+# verandert de meta-beschrijving stilletjes bij de overgang naar het CMS.
+beschrijving: >-
+  Geen uitzendbureau, maar een selectie van honderd horeca- en
+  eventprofessionals in en rond Groningen. Wij regelen de mensen.
+secties:
+  - discriminant: hero
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: In en rond Groningen
+      kop: Een van de 100
+      tekst: >-
+        Geen uitzendbureau, maar een selectie van honderd horeca- en
+        eventprofessionals in en rond Groningen.
+      knop:
+        label: ""
+        href: ""
+      tweedeKnop:
+        label: ""
+        href: ""
+      schicht: true
+  - discriminant: splitscreen
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      deuren:
+        - bovenkop: Opdrachtgevers
+          kop: Jij hebt een avond te draaien
+          tekst: >-
+            Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet
+            hoe een tap onder druk werkt.
+          knop:
+            label: Ik zoek personeel
+            href: /opdrachtgevers
+        - bovenkop: Professionals
+          kop: Honderd plekken
+          tekst: Niet iedereen komt erdoor.
+          knop:
+            label: Ik wil bij jullie werken
+            href: /de-100
+  - discriminant: beeld-tekst
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Waarom we bestaan
+      kop: Mensen die er uitspringen
+      tekst: >-
+        Wij misten een plek waar mensen die veel ervaring hebben in de horeca en
+        events samen komen. Geen standaard uitzendkrachten, maar mensen die er
+        uitspringen.
+      beeld:
+        bron: /beeld/vuur-zonsondergang.jpg
+        alt: Vuurkorf op het festivalterrein in tegenlicht
+      verhouding: breed
+      beeldPositie: rechts
+  - discriminant: citaten
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Wat opdrachtgevers zeggen
+      items:
+        - citaat: >-
+            "Zeker een leuke avond gehad en top mensen hebben jullie gestuurd.
+            Ze hebben het fantastisch gedaan."
+          naam: De Speld
+          rol: ""
+  - discriminant: oproep
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: ""
+      kop: Wij regelen de mensen.
+      tekst: ""
+      knop:
+        label: Ik zoek personeel
+        href: /contact
+      tweedeKnop:
+        label: Ik wil bij jullie werken
+        href: /de-100
