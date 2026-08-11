@@ -1,98 +1,23 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import SectionRenderer from '../lib/SectionRenderer';
+import { leesPagina } from '../lib/pagina';
 
 /*
  * De 100.
  *
- * Toon: directer en uitdagender. Nadruk op erbij horen, op de betere klussen
- * en op wie er niet doorkomt.
+ * De inhoud komt uit het CMS: src/content/paginas/de-100.yaml.
  *
- * De drie merkwaarden staan in bron als drie woorden en verder niets. De
- * kaarten dragen daarom alleen die woorden; er is geen omschrijving bij
- * verzonnen. Zodra de klant er een zin bij levert, past die in `tekst`.
+ * Toon: directer en uitdagender dan op opdrachtgevers. Nadruk op erbij horen,
+ * op de betere klussen, en op wie er niet doorkomt.
  *
- * Schichten op deze pagina: één, de grote in de hero. De opsommingsschicht zou
- * hier passen bij een lijst over de selectie, maar drie is het maximum voor een
- * hele pagina en die raak je met één lijst meteen kwijt.
- *
- * MERKSTEM — hieronder staat bij elke regel die niet uit bron komt een
- * markering. Verder op deze pagina in de merkstem geschreven, en dus ook ter
- * review: de bovenkoppen "Wie erin zitten", "Waarom honderd" en "Meld je". De
- * rest is letterlijk uit bron, op de aangepaste zin bij de oproep na.
+ * De drie kaarten Enthousiast, Ervaren en Trots dragen alleen het woord. Bron
+ * levert geen zin bij die waardes, en er is er hier geen bij verzonnen.
  */
 
-const secties: Sectie[] = [
-  {
-    type: 'hero',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-l',
-    breedte: 'basis',
-    bovenkop: 'De 100',
-    kop: 'Honderd plekken',
-    tekst: 'Je hoort erbij of je hoort er niet bij.',
-    schicht: true,
-  },
-  {
-    type: 'beeld-tekst',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-m',
-    breedte: 'basis',
-    bovenkop: 'Wie erin zitten',
-    kop: 'Geen standaard uitzendkrachten',
-    tekst: 'Iedereen die hier staat, heeft honderd avonden achter een bar gestaan.',
-    beeld: {
-      bron: '/beeld/cocktail-bar.jpg',
-      alt: 'Iemand maakt een cocktail achter de buitenbar',
-    },
-    beeldPositie: 'rechts',
-  },
-  {
-    type: 'kop-tekst',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-m',
-    breedte: 'basis',
-    bovenkop: 'Waarom honderd',
-    // MERKSTEM — deze kop is in de merkstem geschreven, niet uit bron. De
-    // tekst eronder wel: "honderd is geen willekeurig getal, het is de grens".
-    kop: 'Het is de grens.',
-    tekst:
-      'Honderd is geen willekeurig getal. Zit de honderd vol, dan bellen we als er een plek vrijkomt.',
-  },
-  {
-    type: 'drie-kolommen',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-m',
-    breedte: 'basis',
-    kop: 'Enthousiast, ervaren, trots',
-    items: [
-      { nummer: '01', kop: 'Enthousiast' },
-      { nummer: '02', kop: 'Ervaren' },
-      { nummer: '03', kop: 'Trots' },
-    ],
-  },
-  {
-    type: 'oproep',
-    achtergrond: 'inkt',
-    ruimte: 'sectie-l',
-    breedte: 'basis',
-    bovenkop: 'Meld je',
-    kop: 'Niet iedereen komt erdoor.',
-    // Bewuste afwijking van bron. Daar staat "een van de betere barmannen van
-    // de stad"; dat sluit de helft van de ploeg uit. Het merk zelf doet dat
-    // nergens anders: de doelgroepenlijst in het design system heeft "Gastheer
-    // of gastvrouw" en de fotografie toont beide. De rest van de zin is
-    // ongewijzigd.
-    tekst:
-      'Denk je dat jij een van de betere achter de bar van de stad bent, laat het weten.',
-    knop: { label: 'Ik wil bij jullie werken', href: '/contact' },
-  },
-];
+const { titel, beschrijving, secties } = await leesPagina('de100');
 ---
 
-<Basis
-  titel="De 100 — De Club van 100"
-  beschrijving="Honderd plekken. Niet iedereen komt erdoor. Iedereen die hier staat, heeft honderd avonden achter een bar gestaan."
->
+<Basis titel={titel} beschrijving={beschrijving}>
   {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
 </Basis>

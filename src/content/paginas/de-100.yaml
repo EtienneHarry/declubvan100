@@ -1,0 +1,84 @@
+titel: De 100 — De Club van 100
+beschrijving: >-
+  Honderd plekken. Niet iedereen komt erdoor. Iedereen die hier staat, heeft
+  honderd avonden achter een bar gestaan.
+secties:
+  - discriminant: hero
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: De 100
+      kop: Honderd plekken
+      tekst: Je hoort erbij of je hoort er niet bij.
+      knop:
+        label: ""
+        href: ""
+      tweedeKnop:
+        label: ""
+        href: ""
+      schicht: true
+  - discriminant: beeld-tekst
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Wie erin zitten
+      kop: Geen standaard uitzendkrachten
+      tekst: Iedereen die hier staat, heeft honderd avonden achter een bar gestaan.
+      beeld:
+        bron: /beeld/cocktail-bar.jpg
+        alt: Iemand maakt een cocktail achter de buitenbar
+      verhouding: breed
+      beeldPositie: rechts
+  - discriminant: kop-tekst
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Waarom honderd
+      kop: Het is de grens.
+      tekst: >-
+        Honderd is geen willekeurig getal. Zit de honderd vol, dan bellen we als
+        er een plek vrijkomt.
+  - discriminant: drie-kolommen
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: ""
+      kop: Enthousiast, ervaren, trots
+      items:
+        - nummer: "01"
+          kop: Enthousiast
+          tekst: ""
+          href: ""
+        - nummer: "02"
+          kop: Ervaren
+          tekst: ""
+          href: ""
+        - nummer: "03"
+          kop: Trots
+          tekst: ""
+          href: ""
+  - discriminant: oproep
+    value:
+      weergave:
+        achtergrond: inkt
+        ruimte: sectie-l
+        breedte: basis
+      bovenkop: Meld je
+      kop: Niet iedereen komt erdoor.
+      tekst: >-
+        Denk je dat jij een van de betere achter de bar van de stad bent, laat
+        het weten.
+      knop:
+        label: Ik wil bij jullie werken
+        href: /contact
+      tweedeKnop:
+        label: ""
+        href: ""
