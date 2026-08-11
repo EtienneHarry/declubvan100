@@ -343,6 +343,45 @@ de `Navigatie`-component. Tot die tijd breken de vier links in de header af op
 smalle schermen. Dat haalt de horizontale scroll weg maar is niet de bedoelde
 oplossing. In B4 verhuist de navigatie tegelijk naar het CMS.
 
+## Niet upgraden: Keystatic staat vast op 0.6.4
+
+**`@keystatic/core` en `@keystatic/astro` staan exact gepind, zonder caret en
+zonder tilde, met een `overrides`-blok erbij.** Draai hier geen `npm update`
+overheen zonder eerst te meten.
+
+Op **0.6.5 opent een rij in een `fields.blocks`-lijst niet meer**. Klikken,
+dubbelklikken en Enter doen niets, er komt geen dialoog en er staat niets in de
+console. Daarmee is elke bestaande sectie op elke pagina onbewerkbaar: je kunt
+alleen nog toevoegen, verwijderen en verslepen. Het CMS is dan stil kapot — de
+admin laadt, de lijst staat er, en pas als je iets wilt wijzigen merk je het.
+
+Reproductie (gemeten 11 augustus 2026):
+
+- een singleton met één `fields.blocks` met twee triviale varianten, elk een
+  object met één tekstveld, zonder `itemLabel`
+- op **0.6.4**: klikken op een rij opent "Edit &lt;variantnaam&gt;" met de velden erin
+- op **0.6.5**: er gebeurt niets
+
+Het ligt niet aan ons schema. Een gewone `fields.array` — van een tekstveld óf
+van een object, met of zonder `itemLabel` — opent op beide versies gewoon. Het
+verschil zit in `fields.blocks`. In die stap gaat `@keystar/ui` van 0.9.2 naar
+0.9.3; `react-aria` is in beide 3.50.0, dus dat is het niet.
+
+Gemeld als [Thinkmill/keystatic#1593](https://github.com/Thinkmill/keystatic/issues/1593).
+**Zodra dat issue dicht is, kan de pin eraf** — meet dan opnieuw of een
+blocks-rij opengaat voordat je hem weghaalt.
+
+### Waarom `vite` ook in overrides staat
+
+Niet hetzelfde probleem, wel dezelfde soort. `astro` wil vite 7,
+`@tailwindcss/vite` en `@vitejs/plugin-react` trekken vite 8 naar boven. Met
+allebei in de boom komen de types uit twee majors en valt `astro check` om op
+`Type 'Plugin<any>[]' is not assignable to type 'PluginOption'` in
+`astro.config.mjs`. De override dwingt vite 7 af, wat elke peer-range toelaat.
+
+Dit kwam pas boven bij een verse installatie zonder lockfile. Met de lockfile
+erbij merk je het niet, en dat is precies waarom het hier staat.
+
 ## Bekende beperking — beeld gaat langs Astro's pijplijn heen
 
 De secties tonen een foto met een gewone `<img>` en niet met Astro's
