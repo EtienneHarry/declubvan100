@@ -26,6 +26,14 @@ Eén beleid voor alles betekende dus kiezen tussen een kale admin of
 | `/api/keystatic/:path*` | `script-src 'self'; style-src 'self' 'unsafe-inline'` |
 | al het andere | `script-src 'self'; style-src 'self'` |
 
+**Dit werkt; het is op een preview-deploy nagemeten.** De adapter schrijft zijn
+eigen routes in `.vercel/output/config.json` en leest `vercel.json` alleen om te
+waarschuwen over `trailingSlash` — hij merget er geen headers uit. De vraag was
+dus of het platform `vercel.json` nog wel oppakt naast de Build Output API. Dat
+doet het: op de preview gaf `/` precies `script-src 'self'; style-src 'self'` en
+`/keystatic` dezelfde policy plus `'unsafe-inline'` op `style-src`, één header
+per pad.
+
 De site verliest hiermee niets. Astro's meta zette `'self'` plus sha256-hashes
 per inline script; de gebouwde pagina's hebben nul inline scripts, nul inline
 stijlblokken en nul `style`-attributen, dus `'self'` dekt precies hetzelfde af.
@@ -42,16 +50,25 @@ Twee dingen om te onthouden:
 
 `scripts/check-csp.mjs` bewaakt dit na elke build: elk pad precies één
 CSP-header, `'unsafe-inline'` alleen op de admin, en geen inline script, stijlblok
-of `style`-attribuut in de gebouwde HTML. Zonder die controle zou een inline
-stijl pas in productie stukgaan — in `dev` en `preview` merk je er niets van,
-want daar zet niemand deze headers.
+of `style`-attribuut in de gebouwde HTML.
+
+### Waar je de headers wel en niet ziet
+
+De headers komen van Vercel, niet uit de HTML. Dat betekent:
+
+- **Lokaal zie je ze nooit.** Niet in `npm run dev` en niet in `npm run preview`
+  — dat laatste is `astro preview` en heeft niets met een preview-deploy te
+  maken. Een inline stijl gaat daar dus gewoon werken en pas op de deploy stuk.
+  `check-csp` is precies daarvoor de vervanging.
+- **Op een preview-deploy meten werkt alleen met Deployment Protection uit.**
+  Staat die aan, dan krijg je een 302 naar `vercel.com/sso-api` en meet je de
+  headers van de inlogpagina in plaats van die van de site. Dat leest als een
+  genegeerde `vercel.json` terwijl er niets mis is.
 
 Verder over CSP:
 
 - **Inline stijl wordt geblokkeerd.** De regel "geen `style`-attribuut" wordt
   afgedwongen, niet alleen afgesproken.
-- De headers komen van Vercel, dus je ziet ze niet in `dev` en niet in
-  `preview`. `check-csp` is daar de vervanging voor.
 - Geen `<ClientRouter />`-viewtransities en geen Shiki-syntaxkleuring;
   `markdown.syntaxHighlight` staat daarom uit.
 
