@@ -1,7 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
-import cocktailBar from '../assets/photo/cocktail-bar.jpg';
 
 /*
  * De 100.
@@ -43,7 +42,7 @@ const secties: Sectie[] = [
     kop: 'Geen standaard uitzendkrachten',
     tekst: 'Iedereen die hier staat, heeft honderd avonden achter een bar gestaan.',
     beeld: {
-      bron: cocktailBar.src,
+      bron: '/beeld/cocktail-bar.jpg',
       alt: 'Iemand maakt een cocktail achter de buitenbar',
     },
     beeldPositie: 'rechts',

@@ -1,7 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
-import bedieningBuiten from '../assets/photo/bediening-buiten.jpg';
 
 /*
  * Opdrachtgevers.
@@ -70,7 +69,7 @@ const secties: Sectie[] = [
     tekst:
       'Wij zeggen niet dat we goed zijn. We laten merken dat niet iedereen mee mag doen. Dat is het hele verschil met een uitzendbureau: geen standaard uitzendkrachten, maar mensen die er uitspringen.',
     beeld: {
-      bron: bedieningBuiten.src,
+      bron: '/beeld/bediening-buiten.jpg',
       alt: 'Bediening aan tafel, daglicht onder de bomen',
     },
     beeldPositie: 'links',

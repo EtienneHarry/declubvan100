@@ -1,9 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
-import barPouring from '../assets/photo/bar-pouring.jpg';
-import ploegDrie from '../assets/photo/ploeg-drie.jpg';
-import vuurZonsondergang from '../assets/photo/vuur-zonsondergang.jpg';
 
 /*
  * Home.
@@ -49,14 +46,14 @@ const secties: Sectie[] = [
         tekst:
           'Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe een tap onder druk werkt.',
         knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
-        beeld: { bron: barPouring.src, alt: 'Bartender schenkt een glas in bij warm binnenlicht' },
+        beeld: { bron: '/beeld/bar-pouring.jpg', alt: 'Bartender schenkt een glas in bij warm binnenlicht' },
       },
       {
         bovenkop: 'Professionals',
         kop: 'Honderd plekken',
         tekst: 'Niet iedereen komt erdoor.',
         knop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
-        beeld: { bron: ploegDrie.src, alt: 'Drie collega’s achter de tap' },
+        beeld: { bron: '/beeld/ploeg-drie.jpg', alt: 'Drie collega’s achter de tap' },
       },
     ],
   },
@@ -71,7 +68,7 @@ const secties: Sectie[] = [
     tekst:
       'Wij misten een plek waar mensen die veel ervaring hebben in de horeca en events samen komen. Geen standaard uitzendkrachten, maar mensen die er uitspringen.',
     beeld: {
-      bron: vuurZonsondergang.src,
+      bron: '/beeld/vuur-zonsondergang.jpg',
       alt: 'Vuurkorf op het festivalterrein in tegenlicht',
     },
     beeldPositie: 'rechts',
