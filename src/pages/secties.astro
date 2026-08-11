@@ -296,12 +296,15 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         knop: { label: 'Stuur maar', href: '/contact' },
       },
       {
+        // Zonder sectiekop. De kopblokken zijn dan zelf het bovenste niveau en
+        // horen <h2> te zijn; met een sectiekop erboven zakken ze naar <h3>.
+        // Dat tweede geval staat in "te lange kop" en in "veel items".
         type: 'rijke-tekst',
         achtergrond: 'papier',
         ruimte: 'sectie-l',
         breedte: 'smal',
-        kop: 'Voorwaarden',
         blokken: [
+          { soort: 'kop', tekst: 'Zonder sectiekop erboven' },
           { soort: 'alinea', tekst: LOPENDE_TEKST },
           { soort: 'lijst', items: ['Eerste punt', 'Tweede punt'] },
         ],

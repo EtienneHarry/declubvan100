@@ -46,6 +46,22 @@ export default function RijkeTekst({
 }: RijkeTekstProps) {
   const maat = maatRegelKlasse[achtergrond];
 
+  /*
+   * Het niveau van een kopblok hangt af van de sectiekop erboven.
+   *
+   * Heeft de sectie een eigen kop, dan is dat de <h2> en hangen de kopblokken
+   * daaronder als <h3>. Heeft ze er geen, dan zijn de kopblokken zelf het
+   * bovenste niveau binnen de sectie en horen ze <h2> te zijn — anders springt
+   * de pagina van de <h1> van de hero rechtstreeks naar <h3>.
+   *
+   * Afgeleid en niet als prop: zo kan het niet verkeerd gezet worden. Een prop
+   * die op 2 staat terwijl er een sectiekop is, levert twee keer <h2> op en
+   * breekt precies de volgorde die dit moet bewaken.
+   */
+  const heeftSectieKop = Boolean(kop?.trim());
+  const KopBlok = heeftSectieKop ? 'h3' : 'h2';
+  const kopBlokKlasse = heeftSectieKop ? 'text-kop-s' : 'text-kop-m';
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
@@ -64,12 +80,12 @@ export default function RijkeTekst({
 
           if (blok.soort === 'kop') {
             return (
-              <h3
+              <KopBlok
                 key={`kop-${index}`}
-                className={`mt-10 text-kop-s text-balance break-words ${maat}`}
+                className={`mt-10 ${kopBlokKlasse} text-balance break-words ${maat}`}
               >
                 {blok.tekst}
-              </h3>
+              </KopBlok>
             );
           }
 

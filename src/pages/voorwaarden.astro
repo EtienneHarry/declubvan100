@@ -10,14 +10,29 @@ import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
  * secties zetten zelf data-thema="licht", zodat de semantische aliassen
  * meekantelen.
  *
- * PLAATSHOUDER — de echte voorwaardentekst ontbreekt. De pdf is buiten deze
- * repo gehouden, dus er staat hier niets samengevats of nagemaakts: dat zou
- * juridische tekst worden die niemand heeft goedgekeurd. Zodra de tekst er is
- * vervangt hij de twee alinea's hieronder, als kop- en alineablokken.
+ * De tekst hieronder komt letterlijk uit bron/voorwaarden.md, aangeleverd door
+ * de klant op 11 augustus 2026. Niets herschreven, niets ingekort, niets
+ * samengevat: dit is juridische tekst die niemand van ons heeft goedgekeurd.
+ * Wie hier iets wil veranderen, verandert eerst bron/voorwaarden.md en overlegt
+ * met de klant.
  *
- * schichtLijst blijft uit zodra er lijsten in komen: de opsommingsschicht is
- * volgens de richtlijn alleen voor lijsten over de 100 of de selectie, niet
- * voor een artikelopsomming.
+ * ===========================================================================
+ * NIET LIVE ZETTEN — punt 6 verwijst naar een privacyverklaring die nog niet
+ * bestaat. Die verwijzing staat er nu bewust zonder link: een dode link is
+ * erger dan geen link, en beide zijn onacceptabel op een pagina die naar
+ * privacywetgeving verwijst. Zeker nu het aanmeldformulier eraan komt en er
+ * dus persoonsgegevens verwerkt gaan worden.
+ *
+ * Voordat deze site live gaat moet er een privacyverklaring zijn en moet punt
+ * 6 daarnaartoe wijzen. Zie ook de openstaande punten in CLAUDE.md.
+ * ===========================================================================
+ *
+ * De artikelkoppen zijn kopblokken zonder sectiekop erboven, dus RijkeTekst
+ * maakt er <h2> van. Daarmee loopt de pagina van de <h1> in de hero netjes
+ * naar <h2> per artikel, zonder overgeslagen niveau.
+ *
+ * schichtLijst blijft uit: de opsommingsschicht is volgens de richtlijn alleen
+ * voor lijsten over de 100 of de selectie, niet voor een artikelopsomming.
  */
 
 const secties: Sectie[] = [
@@ -37,7 +52,6 @@ const secties: Sectie[] = [
     // browser het woord op een willekeurig punt af ("voorwaard|en", gemeten).
     // Deze streep legt de plek vast zonder de tekst te veranderen.
     kop: 'Algemene voor­waarden',
-    tekst: 'Deze pagina wacht op de definitieve tekst.',
   },
   {
     type: 'rijke-tekst',
@@ -45,14 +59,63 @@ const secties: Sectie[] = [
     ruimte: 'sectie-m',
     breedte: 'smal',
     blokken: [
+      { soort: 'kop', tekst: '1. Algemeen' },
       {
         soort: 'alinea',
         tekst:
-          'De algemene voorwaarden van De Club van 100 staan nog niet op deze pagina. De tekst wordt nageleverd en komt hier ongewijzigd te staan.',
+          'Deze website wordt beheerd door De Club van 100. Door gebruik te maken van deze website stem je in met deze algemene voorwaarden. Wij raden je aan deze voorwaarden zorgvuldig te lezen alvorens onze diensten af te nemen.',
       },
+
+      { soort: 'kop', tekst: '2. Gebruik van de website' },
       {
         soort: 'alinea',
-        tekst: 'Heb je ze nu nodig, mail dan naar info@declubvan.nl.',
+        tekst:
+          'De informatie op deze website is uitsluitend bedoeld voor algemene informatiedoeleinden. Hoewel De Club van 100 streeft naar het geven van correcte en actuele informatie, kunnen we niet garanderen dat alle informatie op elk moment volledig of juist is. Wij behouden ons het recht voor om informatie op de website op elk moment zonder kennisgeving te wijzigen of te actualiseren.',
+      },
+
+      { soort: 'kop', tekst: '3. Diensten en tarieven' },
+      {
+        soort: 'alinea',
+        tekst:
+          'De Club van 100 biedt horecaprofessionals en bijbehorende diensten voor diverse evenementen. De tarieven en beschikbaarheid van personeel kunnen variëren en zijn onderhevig aan wijziging. Voor specifieke verzoeken of vragen over tarieven kun je contact opnemen via de op de website vermelde contactgegevens.',
+      },
+
+      { soort: 'kop', tekst: '4. Aansprakelijkheid' },
+      {
+        soort: 'alinea',
+        tekst:
+          'De Club van 100 is niet aansprakelijk voor eventuele directe of indirecte schade als gevolg van het gebruik van de website of de inhoud ervan. Dit omvat, maar is niet beperkt tot, schade door verlies van gegevens, winstderving of onderbreking van activiteiten. Voor afspraken en voorwaarden met betrekking tot onze dienstverlening, verwijzen wij naar onze dienstenovereenkomst.',
+      },
+
+      { soort: 'kop', tekst: '5. Intellectueel eigendom' },
+      {
+        soort: 'alinea',
+        tekst:
+          "Alle inhoud op de website, waaronder teksten, afbeeldingen, logo's en andere materialen, is eigendom van De Club van 100 of wordt met toestemming gebruikt. Zonder schriftelijke toestemming van De Club van 100 mag de inhoud niet worden gekopieerd, gereproduceerd, gedistribueerd of op enige andere manier worden gebruikt.",
+      },
+
+      { soort: 'kop', tekst: '6. Privacy' },
+      // OPENSTAAND — "onze privacyverklaring" hoort een link te zijn. Die
+      // verklaring bestaat nog niet, dus staat er nu geen link. Zie het blok
+      // bovenaan dit bestand: de site mag hier niet mee live.
+      {
+        soort: 'alinea',
+        tekst:
+          'De Club van 100 respecteert jouw privacy en verwerkt persoonlijke gegevens in overeenstemming met de geldende privacywetgeving. Voor meer informatie over hoe wij jouw gegevens verwerken, verwijzen we naar onze privacyverklaring.',
+      },
+
+      { soort: 'kop', tekst: '7. Toepasselijk recht en geschillen' },
+      {
+        soort: 'alinea',
+        tekst:
+          'Op deze voorwaarden is Nederlands recht van toepassing. Geschillen die voortvloeien uit of verband houden met deze voorwaarden zullen uitsluitend worden voorgelegd aan de bevoegde rechter in Nederland.',
+      },
+
+      { soort: 'kop', tekst: '8. Wijzigingen aan de voorwaarden' },
+      {
+        soort: 'alinea',
+        tekst:
+          'De Club van 100 behoudt zich het recht voor deze algemene voorwaarden op elk moment te wijzigen. Wij adviseren gebruikers om regelmatig deze pagina te raadplegen voor de laatste versie.',
       },
     ],
   },
@@ -61,7 +124,7 @@ const secties: Sectie[] = [
 
 <Basis
   titel="Algemene voorwaarden — De Club van 100"
-  beschrijving="De algemene voorwaarden van De Club van 100. De definitieve tekst wordt nageleverd."
+  beschrijving="De algemene voorwaarden van De Club van 100."
 >
   {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
 </Basis>
