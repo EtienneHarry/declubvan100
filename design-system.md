@@ -159,4 +159,21 @@ Knoppen schrijf je als wat de bezoeker zelf zou zeggen: "Stuur maar", niet
 Optionele velden krijgen "— mag je overslaan"; verplichte velden krijgen geen
 sterretje.
 
+**Die veldregel geldt voor de site, niet voor de admin.** In het CMS krijgen
+verplichte velden wél een sterretje, want Keystatic zet dat er zelf bij zodra
+een veld validatie heeft. Dat laten we staan.
+
+De afweging is niet dat de regel daar minder waard is, maar dat validatie er
+meer waard is. Het sterretje is de zichtbare kant van een controle die
+tegenhoudt dat een sectie zonder kop of een foto zonder alt-tekst wordt
+opgeslagen. Bij alt-tekst is dat het verschil tussen een afspraak en een regel:
+laten we de validatie weg om het sterretje kwijt te raken, dan verdwijnt precies
+de controle die de toegankelijkheid bewaakt.
+
+De twee publieken verschillen ook. De bezoeker vult een formulier in en heeft
+rust nodig; de redacteur beheert een site en heeft juist baat bij een duidelijk
+onderscheid tussen wat moet en wat mag. Het "— mag je overslaan" bij optionele
+velden staat er in de admin gewoon bij, dus de andere helft van de afspraak
+loopt daar wel door.
+
 De volledige woordenlijst en de microcopy-tabel staan in de bron.
