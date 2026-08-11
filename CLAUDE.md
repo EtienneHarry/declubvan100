@@ -343,6 +343,29 @@ de `Navigatie`-component. Tot die tijd breken de vier links in de header af op
 smalle schermen. Dat haalt de horizontale scroll weg maar is niet de bedoelde
 oplossing. In B4 verhuist de navigatie tegelijk naar het CMS.
 
+## Bekende beperking — beeld gaat langs Astro's pijplijn heen
+
+De secties tonen een foto met een gewone `<img>` en niet met Astro's
+`<Image>`-component. Dat is geen slordigheid maar een gevolg: de beeldpijplijn
+werkt op imports die tijdens het bouwen bekend moeten zijn, en een pad dat uit
+een yaml-bestand komt is dat niet. Zodra de redacteur een foto kiest, kan die
+niet meer door die pijplijn.
+
+Twee dingen die je daarmee misloopt:
+
+1. **Geen moderne formaten en geen responsieve varianten.** Er wordt geen webp
+   of avif gemaakt en geen `srcset` met meerdere breedtes. Iedereen krijgt het
+   originele bestand, ook een telefoon. De foto's in `public/beeld` zijn
+   1333×2000 of 2000×1333 en 75 tot 910 kB per stuk.
+2. **Geen immutable-cacheheader.** `/_astro/*` krijgt van de adapter
+   `cache-control: max-age=31536000, immutable`, want de hash in de
+   bestandsnaam maakt dat veilig. `/beeld/*` heeft geen hash en krijgt die
+   header dus niet; een terugkerende bezoeker haalt die foto's vaker op.
+
+**Beide afwegen in B5, niet nu oplossen.** De oplossing zit waarschijnlijk in
+Vercels eigen beeldoptimalisatie of in een hash bij het uploaden, en allebei
+raken ze de manier waarop de redacteur een foto kiest.
+
 ## Bekende beperking — de admin is half Nederlands
 
 `keystatic.config.ts` staat op `locale: 'nl-NL'`. Dat helpt, maar niet overal.
