@@ -93,27 +93,34 @@ function keuzeUit<T extends string>(
  * deze namen staan in de tokenlaag en zijn doorgerekend op contrast. Een vrije
  * kleur zou daar buitenom gaan.
  */
-const weergave = {
-  achtergrond: fields.select({
-    label: 'Achtergrond',
+const weergave = fields.object(
+  {
+    achtergrond: fields.select({
+      label: 'Achtergrond',
+      description:
+        'De kleur van het vlak waarop deze sectie staat. Houd één donkere en één lichte kleur per pagina aan.',
+      options: keuzeUit(ACHTERGROND_TOKENS, ACHTERGROND_UITLEG),
+      defaultValue: 'inkt' satisfies AchtergrondToken,
+    }),
+    ruimte: fields.select({
+      label: 'Ruimte boven en onder',
+      description: 'Hoeveel lucht deze sectie krijgt ten opzichte van de secties eromheen.',
+      options: keuzeUit(RUIMTE_TOKENS, RUIMTE_UITLEG),
+      defaultValue: 'sectie-m' satisfies RuimteToken,
+    }),
+    breedte: fields.select({
+      label: 'Breedte van de inhoud',
+      description: 'Hoe ver de inhoud mag uitlopen binnen de sectie.',
+      options: keuzeUit(BREEDTE_TOKENS, BREEDTE_UITLEG),
+      defaultValue: 'basis' satisfies BreedteToken,
+    }),
+  },
+  {
+    label: 'Weergave',
     description:
-      'De kleur van het vlak waarop deze sectie staat. Houd één donkere en één lichte kleur per pagina aan.',
-    options: keuzeUit(ACHTERGROND_TOKENS, ACHTERGROND_UITLEG),
-    defaultValue: 'inkt' satisfies AchtergrondToken,
-  }),
-  ruimte: fields.select({
-    label: 'Ruimte boven en onder',
-    description: 'Hoeveel lucht deze sectie krijgt ten opzichte van de secties eromheen.',
-    options: keuzeUit(RUIMTE_TOKENS, RUIMTE_UITLEG),
-    defaultValue: 'sectie-m' satisfies RuimteToken,
-  }),
-  breedte: fields.select({
-    label: 'Breedte van de inhoud',
-    description: 'Hoe ver de inhoud mag uitlopen binnen de sectie.',
-    options: keuzeUit(BREEDTE_TOKENS, BREEDTE_UITLEG),
-    defaultValue: 'basis' satisfies BreedteToken,
-  }),
-};
+      'Hoe deze sectie eruitziet op de pagina. Aan de tekst verandert hier niets; je verzet alleen kleur, ruimte en breedte.',
+  },
+);
 
 /* ---------------------------------------------------------------------------
    Kleine bouwstenen
@@ -200,7 +207,7 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Opening — ${props.fields.kop.value || 'zonder kop'}`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
@@ -230,12 +237,13 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Twee deuren — ${props.fields.deuren.elements.length} stuks`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           deuren: fields.array(
             fields.object({
               bovenkop: bovenkopVeld(),
               kop: fields.text({
                 label: 'Kop',
+                description: 'Waar deze deur over gaat. Vier of vijf woorden is genoeg.',
                 validation: { length: { min: 1 } },
               }),
               tekst: tekstVeld('Eén of twee zinnen die uitleggen waar deze deur heen gaat.'),
@@ -258,9 +266,13 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Kop met tekst — ${props.fields.kop.value || 'zonder kop'}`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           bovenkop: bovenkopVeld(),
-          kop: fields.text({ label: 'Kop', validation: { length: { min: 1 } } }),
+          kop: fields.text({
+            label: 'Kop',
+            description: 'De kop van deze sectie. Hij staat groot op de pagina.',
+            validation: { length: { min: 1 } },
+          }),
           tekst: tekstVeld('De lopende tekst onder de kop.'),
         },
         { label: 'Kop met tekst' },
@@ -272,9 +284,13 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Beeld naast tekst — ${props.fields.kop.value || 'zonder kop'}`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           bovenkop: bovenkopVeld(),
-          kop: fields.text({ label: 'Kop', validation: { length: { min: 1 } } }),
+          kop: fields.text({
+            label: 'Kop',
+            description: 'De kop die naast het beeld komt te staan.',
+            validation: { length: { min: 1 } },
+          }),
           tekst: tekstVeld('De tekst die naast het beeld komt te staan.'),
           beeld: beeldVeld(),
           verhouding: fields.select({
@@ -303,7 +319,7 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Kaarten — ${props.fields.items.elements.length} stuks`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop — mag je overslaan',
@@ -315,7 +331,11 @@ const sectieBlokken = fields.blocks(
                 label: 'Nummer — mag je overslaan',
                 description: 'Een volgnummer boven de kop, bijvoorbeeld 01.',
               }),
-              kop: fields.text({ label: 'Kop', validation: { length: { min: 1 } } }),
+              kop: fields.text({
+                label: 'Kop',
+                description: 'Waar deze kaart over gaat. Kort houden; ze staan naast elkaar.',
+                validation: { length: { min: 1 } },
+              }),
               tekst: tekstVeld('De tekst op de kaart.'),
               href: fields.text({
                 label: 'Waar de kaart heen gaat — mag je overslaan',
@@ -338,7 +358,7 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Citaten — ${props.fields.items.elements.length} stuks`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           bovenkop: bovenkopVeld(),
           items: fields.array(
             fields.object({
@@ -372,9 +392,13 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Oproep — ${props.fields.kop.value || 'zonder kop'}`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           bovenkop: bovenkopVeld(),
-          kop: fields.text({ label: 'Kop', validation: { length: { min: 1 } } }),
+          kop: fields.text({
+            label: 'Kop',
+            description: 'De kop van het afsluitende blok. Hij staat groot op de pagina.',
+            validation: { length: { min: 1 } },
+          }),
           tekst: tekstVeld('Eén zin die zegt wat je van de bezoeker wilt.'),
           knop: knopVeld('Knop — mag je overslaan', 'De actie waar het om gaat.'),
           tweedeKnop: knopVeld(
@@ -391,7 +415,7 @@ const sectieBlokken = fields.blocks(
       itemLabel: (props) => `Lopende tekst — ${props.fields.kop.value || 'zonder kop'}`,
       schema: fields.object(
         {
-          ...weergave,
+          weergave,
           kop: fields.text({
             label: 'Kop — mag je overslaan',
             description:
@@ -573,6 +597,7 @@ const instellingen = singleton({
           fields.object({
             label: fields.text({
               label: 'Wat er staat',
+              description: 'De tekst van de link, bijvoorbeeld Voorwaarden.',
               validation: { length: { min: 1 } },
             }),
             href: fields.text({
