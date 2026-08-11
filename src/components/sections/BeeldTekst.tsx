@@ -4,9 +4,11 @@ import {
   isLichteAchtergrond,
   maatRegelKlasse,
   ruimteKlasse,
+  verhoudingKlasse,
   type AchtergrondToken,
   type BreedteToken,
   type RuimteToken,
+  type VerhoudingToken,
 } from '../../lib/tokens';
 import Bovenkop from '../basis/Bovenkop';
 
@@ -19,6 +21,8 @@ export interface BeeldTekstProps {
   tekst?: string;
   beeld?: { bron: string; alt: string };
   beeldPositie?: 'links' | 'rechts';
+  /** De drie uit de beeldrichtlijn. Standaard 16:9, zoals het hiervoor vastlag. */
+  verhouding?: VerhoudingToken;
 }
 
 /*
@@ -30,6 +34,12 @@ export interface BeeldTekstProps {
  *
  * Ontbreekt het beeld, dan valt de beeldkolom helemaal weg en loopt de tekst
  * over de volle breedte door — geen leeg vlak en geen gebroken afbeelding.
+ *
+ * De verhouding stond hier eerst hard op 16:9. Dat was de uitzondering: de
+ * beeldrichtlijn kent er drie en Beeldvlak bood ze al aan. Nu leest dit
+ * component dezelfde tabel uit tokens.ts. Dat is geen overbodige keuze — het
+ * merendeel van de aangeleverde fotografie is staand, en 16:9 sneed daar
+ * gemeten 63% van de hoogte af.
  */
 export default function BeeldTekst({
   achtergrond,
@@ -40,6 +50,7 @@ export default function BeeldTekst({
   tekst,
   beeld,
   beeldPositie = 'links',
+  verhouding = 'breed',
 }: BeeldTekstProps) {
   const heeftBeeld = Boolean(beeld?.bron.trim());
   const beeldOrde = beeldPositie === 'rechts' ? 'md:order-2' : 'md:order-1';
@@ -59,7 +70,7 @@ export default function BeeldTekst({
               <img
                 src={beeld.bron}
                 alt={beeld.alt}
-                className="aspect-video w-full rounded-none object-cover"
+                className={`${verhoudingKlasse[verhouding]} w-full rounded-none object-cover`}
               />
             </div>
           ) : null}

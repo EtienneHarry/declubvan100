@@ -130,6 +130,23 @@ Eigen fotografie, geen stock. Full-bleed of tot de containerrand. Verhoudingen
 behandeling haalt witte tekst op deze fotografie nooit betrouwbaar AA, en een
 foto is geen token: hij wordt vervangen en dan klopt het contrast niet meer.
 
+**De drie verhoudingen staan in `tokens.ts`, niet in een component.** Ze zijn
+een tokennaam naar een klasse, net als achtergrond en ruimte, en ze gelden voor
+elk vlak waar een foto in valt. `Beeldvlak` bood ze al aan; `BeeldTekst` had
+16:9 hardgecodeerd en dat was de uitzondering, geen regel. Nu lezen beide
+dezelfde tabel.
+
+Dat is geen overbodige keuze. Het merendeel van de aangeleverde fotografie is
+staand (1333×2000); in een liggend vlak van 16:9 verdwijnt daar gemeten **63%
+van de hoogte**. Er komt geen vervorming bij kijken — `object-cover` snijdt
+netjes weg — en juist daardoor valt het niet op: op portretten snijdt het
+midden de hoofden eraf. De standaard blijft `breed`, zodat bestaande inhoud niet
+verschuift.
+
+`BeeldTekst` gaat bewust níet via `Beeldvlak`. Daar staat de tekst náást het
+beeld en niet erop, dus de sluier heeft er geen functie en zou de foto alleen
+verduisteren. Wat gedeeld wordt is de verhoudingstabel, niet het component.
+
 **Afwijking — splitscreen gebruikt de vlakke sluier.** De beeldtabel wijst
 splitscreen `--sluier-zij` toe, bedoeld voor tekst in de linkerhelft. Een deur
 is op mobiel ongeveer 335px breed; daar heeft tekst de volle breedte nodig en

@@ -4,9 +4,11 @@ import {
   ACHTERGROND_TOKENS,
   BREEDTE_TOKENS,
   RUIMTE_TOKENS,
+  VERHOUDING_TOKENS,
   type AchtergrondToken,
   type BreedteToken,
   type RuimteToken,
+  type VerhoudingToken,
 } from './src/lib/tokens';
 
 /*
@@ -68,6 +70,12 @@ const BREEDTE_UITLEG: Partial<Record<BreedteToken, string>> = {
   smal: 'Smal — leest het prettigst bij lange tekst',
   basis: 'Normaal',
   breed: 'Breed — voor rasters en beeld',
+};
+
+const VERHOUDING_UITLEG: Partial<Record<VerhoudingToken, string>> = {
+  breed: 'Liggend (16:9)',
+  portret: 'Staand (4:5)',
+  vierkant: 'Vierkant (1:1)',
 };
 
 function keuzeUit<T extends string>(
@@ -269,6 +277,13 @@ const sectieBlokken = fields.blocks(
           kop: fields.text({ label: 'Kop', validation: { length: { min: 1 } } }),
           tekst: tekstVeld('De tekst die naast het beeld komt te staan.'),
           beeld: beeldVeld(),
+          verhouding: fields.select({
+            label: 'Vorm van het beeldvlak',
+            description:
+              'Kies wat bij de foto past. Een staande foto in een liggend vlak verliest de boven- en onderkant.',
+            options: keuzeUit(VERHOUDING_TOKENS, VERHOUDING_UITLEG),
+            defaultValue: 'breed' satisfies VerhoudingToken,
+          }),
           beeldPositie: fields.select({
             label: 'Waar het beeld staat',
             description: 'Op een telefoon staat het beeld altijd boven de tekst.',

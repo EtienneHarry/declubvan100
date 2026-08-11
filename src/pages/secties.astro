@@ -35,6 +35,16 @@ const LANGE_TEKST = `${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST}`;
 const BEELD = { bron: foto.src, alt: 'Twee mensen proosten aan de buitenbar' };
 
 /*
+ * Een staande foto, rechtstreeks uit public/beeld en dus langs Astro's
+ * beeldpijplijn heen — precies zoals een foto die de redacteur in het CMS
+ * kiest. Het merendeel van de aangeleverde fotografie is 1333x2000.
+ */
+const STAAND_BEELD = {
+  bron: '/beeld/staff-wanted.jpg',
+  alt: 'Aanplakbiljet met de tekst staff wanted tegen een muur',
+};
+
+/*
  * Regressie. Beeldvlak sneed inhoud af zolang het een vaste verhouding met
  * absoluut gepositioneerde tekst was: op 375px verdween hier 309px kop en tekst
  * boven de rand. De reparatie hangt aan grid-cols-1 en w-full in Beeldvlak, en
@@ -435,6 +445,54 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
             beeld: BEELD,
           },
         ],
+      },
+    ],
+  },
+  {
+    /*
+     * Regressie. Een staande foto van 1333x2000 in het liggende vlak van 16:9
+     * verloor 63% van zijn hoogte, gemeten. Dat viel niet op omdat er geen
+     * vervorming bij komt kijken — object-cover snijdt netjes weg — en op deze
+     * fotografie snijdt het midden precies de hoofden eraf.
+     *
+     * De twee hieronder staan naast elkaar met dezelfde foto: links de vorm die
+     * erbij hoort, rechts de standaard. Wijkt de linker af van 4:5, dan is de
+     * verhoudingstabel in tokens.ts of de doorgave in BeeldTekst stuk.
+     */
+    naam: 'regressie · staande foto op 4:5 tegenover 16:9',
+    secties: [
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Staand op 4:5',
+        kop: 'De vorm die bij de foto past',
+        tekst: LOPENDE_TEKST,
+        beeld: STAAND_BEELD,
+        verhouding: 'portret',
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Dezelfde foto op 16:9',
+        kop: 'Wat de standaard ervan maakt',
+        tekst: LOPENDE_TEKST,
+        beeld: STAAND_BEELD,
+        beeldPositie: 'rechts',
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Vierkant',
+        kop: 'De derde uit de beeldrichtlijn',
+        tekst: LOPENDE_TEKST,
+        beeld: STAAND_BEELD,
+        verhouding: 'vierkant',
       },
     ],
   },

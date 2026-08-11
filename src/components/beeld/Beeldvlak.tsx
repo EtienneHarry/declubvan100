@@ -1,7 +1,14 @@
 import type { ReactNode } from 'react';
 
+import { verhoudingKlasse, type VerhoudingToken } from '../../lib/tokens';
+
 export type Sluier = 'onder' | 'zij' | 'vlak';
-export type Verhouding = 'breed' | 'portret' | 'vierkant';
+
+/**
+ * De drie verhoudingen staan in tokens.ts, want ze zijn niet van dit component
+ * alleen: BeeldTekst zet dezelfde drie op een foto zonder tekst erop.
+ */
+export type Verhouding = VerhoudingToken;
 
 export interface BeeldvlakProps {
   bron: string;
@@ -32,12 +39,6 @@ const sluierKlasse: Record<Sluier, string> = {
   onder: 'bg-[image:var(--sluier-onder)]',
   zij: 'bg-[image:var(--sluier-zij)]',
   vlak: 'bg-[color:var(--sluier)]',
-};
-
-const verhoudingKlasse: Record<Verhouding, string> = {
-  breed: 'aspect-video',
-  portret: 'aspect-4/5',
-  vierkant: 'aspect-square',
 };
 
 export default function Beeldvlak({

@@ -41,6 +41,17 @@ export const BREEDTE_TOKENS = ['smal', 'basis', 'breed'] as const;
 export type BreedteToken = (typeof BREEDTE_TOKENS)[number];
 
 /**
+ * De drie beeldverhoudingen uit de beeldrichtlijn, en niet meer. 16:9 voor
+ * breed, 4:5 voor een portret in een kolom, 1:1 voor een raster.
+ *
+ * Stond eerst alleen in Beeldvlak. Hij hoort hier, want het is precies wat dit
+ * bestand doet: een tokennaam naar een klasse. Elk component dat een foto in
+ * een vlak zet, leest dezelfde drie.
+ */
+export const VERHOUDING_TOKENS = ['breed', 'portret', 'vierkant'] as const;
+export type VerhoudingToken = (typeof VERHOUDING_TOKENS)[number];
+
+/**
  * Achtergrond levert vlak- én tekstkleur. Die twee horen bij elkaar: op inkt en
  * roet haalt `krijt` 19,8:1 en 17,6:1, op papier en mist haalt `inkt` 19,0:1 en
  * 15,6:1. Losgekoppeld is de kans op een verboden combinatie te groot.
@@ -74,6 +85,17 @@ export const maatRegelKlasse: Record<AchtergrondToken, string> = {
   roet: 'max-w-[var(--maat-regel-donker)]',
   papier: 'max-w-[var(--maat-regel)]',
   mist: 'max-w-[var(--maat-regel)]',
+};
+
+/**
+ * Beeldverhouding naar Tailwind-klasse. Het vlak legt de verhouding vast en de
+ * foto vult hem met `object-cover`, zodat een aangeleverd beeld van elke maat
+ * er zonder vervorming in valt.
+ */
+export const verhoudingKlasse: Record<VerhoudingToken, string> = {
+  breed: 'aspect-video',
+  portret: 'aspect-4/5',
+  vierkant: 'aspect-square',
 };
 
 /** Verticale ruimte van een sectie: padding boven en onder, vloeiend. */
