@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 
 import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
+import keystatic from '@keystatic/astro';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
@@ -22,7 +23,10 @@ export default defineConfig({
     // security.csp uitzet. Uit, zodat die waarschuwing bij elke build verdwijnt.
     syntaxHighlight: false,
   },
-  integrations: [react()],
+  // Keystatic injecteert zelf twee routes: /keystatic voor de admin en
+  // /api/keystatic voor het lezen en schrijven. Allebei met prerender false,
+  // dus die draaien op verzoek. De vijf pagina's blijven vooraf gerenderd.
+  integrations: [react(), keystatic()],
   vite: {
     plugins: [tailwindcss()],
   },

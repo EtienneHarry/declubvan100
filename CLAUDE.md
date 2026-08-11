@@ -15,6 +15,24 @@ onthouden:
 - CSP werkt in `build` en `preview`, niet in `dev`.
 - Geen `<ClientRouter />`-viewtransities en geen Shiki-syntaxkleuring;
   `markdown.syntaxHighlight` staat daarom uit.
+- **De Keystatic-admin botst hierop.** Zie hieronder.
+
+### CSP tegenover de Keystatic-admin
+
+`security.csp` is een manifest-brede vlag in Astro, geen instelling per route:
+`shouldInjectCspMetaTags` komt uit het manifest en geldt dus ook voor de
+adminroutes, die op verzoek draaien.
+
+De admin-UI zit in `@keystar/ui` en die stijlt met Emotion. Gemeten op
+`/keystatic`: **414 `<style>`-elementen met `data-emotion`**, samen alle CSS van
+het paneel. Er wordt geen CSS-bestand meegeleverd. Onder `style-src 'self'`
+zonder `'unsafe-inline'` worden die geblokkeerd en staat de admin er kaal bij.
+
+Nu is dat geen probleem: local mode draait op `npm run dev`, en daar is CSP uit.
+Het wordt er een zodra de GitHub-modus aangaat en de admin op de deploy staat.
+Dat is dan een keuze tussen de CSP versoepelen voor het hele project, of hem uit
+Astro halen en per pad via een header zetten. Niet vooruit oplossen zonder dat
+die keuze gemaakt is.
 
 `design-system.md` beschrijft hoe het design system van de klant hier is
 uitgewerkt, inclusief de afwijkingen. De bron zelf is het design system van De
