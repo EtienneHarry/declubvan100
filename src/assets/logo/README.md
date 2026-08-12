@@ -36,16 +36,24 @@ dus op zeer groot formaat, bijvoorbeeld een spandoek of een geborduurd shirt, ku
 minieme afwijkingen zichtbaar worden. Voor web, drukwerk op A-formaat en textiel is
 dit ruim voldoende.
 
+## Lettertype van het woordmerk
+
+**Montserrat, SemiBold en Bold.** Bevestigd door de klant; dit is geen schatting meer.
+
+Voor deze set maakt het niets uit: het woordmerk zit als contour in de SVG en heeft
+geen lettertype nodig om te renderen. Het telt wel zodra er tekst bij het merk gezet
+moet worden die op het woordmerk moet lijken — drukwerk, een gestapelde variant, een
+socialtemplate.
+
+Dit staat los van de letter van de site. Die is Archivo Variable, en dat blijft zo:
+zie het typografiehoofdstuk in `design-system.md`. Dat de site een andere letter voert
+dan het logo is de normale verhouding tussen merkteken en tekst, geen inconsistentie.
+
 ## Openstaande punten
 
 1. **Vraag het origineel op bij de ontwerper.** Een `.ai`, `.eps` of `.svg` is altijd
    beter dan een trace. Deze set overbrugt de tijd tot dat er is, of vervangt het
    permanent als het er niet meer is.
-2. **Lettertype van het woordmerk.** Het is een geometrische schreefloze. Dichtste
-   match op vorm en verhouding is **Poppins Bold**; Montserrat ExtraBold komt qua
-   gewicht in de buurt maar is merkbaar breder. Matig zeker. Zekerheid komt uit de
-   bronbestanden of uit één vraag aan de ontwerper. Voor de site maakt het niet uit,
-   het woordmerk zit hier als contour in de SVG.
-3. **Er is geen gestapelde variant.** Die bestaat niet in het bronmateriaal, dus die
+2. **Er is geen gestapelde variant.** Die bestaat niet in het bronmateriaal, dus die
    is hier niet verzonnen. Blijkt hij nodig voor smalle schermen, dan is dat een
    ontwerpbeslissing die je even met de klant afstemt.

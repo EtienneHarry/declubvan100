@@ -23,3 +23,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# lokaal hulpspul van de agent-tooling: launch.json start de dev-server op 4321.
+# Per machine anders en niet nodig om de site te bouwen of te draaien.
+.claude/

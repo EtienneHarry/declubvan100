@@ -1,0 +1,32 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/keystatic/:path*",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "script-src 'self'; style-src 'self' 'unsafe-inline'"
+        }
+      ]
+    },
+    {
+      "source": "/api/keystatic/:path*",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "script-src 'self'; style-src 'self' 'unsafe-inline'"
+        }
+      ]
+    },
+    {
+      "source": "/:path((?!keystatic$|keystatic/|api/keystatic$|api/keystatic/).*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "script-src 'self'; style-src 'self'"
+        }
+      ]
+    }
+  ]
+}

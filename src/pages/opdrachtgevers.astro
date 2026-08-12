@@ -1,0 +1,25 @@
+---
+import Basis from '../layouts/Basis.astro';
+import { SectieLijst } from '../lib/SectionRenderer';
+import { leesPagina } from '../lib/pagina';
+
+/*
+ * Opdrachtgevers.
+ *
+ * De inhoud komt uit het CMS: src/content/paginas/opdrachtgevers.yaml.
+ *
+ * Toon: rustig en zeker. Jij hebt een avond te draaien en wij zorgen dat er
+ * niets misgaat. Nadruk op wat je niet hoeft te regelen; geen enthousiasme dat
+ * om een gunst vraagt.
+ *
+ * bediening-buiten is het lichtste beeld dat er ligt en haalt witte tekst niet
+ * met de sluier van 62%. Het staat daarom in beeld-tekst, waar de tekst ernaast
+ * staat en niet erop.
+ */
+
+const { titel, beschrijving, secties } = await leesPagina('opdrachtgevers');
+---
+
+<Basis titel={titel} beschrijving={beschrijving}>
+  <SectieLijst secties={secties} />
+</Basis>

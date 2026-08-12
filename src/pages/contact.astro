@@ -1,0 +1,33 @@
+---
+import Basis from '../layouts/Basis.astro';
+import { SectieLijst } from '../lib/SectionRenderer';
+import { leesPagina } from '../lib/pagina';
+
+/*
+ * Contact.
+ *
+ * De inhoud komt uit het CMS: src/content/paginas/contact.yaml.
+ *
+ * Nog geen formulier. Het aanmeldformulier komt in deze repo en verstuurt naar
+ * contact@declubvan.nl; eerder zou aanmelden via een extern formulier lopen,
+ * die afspraak is vervallen.
+ *
+ * PLAATSHOUDER — de aanmeldsectie onderaan overbrugt de tijd tot dat formulier
+ * er is. Zodra het staat, gaat de href van die knop van mailto naar de
+ * formulierroute en kan de zin over "staat nog niet online" weg.
+ *
+ * Het formulier is werk voor een eigen sessie en heeft drie eisen die hier nog
+ * nergens zitten: een route op verzoek, honeypot plus tijdsdrempel zonder
+ * captcha, en een privacyverklaring. Zie CLAUDE.md, "Wat er nog niet staat".
+ *
+ * Wat er aan contactgegevens ligt staat in de site-instellingen. Een adres, een
+ * telefoonnummer en een KvK-nummer staan daar; de kaarten op deze pagina tonen
+ * bewust alleen het mailadres en het werkgebied.
+ */
+
+const { titel, beschrijving, secties } = await leesPagina('contact');
+---
+
+<Basis titel={titel} beschrijving={beschrijving}>
+  <SectieLijst secties={secties} />
+</Basis>

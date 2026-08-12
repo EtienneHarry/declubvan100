@@ -130,6 +130,23 @@ Eigen fotografie, geen stock. Full-bleed of tot de containerrand. Verhoudingen
 behandeling haalt witte tekst op deze fotografie nooit betrouwbaar AA, en een
 foto is geen token: hij wordt vervangen en dan klopt het contrast niet meer.
 
+**De drie verhoudingen staan in `tokens.ts`, niet in een component.** Ze zijn
+een tokennaam naar een klasse, net als achtergrond en ruimte, en ze gelden voor
+elk vlak waar een foto in valt. `Beeldvlak` bood ze al aan; `BeeldTekst` had
+16:9 hardgecodeerd en dat was de uitzondering, geen regel. Nu lezen beide
+dezelfde tabel.
+
+Dat is geen overbodige keuze. Het merendeel van de aangeleverde fotografie is
+staand (1333×2000); in een liggend vlak van 16:9 verdwijnt daar gemeten **63%
+van de hoogte**. Er komt geen vervorming bij kijken — `object-cover` snijdt
+netjes weg — en juist daardoor valt het niet op: op portretten snijdt het
+midden de hoofden eraf. De standaard blijft `breed`, zodat bestaande inhoud niet
+verschuift.
+
+`BeeldTekst` gaat bewust níet via `Beeldvlak`. Daar staat de tekst náást het
+beeld en niet erop, dus de sluier heeft er geen functie en zou de foto alleen
+verduisteren. Wat gedeeld wordt is de verhoudingstabel, niet het component.
+
 **Afwijking — splitscreen gebruikt de vlakke sluier.** De beeldtabel wijst
 splitscreen `--sluier-zij` toe, bedoeld voor tekst in de linkerhelft. Een deur
 is op mobiel ongeveer 335px breed; daar heeft tekst de volle breedte nodig en
@@ -158,5 +175,22 @@ Knoppen schrijf je als wat de bezoeker zelf zou zeggen: "Stuur maar", niet
 "Verzenden". Foutmeldingen zeggen wat er nú moet gebeuren, niet wat stuk is.
 Optionele velden krijgen "— mag je overslaan"; verplichte velden krijgen geen
 sterretje.
+
+**Die veldregel geldt voor de site, niet voor de admin.** In het CMS krijgen
+verplichte velden wél een sterretje, want Keystatic zet dat er zelf bij zodra
+een veld validatie heeft. Dat laten we staan.
+
+De afweging is niet dat de regel daar minder waard is, maar dat validatie er
+meer waard is. Het sterretje is de zichtbare kant van een controle die
+tegenhoudt dat een sectie zonder kop of een foto zonder alt-tekst wordt
+opgeslagen. Bij alt-tekst is dat het verschil tussen een afspraak en een regel:
+laten we de validatie weg om het sterretje kwijt te raken, dan verdwijnt precies
+de controle die de toegankelijkheid bewaakt.
+
+De twee publieken verschillen ook. De bezoeker vult een formulier in en heeft
+rust nodig; de redacteur beheert een site en heeft juist baat bij een duidelijk
+onderscheid tussen wat moet en wat mag. Het "— mag je overslaan" bij optionele
+velden staat er in de admin gewoon bij, dus de andere helft van de afspraak
+loopt daar wel door.
 
 De volledige woordenlijst en de microcopy-tabel staan in de bron.

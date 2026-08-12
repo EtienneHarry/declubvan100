@@ -7,6 +7,7 @@ import {
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
+import type { KopNiveau } from '../../lib/SectionRenderer';
 import Bovenkop from '../basis/Bovenkop';
 import Kaart from '../basis/Kaart';
 
@@ -24,6 +25,8 @@ export interface DrieKolommenProps {
   bovenkop?: string;
   kop?: string;
   items: Kolom[];
+  /** Gezet door SectieLijst; 1 als deze sectie de pagina opent. */
+  kopNiveau?: KopNiveau;
 }
 
 /**
@@ -38,9 +41,19 @@ export default function DrieKolommen({
   bovenkop,
   kop,
   items,
+  kopNiveau = 2,
 }: DrieKolommenProps) {
   const heeftKop = Boolean(kop?.trim());
   const heeftBovenkop = Boolean(bovenkop?.trim());
+
+  const Kop = kopNiveau === 1 ? 'h1' : 'h2';
+
+  /*
+   * De kaartkoppen zakken onder de sectiekop. Is er geen sectiekop, dan zijn de
+   * kaarten zelf het bovenste niveau van deze sectie en blijven ze staan waar de
+   * sectie staat — anders zou er een niveau overgeslagen worden.
+   */
+  const kaartNiveau: 2 | 3 = heeftKop ? (kopNiveau === 1 ? 2 : 3) : 2;
 
   return (
     <section
@@ -50,7 +63,7 @@ export default function DrieKolommen({
       <div className={breedteKlasse[breedte]}>
         {heeftBovenkop ? <Bovenkop>{bovenkop}</Bovenkop> : null}
         {heeftKop ? (
-          <h2 className="mt-4 text-kop-l text-balance break-words first:mt-0">{kop}</h2>
+          <Kop className="mt-4 text-kop-l text-balance break-words first:mt-0">{kop}</Kop>
         ) : null}
         {items.length > 0 ? (
           <ul
@@ -66,6 +79,7 @@ export default function DrieKolommen({
                     kop={item.kop}
                     tekst={item.tekst}
                     href={item.href}
+                    kopNiveau={kaartNiveau}
                   />
                 </div>
               </li>

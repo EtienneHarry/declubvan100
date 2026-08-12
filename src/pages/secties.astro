@@ -1,6 +1,8 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import { SectieLijst, type Sectie } from '../lib/SectionRenderer';
+import Markdoc from '@markdoc/markdoc';
+
 import foto from '../assets/photo/proost-tap.jpg';
 
 /*
@@ -35,6 +37,16 @@ const LANGE_TEKST = `${LOPENDE_TEKST} ${LOPENDE_TEKST} ${LOPENDE_TEKST}`;
 const BEELD = { bron: foto.src, alt: 'Twee mensen proosten aan de buitenbar' };
 
 /*
+ * Een staande foto, rechtstreeks uit public/beeld en dus langs Astro's
+ * beeldpijplijn heen — precies zoals een foto die de redacteur in het CMS
+ * kiest. Het merendeel van de aangeleverde fotografie is 1333x2000.
+ */
+const STAAND_BEELD = {
+  bron: '/beeld/staff-wanted.jpg',
+  alt: 'Aanplakbiljet met de tekst staff wanted tegen een muur',
+};
+
+/*
  * Regressie. Beeldvlak sneed inhoud af zolang het een vaste verhouding met
  * absoluut gepositioneerde tekst was: op 375px verdween hier 309px kop en tekst
  * boven de rand. De reparatie hangt aan grid-cols-1 en w-full in Beeldvlak, en
@@ -66,6 +78,18 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   {
     naam: 'te lange kop',
     secties: [
+      {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        bovenkop: 'Een bovenkop die ook al aan de lange kant is',
+        kop: LANGE_KOP,
+        tekst: LOPENDE_TEKST,
+        knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+        tweedeKnop: { label: 'Ik wil bij jullie werken', href: '/de-100' },
+        schicht: true,
+      },
       {
         type: 'splitscreen',
         achtergrond: 'inkt',
@@ -138,16 +162,25 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         ruimte: 'sectie-m',
         breedte: 'smal',
         kop: LANGE_KOP,
-        blokken: [
-          { soort: 'kop', tekst: LANGE_KOP },
-          { soort: 'alinea', tekst: LOPENDE_TEKST },
-        ],
+        inhoud: Markdoc.parse(`## ${LANGE_KOP}\n\n${LOPENDE_TEKST}`),
       },
     ],
   },
   {
     naam: 'lege tekst',
     secties: [
+      {
+        // Met beeld loopt de kop door Beeldvlak. schicht staat hier expres aan:
+        // beeld wint, de schicht hoort dan niet te verschijnen.
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-s',
+        breedte: 'basis',
+        kop: 'Een van de 100',
+        tekst: '',
+        beeld: BEELD,
+        schicht: true,
+      },
       {
         type: 'splitscreen',
         achtergrond: 'roet',
@@ -204,13 +237,20 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         achtergrond: 'inkt',
         ruimte: 'sectie-s',
         breedte: 'smal',
-        blokken: [{ soort: 'alinea', tekst: '' }],
+        inhoud: Markdoc.parse(''),
       },
     ],
   },
   {
     naam: 'weinig items',
     secties: [
+      {
+        type: 'hero',
+        achtergrond: 'papier',
+        ruimte: 'sectie-l',
+        breedte: 'smal',
+        kop: 'Alleen een kop',
+      },
       {
         type: 'splitscreen',
         achtergrond: 'inkt',
@@ -265,21 +305,36 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         knop: { label: 'Stuur maar', href: '/contact' },
       },
       {
+        // Zonder sectiekop. De kopblokken zijn dan zelf het bovenste niveau en
+        // horen <h2> te zijn; met een sectiekop erboven zakken ze naar <h3>.
+        // Dat tweede geval staat in "te lange kop" en in "veel items".
         type: 'rijke-tekst',
         achtergrond: 'papier',
         ruimte: 'sectie-l',
         breedte: 'smal',
-        kop: 'Voorwaarden',
-        blokken: [
-          { soort: 'alinea', tekst: LOPENDE_TEKST },
-          { soort: 'lijst', items: ['Eerste punt', 'Tweede punt'] },
-        ],
+        inhoud: Markdoc.parse(
+          `## Zonder sectiekop erboven\n\n${LOPENDE_TEKST}\n\n- Eerste punt\n- Tweede punt`,
+        ),
       },
     ],
   },
   {
     naam: 'veel items · ontbrekend beeld',
     secties: [
+      {
+        // Lege bron: geen gebroken afbeelding, geen leeg kader. De hero valt
+        // terug op het egale vlak en de schicht mag dan wél verschijnen.
+        type: 'hero',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'breed',
+        bovenkop: 'Zonder beeld',
+        kop: 'Een van de 100',
+        tekst: LANGE_TEKST,
+        knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+        beeld: { bron: '', alt: '' },
+        schicht: true,
+      },
       {
         type: 'splitscreen',
         achtergrond: 'roet',
@@ -352,14 +407,11 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         breedte: 'smal',
         kop: 'Algemene voorwaarden',
         schichtLijst: true,
-        blokken: [
-          { soort: 'alinea', tekst: LANGE_TEKST },
-          { soort: 'kop', tekst: 'Artikel 1 — Wie we zijn' },
-          { soort: 'alinea', tekst: LANGE_TEKST },
-          { soort: 'lijst', items: ['Eerste punt', 'Tweede punt', 'Derde punt', 'Vierde punt'] },
-          { soort: 'kop', tekst: 'Artikel 2 — Wat je krijgt' },
-          { soort: 'alinea', tekst: LANGE_TEKST },
-        ],
+        // Ook de inline-opmaak die het schema toelaat: vet, cursief en een
+        // link. Zonder dit blijft die tak van de renderer ongetest.
+        inhoud: Markdoc.parse(
+          `${LANGE_TEKST}\n\n## Artikel 1 — Wie we zijn\n\n${LANGE_TEKST}\n\n- Eerste punt\n- Tweede punt\n- Derde punt\n- Vierde punt\n\n### Een kop een niveau dieper\n\n**Vet**, *cursief* en een [link naar contact](/contact).`,
+        ),
       },
     ],
   },
@@ -390,9 +442,144 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
     ],
   },
+  {
+    /*
+     * Regressie. Een staande foto van 1333x2000 in het liggende vlak van 16:9
+     * verloor 63% van zijn hoogte, gemeten. Dat viel niet op omdat er geen
+     * vervorming bij komt kijken — object-cover snijdt netjes weg — en op deze
+     * fotografie snijdt het midden precies de hoofden eraf.
+     *
+     * De twee hieronder staan naast elkaar met dezelfde foto: links de vorm die
+     * erbij hoort, rechts de standaard. Wijkt de linker af van 4:5, dan is de
+     * verhoudingstabel in tokens.ts of de doorgave in BeeldTekst stuk.
+     */
+    naam: 'regressie · staande foto op 4:5 tegenover 16:9',
+    secties: [
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Staand op 4:5',
+        kop: 'De vorm die bij de foto past',
+        tekst: LOPENDE_TEKST,
+        beeld: STAAND_BEELD,
+        verhouding: 'portret',
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Dezelfde foto op 16:9',
+        kop: 'Wat de standaard ervan maakt',
+        tekst: LOPENDE_TEKST,
+        beeld: STAAND_BEELD,
+        beeldPositie: 'rechts',
+      },
+      {
+        type: 'beeld-tekst',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Vierkant',
+        kop: 'De derde uit de beeldrichtlijn',
+        tekst: LOPENDE_TEKST,
+        beeld: STAAND_BEELD,
+        verhouding: 'vierkant',
+      },
+    ],
+  },
+  {
+    /*
+     * Regressie. Drie manieren waarop de koppenvolgorde stil sneuvelde toen het
+     * kopniveau nog in de sectie zelf vastlag: geen h1, twee h1's, en een niveau
+     * dat halverwege omhoog ging.
+     *
+     * SectieLijst berekent het niveau nu over de hele lijst. Deze drie gevallen
+     * horen uit te komen op precies één h1, vooraan, zonder sprong.
+     */
+    naam: 'regressie · koppen zonder hero',
+    secties: [
+      {
+        // Geen hero. Zonder de berekening had deze pagina nul h1 en begon ze
+        // op h2; nu draagt de eerste sectie met een kop hem.
+        type: 'kop-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Zonder openingssectie',
+        kop: 'Deze kop opent de pagina',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        kop: 'En deze zakt naar h2',
+        items: kolommen(2),
+      },
+    ],
+  },
+  {
+    naam: 'regressie · twee openingssecties',
+    secties: [
+      {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Eerste',
+        kop: 'Deze blijft h1 en display-xl',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Tweede hero: geen tweede h1 en geen tweede display-xl. Hij zakt naar
+        // een gewone sectiekop op display-l.
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Tweede',
+        kop: 'Deze zakt naar h2 en display-l',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
+  {
+    naam: 'regressie · sectie met kop vóór de hero',
+    secties: [
+      {
+        // Deze stond vroeger op h2 met de hero eronder op h1: het niveau ging
+        // dan halverwege de pagina omhoog. Nu draagt deze de h1.
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        kop: 'Deze staat bovenaan en draagt de h1',
+        items: kolommen(2),
+      },
+      {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Verplaatst',
+        kop: 'De hero staat nu tweede',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
 ];
 ---
 
+{/*
+  Elk geval gaat als eigen lijst door SectieLijst, dus elk geval krijgt zijn
+  eigen <h1>. Op een echte pagina zou dat fout zijn; hier is het de bedoeling,
+  want elk geval ís een aparte pagina-in-het-klein. Deze pagina staat op
+  noindex en telt niet mee in check-koppen.
+*/}
 <Basis titel="Sectieoverzicht — De Club van 100" noindex>
   {
     gevallen.map((geval) => (
@@ -400,9 +587,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         <p class="mx-auto max-w-breed px-marge pt-sectie-s text-bovenkop text-tekst-stil uppercase">
           {geval.naam}
         </p>
-        {geval.secties.map((sectie) => (
-          <SectionRenderer sectie={sectie} />
-        ))}
+        <SectieLijst secties={geval.secties} />
       </>
     ))
   }

@@ -2,6 +2,7 @@ import {
   achtergrondKlasse,
   breedteKlasse,
   isLichteAchtergrond,
+  maatRegelKlasse,
   ruimteKlasse,
   type AchtergrondToken,
   type BreedteToken,
@@ -51,7 +52,15 @@ export default function Citaten({
             {items.map((item, index) => (
               <li key={`${item.naam ?? 'citaat'}-${index}`}>
                 <figure className="border-l border-lijn-sterk pl-6">
-                  <blockquote className="text-kop-m text-balance break-words">
+                  {/*
+                    De leesmaat hoort ook op een citaat. Bij meerdere citaten
+                    houdt de kolom de regel vanzelf kort, maar één citaat krijgt
+                    de volle breedte: gemeten liep dat op 1440 uit tot 73 tekens
+                    op zwart, waar het token 60 aanhoudt.
+                  */}
+                  <blockquote
+                    className={`text-kop-m text-balance break-words ${maatRegelKlasse[achtergrond]}`}
+                  >
                     {item.citaat}
                   </blockquote>
                   {item.naam?.trim() || item.rol?.trim() ? (
