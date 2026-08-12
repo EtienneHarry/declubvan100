@@ -11,6 +11,7 @@ import {
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
+import type { KopNiveau } from '../../lib/SectionRenderer';
 import Bliksem from '../merk/Bliksem';
 
 export interface RijkeTekstProps {
@@ -25,6 +26,8 @@ export interface RijkeTekstProps {
    * 100 of de selectie gaan — een lijst met openingstijden krijgt hem niet.
    */
   schichtLijst?: boolean;
+  /** Gezet door SectieLijst; 1 als deze sectie de pagina opent. */
+  kopNiveau?: KopNiveau;
 }
 
 /*
@@ -55,10 +58,19 @@ export default function RijkeTekst({
   kop,
   inhoud,
   schichtLijst = false,
+  kopNiveau = 2,
 }: RijkeTekstProps) {
   const maat = maatRegelKlasse[achtergrond];
   const heeftSectieKop = Boolean(kop?.trim());
-  const verschuiving = heeftSectieKop ? 1 : 0;
+  const SectieKop = kopNiveau === 1 ? 'h1' : 'h2';
+
+  /*
+   * Waar de koppen in de tekst beginnen. Onder een sectiekop een niveau lager;
+   * zonder sectiekop zijn ze zelf het bovenste niveau van deze sectie.
+   *
+   * Een ## in de tekst komt dus uit op dit niveau, een ### een stap daaronder.
+   */
+  const basisNiveau = heeftSectieKop ? kopNiveau + 1 : kopNiveau;
 
   const boom = Markdoc.transform(inhoud);
 
@@ -87,12 +99,18 @@ export default function RijkeTekst({
      */
     if (naam === 'article') return <Fragment key={sleutel}>{kinderen}</Fragment>;
 
-    // Koppen. h1 kan hier niet ontstaan: het schema laat alleen 2 en 3 toe, en
-    // h1 hoort bij de openingssectie.
+    /*
+     * Koppen. Het schema laat alleen ## en ### toe, dus een h1 kan hier niet
+     * uit de tekst komen; die hoort bij de sectie die de pagina opent.
+     *
+     * De ## uit de tekst landt op basisNiveau, de ### een stap daaronder.
+     * Geklemd op 2 tot en met 4: dieper dan h4 heeft op deze pagina's geen
+     * betekenis meer, en h1 blijft voorbehouden aan de sectiekop.
+     */
     const kopTreffer = /^h([1-6])$/.exec(naam);
     if (kopTreffer) {
-      const bron = Number(kopTreffer[1]);
-      const niveau = Math.min(Math.max(bron + verschuiving, 2), 4) as 2 | 3 | 4;
+      const stapInTekst = Number(kopTreffer[1]) - 2;
+      const niveau = Math.min(Math.max(basisNiveau + stapInTekst, 2), 4) as 2 | 3 | 4;
       const Tag = `h${niveau}` as 'h2' | 'h3' | 'h4';
 
       return (
@@ -167,7 +185,9 @@ export default function RijkeTekst({
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
     >
       <div className={breedteKlasse[breedte]}>
-        {heeftSectieKop ? <h2 className="text-kop-l text-balance break-words">{kop}</h2> : null}
+        {heeftSectieKop ? (
+          <SectieKop className="text-kop-l text-balance break-words">{kop}</SectieKop>
+        ) : null}
         {render(boom, 'r')}
       </div>
     </section>

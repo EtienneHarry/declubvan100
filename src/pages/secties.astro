@@ -1,6 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import SectionRenderer, { type Sectie } from '../lib/SectionRenderer';
+import { SectieLijst, type Sectie } from '../lib/SectionRenderer';
 import Markdoc from '@markdoc/markdoc';
 
 import foto from '../assets/photo/proost-tap.jpg';
@@ -490,9 +490,96 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
     ],
   },
+  {
+    /*
+     * Regressie. Drie manieren waarop de koppenvolgorde stil sneuvelde toen het
+     * kopniveau nog in de sectie zelf vastlag: geen h1, twee h1's, en een niveau
+     * dat halverwege omhoog ging.
+     *
+     * SectieLijst berekent het niveau nu over de hele lijst. Deze drie gevallen
+     * horen uit te komen op precies één h1, vooraan, zonder sprong.
+     */
+    naam: 'regressie · koppen zonder hero',
+    secties: [
+      {
+        // Geen hero. Zonder de berekening had deze pagina nul h1 en begon ze
+        // op h2; nu draagt de eerste sectie met een kop hem.
+        type: 'kop-tekst',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Zonder openingssectie',
+        kop: 'Deze kop opent de pagina',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        kop: 'En deze zakt naar h2',
+        items: kolommen(2),
+      },
+    ],
+  },
+  {
+    naam: 'regressie · twee openingssecties',
+    secties: [
+      {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Eerste',
+        kop: 'Deze blijft h1 en display-xl',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Tweede hero: geen tweede h1 en geen tweede display-xl. Hij zakt naar
+        // een gewone sectiekop op display-l.
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Tweede',
+        kop: 'Deze zakt naar h2 en display-l',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
+  {
+    naam: 'regressie · sectie met kop vóór de hero',
+    secties: [
+      {
+        // Deze stond vroeger op h2 met de hero eronder op h1: het niveau ging
+        // dan halverwege de pagina omhoog. Nu draagt deze de h1.
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        kop: 'Deze staat bovenaan en draagt de h1',
+        items: kolommen(2),
+      },
+      {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Verplaatst',
+        kop: 'De hero staat nu tweede',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
 ];
 ---
 
+{/*
+  Elk geval gaat als eigen lijst door SectieLijst, dus elk geval krijgt zijn
+  eigen <h1>. Op een echte pagina zou dat fout zijn; hier is het de bedoeling,
+  want elk geval ís een aparte pagina-in-het-klein. Deze pagina staat op
+  noindex en telt niet mee in check-koppen.
+*/}
 <Basis titel="Sectieoverzicht — De Club van 100" noindex>
   {
     gevallen.map((geval) => (
@@ -500,9 +587,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         <p class="mx-auto max-w-breed px-marge pt-sectie-s text-bovenkop text-tekst-stil uppercase">
           {geval.naam}
         </p>
-        {geval.secties.map((sectie) => (
-          <SectionRenderer sectie={sectie} />
-        ))}
+        <SectieLijst secties={geval.secties} />
       </>
     ))
   }

@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "oxlint -c _adherence.oxlintrc.json",
-    "check": "npm run lint && node scripts/check-tokens.mjs && astro check && astro build && node scripts/check-csp.mjs && node scripts/check-nesting.mjs"
+    "check": "npm run lint && node scripts/check-tokens.mjs && astro check && astro build && node scripts/check-csp.mjs && node scripts/check-nesting.mjs && node scripts/check-koppen.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",

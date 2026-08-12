@@ -1,6 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import SectionRenderer from '../lib/SectionRenderer';
+import { SectieLijst } from '../lib/SectionRenderer';
 import { leesPagina } from '../lib/pagina';
 
 /*
@@ -21,5 +21,5 @@ const { titel, beschrijving, secties } = await leesPagina('opdrachtgevers');
 ---
 
 <Basis titel={titel} beschrijving={beschrijving}>
-  {secties.map((sectie) => <SectionRenderer sectie={sectie} />)}
+  <SectieLijst secties={secties} />
 </Basis>

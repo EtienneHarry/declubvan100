@@ -8,6 +8,7 @@ import {
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
+import type { KopNiveau } from '../../lib/SectionRenderer';
 import Bovenkop from '../basis/Bovenkop';
 
 export interface KopTekstProps {
@@ -17,6 +18,8 @@ export interface KopTekstProps {
   bovenkop?: string;
   kop: string;
   tekst?: string;
+  /** Gezet door SectieLijst; 1 als deze sectie de pagina opent. */
+  kopNiveau?: KopNiveau;
 }
 
 /**
@@ -32,7 +35,10 @@ export default function KopTekst({
   bovenkop,
   kop,
   tekst,
+  kopNiveau = 2,
 }: KopTekstProps) {
+  const Kop = kopNiveau === 1 ? 'h1' : 'h2';
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
@@ -40,7 +46,7 @@ export default function KopTekst({
     >
       <div className={breedteKlasse[breedte]}>
         {bovenkop?.trim() ? <Bovenkop>{bovenkop}</Bovenkop> : null}
-        <h2 className="mt-4 text-display-l text-balance break-words first:mt-0">{kop}</h2>
+        <Kop className="mt-4 text-display-l text-balance break-words first:mt-0">{kop}</Kop>
         {tekst?.trim() ? (
           <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
             {tekst}

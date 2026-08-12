@@ -8,6 +8,7 @@ import {
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
+import type { KopNiveau } from '../../lib/SectionRenderer';
 import Bovenkop from '../basis/Bovenkop';
 import Knop from '../basis/Knop';
 import Beeldvlak from '../beeld/Beeldvlak';
@@ -28,6 +29,12 @@ export interface HeroProps {
    * bij voorkeur in de hero of in de laatste sectie — niet allebei.
    */
   schicht?: boolean;
+  /**
+   * Gezet door SectieLijst. 1 als deze hero de pagina opent, 2 als er al een
+   * kop boven staat. Een tweede hero op dezelfde pagina zakt daarmee naar een
+   * gewone sectiekop, zodat er één <h1> en één display-xl overblijft.
+   */
+  kopNiveau?: KopNiveau;
 }
 
 /*
@@ -56,9 +63,15 @@ export default function Hero({
   tweedeKnop,
   beeld,
   schicht = false,
+  kopNiveau = 1,
 }: HeroProps) {
   const heeftBeeld = Boolean(beeld?.bron.trim());
   const toontSchicht = schicht && !heeftBeeld;
+
+  // Opent deze hero de pagina, dan is hij de <h1> en de enige display-xl.
+  // Staat er al een kop boven, dan is dit gewoon een sectie.
+  const Kop = kopNiveau === 1 ? 'h1' : 'h2';
+  const kopKlasse = kopNiveau === 1 ? 'text-display-xl' : 'text-display-l';
 
   const inhoud = (
     <>
@@ -72,9 +85,9 @@ export default function Hero({
         nette streep, en break-words blijft eronder liggen voor wat zelfs dan
         niet past.
       */}
-      <h1 className="mt-4 text-display-xl text-balance hyphens-auto break-words first:mt-0">
+      <Kop className={`mt-4 ${kopKlasse} text-balance hyphens-auto break-words first:mt-0`}>
         {kop}
-      </h1>
+      </Kop>
       {tekst?.trim() ? (
         <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
           {tekst}

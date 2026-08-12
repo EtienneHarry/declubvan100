@@ -13,6 +13,12 @@ export interface KaartProps {
   disabled?: boolean;
   /** Toont een skelet in plaats van de inhoud. */
   laadt?: boolean;
+  /**
+   * Het kopniveau van de kaartkop. Gezet door de sectie eromheen, zodat de
+   * kaarten netjes onder de sectiekop hangen en er geen niveau wordt
+   * overgeslagen.
+   */
+  kopNiveau?: 2 | 3 | 4;
 }
 
 /*
@@ -39,7 +45,9 @@ export default function Kaart({
   href,
   disabled = false,
   laadt = false,
+  kopNiveau = 3,
 }: KaartProps) {
+  const Kop = `h${kopNiveau}` as 'h2' | 'h3' | 'h4';
   const klikbaar = Boolean(href) && !disabled && !laadt;
 
   const klassen = [
@@ -69,7 +77,7 @@ export default function Kaart({
       {nummer ? (
         <span className="mb-4 text-bovenkop text-tekst-stil tabular-nums uppercase">{nummer}</span>
       ) : null}
-      {kop ? <h3 className="mb-2 text-kop-m text-balance break-words">{kop}</h3> : null}
+      {kop ? <Kop className="mb-2 text-kop-m text-balance break-words">{kop}</Kop> : null}
       {tekst ? <p className="text-lopend-m text-tekst-zacht">{tekst}</p> : null}
       {voet ? <div className="mt-auto pt-6">{voet}</div> : null}
     </>
