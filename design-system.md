@@ -119,6 +119,68 @@ Twee verschillende duren op één element passen niet in een losse
 Bij `prefers-reduced-motion: reduce` zet `tokens.css` globaal elke duur op 1ms
 en laat elke verschuiving vervallen.
 
+### Inslag als karakter, Ploeg als ritme
+
+Dat is het concept achter alles wat op deze site binnenkomt. Een element komt
+hard binnen, remt scherp af en staat dan stil: geen naloop, geen veer, geen
+overshoot. Maar nooit met z'n allen tegelijk — binnen een sectie volgen ze
+elkaar op in een strak ritme.
+
+Het is het gedrag van de bliksemschicht uit het logo, vertaald naar timing. De
+schicht is één harde beweging met een scherpe knik erin; hij zwelt niet aan en
+hij dijt niet uit. Dezelfde toon als de voice: kort en zeker, niet zacht en niet
+traag.
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `--inslag` | `cubic-bezier(0.12, 0.9, 0.1, 1)` | alles wat binnenkomt |
+| `--duur-inslag-dekking` | 340ms | de dekking, en het masker onder een kop |
+| `--duur-inslag-hef` | 420ms | de verplaatsing |
+| `--ploeg` | 70ms | tussen twee opeenvolgende elementen in één sectie |
+| `--inslag-hef` | 24px | de afstand, altijd van onder naar boven |
+| `--inslag-masker` | 112% | hoe ver het masker onder een kop doorloopt |
+| `--zoom-beeld` | 1.05 | hover op een beeld dat ergens heen gaat |
+| `--duur-zoom` | 700ms | diezelfde zoom |
+
+**De curve is de inslag.** Het eerste stuurpunt ligt op `0.12, 0.9`: bij een
+achtste van de tijd is negen tiende van de weg al afgelegd. De rest van de duur
+is afremmen. Geen van beide stuurpunten komt boven 1 uit, dus er is geen
+doorschieten en geen terugveren.
+
+**De verplaatsing gaat altijd omhoog en nooit verder dan 24px.** Naar boven,
+want dat is de richting van binnenkomen; 24px, want alles daarboven wordt een
+reis in plaats van een inslag. De verplaatsing duurt langer dan de dekking
+(420 tegen 340ms), zodat een element eerst helemaal zichtbaar is en dan pas
+stilvalt.
+
+**Koppen faden niet, ze komen uit een masker omhoog.** Een kop is het zwaarste
+element op een pagina; die hoort tevoorschijn te komen, niet langzaam waar te
+worden. Het masker is een `clip-path` die met de kop mee opengaat terwijl hij
+omhoog schuift. Hij loopt 12% onder de kop door, want een displaykop staat op
+een regelhoogte onder 1 en op precies 100% knipt het masker de staarten van de
+`p` en de `g` af.
+
+**De ploeg is 70ms.** Elk aanwezig onderdeel van een sectie schuift één stap op:
+bovenkop, kop, tekst, dan de items. Onderdelen die er niet zijn tellen niet mee,
+dus een sectie zonder bovenkop begint gewoon op nul en heeft geen gat aan het
+begin. Kaarten en citaten lopen in datzelfde ritme door.
+
+**Op beeld dat ergens heen gaat staat een lichte zoom.** 1.05 in 700ms, en dus
+ruim trager dan een binnenkomst — die is over voor de zoom halverwege is. Alleen
+waar het beeld klikbaar is of naar iets verwijst; een foto die nergens heen
+gaat, hoort niet te reageren op een muis.
+
+*Afwijking:* de bron geeft voor deze zoom geen eigen curve. Hij loopt daarom op
+`--soepel-uit`, de bestaande uitloopcurve van het design system; er is geen
+nieuwe waarde bij verzonnen. Hoort hier een eigen curve, dan komt die uit de
+bron.
+
+Bij `prefers-reduced-motion: reduce` staat alles er meteen. Geen verplaatsing,
+geen vertraging, geen masker, geen zoom en geen tellende kop. Dat is niet één
+regel maar drie: `beweging.css` staat helemaal binnen
+`(prefers-reduced-motion: no-preference)`, het script zet zijn vlagje niet, en
+de tokens hierboven vallen in `tokens.css` terug op 1ms en 0px.
+
 **Afwijking — spinner en skelet staan op `motion-safe`.** De bron laat de
 spinner bij gereduceerde beweging op 2,4s draaien en zet de skelet-animatie uit.
 Die 2,4s haalt het niet: de globale regel eromheen zet `animation-duration` met
