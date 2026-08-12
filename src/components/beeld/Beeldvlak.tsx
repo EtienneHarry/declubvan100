@@ -67,9 +67,14 @@ export default function Beeldvlak({
    * 700ms tegen de 340 en 420 van een binnenkomst: de zoom loopt trager uit dan
    * iets dat binnenkomt. De curve is --soepel-uit, de bestaande uitloop van het
    * design system; de bron geeft er voor deze zoom geen eigen curve bij.
+   *
+   * De transitie staat op `scale` en niet op `transform`. Tailwind 4 zet
+   * `scale-[…]` op de losse scale-property, en die valt niet onder een
+   * transitie op transform — dan springt de zoom in één beeldje in plaats van
+   * er 700ms over te doen. Dat is niet te zien aan de klassenaam.
    */
   const zoomKlassen = zoom
-    ? 'motion-safe:[transition:transform_var(--duur-zoom)_var(--soepel-uit)] ' +
+    ? 'motion-safe:[transition:scale_var(--duur-zoom)_var(--soepel-uit)] ' +
       'motion-safe:group-hover:scale-[var(--zoom-beeld)]'
     : '';
 
