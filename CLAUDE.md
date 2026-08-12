@@ -138,6 +138,51 @@ Kleur, maat én font-family worden opgevangen door `check-tokens`, de
 propscontracten door TypeScript. Er blijft van die 19 selectors dus niets
 onbewaakt.
 
+## Twee kopieën van hetzelfde pakket
+
+**Dit is in dit project drie keer misgegaan, en drie keer kostte het een half
+uur voordat iemand doorhad wat het was.** Markdoc, vite en Keystatic, alle drie
+dezelfde oorzaak: twee versies van hetzelfde pakket naast elkaar in de boom.
+
+Twee symptomen, en ze lijken allebei niet op een versieprobleem:
+
+1. **`astro check` valt op "not assignable to type"**, waarbij het type links en
+   rechts identiek lijkt en zelfs hetzelfde heet. Het pad in de foutmelding
+   verraadt het: twee keer hetzelfde type uit twee verschillende mappen.
+   Bijvoorbeeld `node_modules/@keystatic/core/node_modules/@markdoc/markdoc/...`
+   tegenover `node_modules/@markdoc/markdoc/...`. Structureel gelijk, nominaal
+   verschillend, en TypeScript rekent op naam.
+2. **Iets doet stil niets.** Geen foutmelding, geen consolefout, geen kapotte
+   pagina — een klik doet gewoon niets, of een component rendert zonder de helft
+   van zijn gedrag. Dat gebeurt als twee kopieën ieder hun eigen state of
+   context hebben en er dus twee werelden naast elkaar draaien.
+
+Diagnose kost één commando:
+
+```bash
+npm ls <pakket>
+```
+
+Staat het er meer dan één keer, of zegt het `deduped` niet waar je dat verwacht,
+dan is dat het. Let ook op een geneste `node_modules` binnen een pakket — dat is
+altijd een tweede kopie.
+
+De oplossing is een `overrides`-blok in `package.json`, dat de hele boom op één
+versie dwingt:
+
+```json
+"overrides": {
+  "@keystatic/core": "0.6.4",
+  "vite": "^7"
+}
+```
+
+Kies de versie die het strengste pakket nodig heeft, niet de nieuwste. Bij vite
+was dat de 7 die `astro` gebruikt, terwijl `@tailwindcss/vite` er 8 bij haalde.
+
+Wat hier níet werkt: een caret. `^0.6.4` haalt bij een verse installatie gewoon
+weer 0.6.5 binnen. Een pin die iets moet tegenhouden is exact of hij is niets.
+
 ## De tokenregel
 
 `scripts/check-tokens.mjs` scant `src/` op `.astro`, `.tsx`, `.ts` en `.css` en
