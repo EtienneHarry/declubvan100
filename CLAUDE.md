@@ -417,6 +417,17 @@ taalinstelling voor. Engels blijven dus onder meer: `Add`, `Empty list`,
 `Add the first item to see it here.`, `Unsaved`, `Create` en
 `Restored draft from`.
 
+**Ook de foutmeldingen bij verplichte velden.** Die werken wél — het veld krijgt
+`aria-invalid`, `aria-required` en de melding hangt er via `aria-describedby`
+aan, dus een schermlezer krijgt hem netjes mee. Maar de tekst is Engels en plakt
+aan ons Nederlandse label vast: "Wat staat er op de foto must not be empty",
+"Foto is required". Ze zijn wel te begrijpen, en ze staan onder het veld waar
+het misgaat.
+
+Dit is dezelfde beperking als hierboven, geen aparte. Bouw er geen eigen
+validatielaag omheen: die zou de bestaande koppeling met `aria-describedby`
+moeten nabouwen, en dat is precies het deel dat nu goed zit.
+
 Alles wat wij zelf schrijven — veldlabels, beschrijvingen, de namen van de
 sectietypes, de tekst in de keuzelijsten — is wel Nederlands.
 

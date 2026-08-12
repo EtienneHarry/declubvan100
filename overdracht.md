@@ -42,6 +42,11 @@ bijwerken bij een adreswijziging die eens in de zoveel jaar voorkomt.
 telefoonnummer weg, dan noemt de site nergens meer een nummer — er blijft geen
 lege regel of streepje staan.
 
+**Vergeet je iets verplichts, dan gaat het venster niet dicht.** Onder het veld
+dat mist verschijnt een melding, en die is Engels. `must not be empty` betekent
+dat het veld leeg is, `is required` dat er nog niets gekozen is. Een sterretje
+achter het label betekent dat je het veld niet kunt overslaan.
+
 **De foto's van de twee deuren op de home liggen vast.** Die staan niet in het
 CMS. De tekst eromheen kun je wel wijzigen.
 
