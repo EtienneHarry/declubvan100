@@ -12,6 +12,7 @@ import {
   type RuimteToken,
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
+import { ploeg } from '../../lib/beweging';
 import Bliksem from '../merk/Bliksem';
 
 export interface RijkeTekstProps {
@@ -87,12 +88,19 @@ export default function RijkeTekst({
 
   if (!heeftSectieKop && !heeftInhoud) return null;
 
-  function render(knoop: RenderableTreeNode, sleutel: string): ReactNode {
+  /*
+   * De ploeg: de sectiekop, dan blok voor blok wat de redacteur geschreven
+   * heeft. Alleen de bovenste laag van de tekst doet mee — een alinea komt
+   * binnen, niet de woorden erin en niet de punten van een lijst apart.
+   */
+  const volgende = ploeg();
+
+  function render(knoop: RenderableTreeNode, sleutel: string, bovenlaag = false): ReactNode {
     if (knoop === null || knoop === undefined || typeof knoop === 'boolean') return null;
     if (typeof knoop === 'string' || typeof knoop === 'number') return knoop;
 
     if (Array.isArray(knoop)) {
-      return knoop.map((kind, index) => render(kind, `${sleutel}-${index}`));
+      return knoop.map((kind, index) => render(kind, `${sleutel}-${index}`, bovenlaag));
     }
 
     // isTag is de enige betrouwbare test. Een gewoon object met een `name` kan
@@ -101,8 +109,10 @@ export default function RijkeTekst({
 
     const naam = String(knoop.name);
     const attributen = (knoop.attributes ?? {}) as Record<string, unknown>;
+    // De kinderen van de wortel zijn de bovenste laag van de tekst; die doen
+    // mee in het ritme. Alles daaronder niet.
     const kinderen = (knoop.children ?? []).map((kind, index) =>
-      render(kind, `${sleutel}-${index}`),
+      render(kind, `${sleutel}-${index}`, naam === 'article'),
     );
 
     /*
@@ -127,7 +137,12 @@ export default function RijkeTekst({
       const Tag = `h${niveau}` as 'h2' | 'h3' | 'h4';
 
       return (
-        <Tag key={sleutel} className={`${KOP_KLASSE[niveau]} text-balance break-words ${maat}`}>
+        <Tag
+          key={sleutel}
+          data-onthul={bovenlaag ? 'kop' : undefined}
+          data-onthul-stap={bovenlaag ? volgende() : undefined}
+          className={`${KOP_KLASSE[niveau]} text-balance break-words ${maat}`}
+        >
           {kinderen}
         </Tag>
       );
@@ -135,7 +150,12 @@ export default function RijkeTekst({
 
     if (naam === 'p') {
       return (
-        <p key={sleutel} className={`mt-4 text-lopend-m text-tekst-zacht ${maat}`}>
+        <p
+          key={sleutel}
+          data-onthul={bovenlaag ? 'blok' : undefined}
+          data-onthul-stap={bovenlaag ? volgende() : undefined}
+          className={`mt-4 text-lopend-m text-tekst-zacht ${maat}`}
+        >
           {kinderen}
         </p>
       );
@@ -144,7 +164,12 @@ export default function RijkeTekst({
     if (naam === 'ul' || naam === 'ol') {
       const Tag = naam;
       return (
-        <Tag key={sleutel} className={`mt-4 flex list-none flex-col gap-3 p-0 ${maat}`}>
+        <Tag
+          key={sleutel}
+          data-onthul={bovenlaag ? 'blok' : undefined}
+          data-onthul-stap={bovenlaag ? volgende() : undefined}
+          className={`mt-4 flex list-none flex-col gap-3 p-0 ${maat}`}
+        >
           {kinderen}
         </Tag>
       );
@@ -199,7 +224,13 @@ export default function RijkeTekst({
     >
       <div className={breedteKlasse[breedte]}>
         {heeftSectieKop ? (
-          <SectieKop className="text-kop-l text-balance break-words">{kop}</SectieKop>
+          <SectieKop
+            data-onthul="kop"
+            data-onthul-stap={volgende()}
+            className="text-kop-l text-balance break-words"
+          >
+            {kop}
+          </SectieKop>
         ) : null}
         {render(boom, 'r')}
       </div>

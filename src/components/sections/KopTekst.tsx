@@ -9,6 +9,7 @@ import {
   type RuimteToken,
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
+import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
 
 export interface KopTekstProps {
@@ -39,16 +40,29 @@ export default function KopTekst({
 }: KopTekstProps) {
   const Kop = kopNiveau === 1 ? 'h1' : 'h2';
 
+  // Bovenkop, kop, tekst — elk aanwezig onderdeel schuift 70ms op.
+  const volgende = ploeg();
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
     >
       <div className={breedteKlasse[breedte]}>
-        {bovenkop?.trim() ? <Bovenkop>{bovenkop}</Bovenkop> : null}
-        <Kop className="mt-4 text-display-l text-balance break-words first:mt-0">{kop}</Kop>
+        {bovenkop?.trim() ? <Bovenkop stap={volgende()}>{bovenkop}</Bovenkop> : null}
+        <Kop
+          data-onthul="kop"
+          data-onthul-stap={volgende()}
+          className="mt-4 text-display-l text-balance break-words first:mt-0"
+        >
+          {kop}
+        </Kop>
         {tekst?.trim() ? (
-          <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
+          <p
+            data-onthul="blok"
+            data-onthul-stap={volgende()}
+            className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}
+          >
             {tekst}
           </p>
         ) : null}

@@ -11,6 +11,7 @@ import {
   type VerhoudingToken,
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
+import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
 
 export interface BeeldTekstProps {
@@ -61,6 +62,36 @@ export default function BeeldTekst({
   const beeldOrde = beeldPositie === 'rechts' ? 'md:order-2' : 'md:order-1';
   const tekstOrde = beeldPositie === 'rechts' ? 'md:order-1' : 'md:order-2';
 
+  /*
+   * Bovenkop, kop, tekst, dan het beeld. Het tekstblok wordt hier opgebouwd en
+   * niet verderop in de JSX, want het beeld staat in de DOM vaak vóór de tekst
+   * en zou dan de eerste stap opeisen. In het ritme is het beeld het item, en
+   * items komen als laatste.
+   */
+  const volgende = ploeg();
+
+  const tekstblok = (
+    <>
+      {bovenkop?.trim() ? <Bovenkop stap={volgende()}>{bovenkop}</Bovenkop> : null}
+      <Kop
+        data-onthul="kop"
+        data-onthul-stap={volgende()}
+        className="mt-4 text-kop-l text-balance break-words first:mt-0"
+      >
+        {kop}
+      </Kop>
+      {tekst?.trim() ? (
+        <p
+          data-onthul="blok"
+          data-onthul-stap={volgende()}
+          className={`mt-4 text-lopend-m text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}
+        >
+          {tekst}
+        </p>
+      ) : null}
+    </>
+  );
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
@@ -71,7 +102,7 @@ export default function BeeldTekst({
           className={`grid grid-cols-1 items-center gap-8 ${heeftBeeld ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}
         >
           {beeld && heeftBeeld ? (
-            <div className={beeldOrde}>
+            <div data-onthul="blok" data-onthul-stap={volgende()} className={beeldOrde}>
               <img
                 src={beeld.bron}
                 alt={beeld.alt}
@@ -79,15 +110,7 @@ export default function BeeldTekst({
               />
             </div>
           ) : null}
-          <div className={heeftBeeld ? tekstOrde : undefined}>
-            {bovenkop?.trim() ? <Bovenkop>{bovenkop}</Bovenkop> : null}
-            <Kop className="mt-4 text-kop-l text-balance break-words first:mt-0">{kop}</Kop>
-            {tekst?.trim() ? (
-              <p className={`mt-4 text-lopend-m text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
-                {tekst}
-              </p>
-            ) : null}
-          </div>
+          <div className={heeftBeeld ? tekstOrde : undefined}>{tekstblok}</div>
         </div>
       </div>
     </section>

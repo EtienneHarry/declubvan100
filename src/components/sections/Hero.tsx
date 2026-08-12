@@ -9,6 +9,7 @@ import {
   type RuimteToken,
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
+import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
 import Teller from '../basis/Teller';
 import Knop from '../basis/Knop';
@@ -74,9 +75,18 @@ export default function Hero({
   const Kop = kopNiveau === 1 ? 'h1' : 'h2';
   const kopKlasse = kopNiveau === 1 ? 'text-display-xl' : 'text-display-l';
 
+  /*
+   * De ploeg: bovenkop, kop, tekst, dan de knoppen. Elk aanwezig onderdeel
+   * schuift 70ms op; wat ontbreekt telt niet mee. Zie src/lib/beweging.ts.
+   *
+   * Boven de vouw gebeurt er meestal niets mee — wat bij het laden al in beeld
+   * staat, staat er meteen. Dit ritme is er voor de hero die tweede staat.
+   */
+  const volgende = ploeg();
+
   const inhoud = (
     <>
-      {bovenkop?.trim() ? <Bovenkop>{bovenkop}</Bovenkop> : null}
+      {bovenkop?.trim() ? <Bovenkop stap={volgende()}>{bovenkop}</Bovenkop> : null}
       {/*
         hyphens-auto vóór break-words. display-xl loopt tot 128px en de smalste
         kolom is 335px op een telefoon; een woord als "voorwaarden" past daar in
@@ -91,16 +101,29 @@ export default function Hero({
         beeld komen naar boven; zit er geen getal in, dan verandert er niets aan
         de uitvoer. Hero weet daar verder niets van.
       */}
-      <Kop className={`mt-4 ${kopKlasse} text-balance hyphens-auto break-words first:mt-0`}>
+      {/* De kop komt uit een masker omhoog en fadet dus niet in. */}
+      <Kop
+        data-onthul="kop"
+        data-onthul-stap={volgende()}
+        className={`mt-4 ${kopKlasse} text-balance hyphens-auto break-words first:mt-0`}
+      >
         <Teller tekst={kop} />
       </Kop>
       {tekst?.trim() ? (
-        <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>
+        <p
+          data-onthul="blok"
+          data-onthul-stap={volgende()}
+          className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}
+        >
           {tekst}
         </p>
       ) : null}
       {knop || tweedeKnop ? (
-        <div className="mt-10 flex flex-wrap items-center gap-4">
+        <div
+          data-onthul="blok"
+          data-onthul-stap={volgende()}
+          className="mt-10 flex flex-wrap items-center gap-4"
+        >
           {knop ? (
             <Knop variant="vol" maat="l" href={knop.href}>
               {knop.label}

@@ -8,6 +8,7 @@ import {
   type RuimteToken,
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
+import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
 import Kaart from '../basis/Kaart';
 
@@ -55,15 +56,28 @@ export default function DrieKolommen({
    */
   const kaartNiveau: 2 | 3 = heeftKop ? (kopNiveau === 1 ? 2 : 3) : 2;
 
+  /*
+   * De ploeg loopt door de kaarten heen: bovenkop, kop, dan kaart na kaart in
+   * hetzelfde ritme van 70ms. Vanaf de negende kaart deelt hij de laatste stap,
+   * anders staat die te lang stil nadat hij in beeld is gekomen.
+   */
+  const volgende = ploeg();
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
     >
       <div className={breedteKlasse[breedte]}>
-        {heeftBovenkop ? <Bovenkop>{bovenkop}</Bovenkop> : null}
+        {heeftBovenkop ? <Bovenkop stap={volgende()}>{bovenkop}</Bovenkop> : null}
         {heeftKop ? (
-          <Kop className="mt-4 text-kop-l text-balance break-words first:mt-0">{kop}</Kop>
+          <Kop
+            data-onthul="kop"
+            data-onthul-stap={volgende()}
+            className="mt-4 text-kop-l text-balance break-words first:mt-0"
+          >
+            {kop}
+          </Kop>
         ) : null}
         {items.length > 0 ? (
           <ul
@@ -72,7 +86,12 @@ export default function DrieKolommen({
             }`}
           >
             {items.map((item, index) => (
-              <li key={`${item.kop}-${index}`} className="flex">
+              <li
+                key={`${item.kop}-${index}`}
+                data-onthul="blok"
+                data-onthul-stap={volgende()}
+                className="flex"
+              >
                 <div className="flex w-full flex-col">
                   <Kaart
                     nummer={item.nummer}
