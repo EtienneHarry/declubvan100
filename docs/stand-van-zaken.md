@@ -1,5 +1,10 @@
 # Stand van zaken
 
+> **Voor wie aan deze site bouwt.** Dit gaat over de code en wat er nog moet
+> gebeuren, niet over het beheren van de inhoud. Dat staat in `overdracht.md`,
+> en dat is voor de redacteur. Voeg die twee niet samen: ze zijn voor andere
+> mensen en veranderen op andere momenten.
+
 Bijgewerkt na B4. Wat er af is, wat er open ligt, en waar je verder gaat.
 
 De git-geschiedenis vertelt wat er gebeurd is; dit document vertelt wat er nog

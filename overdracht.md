@@ -1,5 +1,10 @@
 # Overdracht — de site beheren
 
+> **Voor de redacteur van De Club van 100.** Dit gaat over het beheren van de
+> site, niet over het bouwen ervan. Wie eraan werkt, kijkt in
+> `docs/stand-van-zaken.md`. Voeg die twee niet samen: ze zijn voor andere
+> mensen en veranderen op andere momenten.
+
 Wat je zelf kunt aanpassen, en waar dat zit. Eén A4, bedoeld om naast het scherm
 te leggen.
 
