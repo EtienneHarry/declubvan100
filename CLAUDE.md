@@ -104,10 +104,13 @@ hebt.
 `npm run check` draait de hele poort en stopt bij de eerste stap die faalt:
 
 ```
-oxlint  →  check-tokens  →  astro check  →  astro build  →  check-csp
+oxlint  →  check-tokens  →  astro check  →  astro build
+        →  check-csp  →  check-nesting  →  check-koppen
 ```
 
-`check-csp` staat achteraan omdat hij de gebouwde HTML leest.
+De laatste drie staan achter de build omdat ze de gebouwde HTML lezen. Ze
+bewaken alle drie iets dat stil misgaat: geen foutmelding, geen kapotte pagina,
+en lokaal zie je er niets van.
 
 Dezelfde `check` draait in GitHub Actions bij elke push en pull request.
 
@@ -122,6 +125,8 @@ Wie bewaakt wat:
 | Import via `index.js` | oxlint, `no-restricted-imports` |
 | Onbekende tokennaam | TypeScript, via de union-types in `tokens.ts` |
 | CSP per pad, en inline script of stijl in de uitvoer | `scripts/check-csp.mjs` |
+| Blokelement binnen een inline-element | `scripts/check-nesting.mjs` |
+| Eén `<h1>` vooraan, geen overgeslagen kopniveau | `scripts/check-koppen.mjs` |
 
 `_adherence.oxlintrc.json` is samengevoegd uit de adherence-config van De Club
 van 100 en die van het Kick&Work-sjabloon. Twee blokken uit die bronnen konden
@@ -186,23 +191,24 @@ meer overschrijven.
 
 ## Koppelbestanden
 
-Er zijn er twee. Alles wat een sectie aan iets anders vastknoopt, staat in één
-van deze twee bestanden en nergens anders:
+Er zijn er drie. Alles wat een sectie aan iets anders vastknoopt, staat in één
+van deze drie bestanden en nergens anders:
 
 - **`src/lib/tokens.ts`** — tokennaam naar Tailwind-klasse, voor achtergrond,
   verticale ruimte, containerbreedte en leesbreedte. Elke groep heeft een
   union-type, dus een tokennaam die niet bestaat is een compileerfout. Alleen
   klassenamen in dit bestand; een rauwe waarde laat `check-tokens.mjs` de build
   breken.
-- **`src/lib/SectionRenderer.tsx`** — sectietype naar component. Een onbekend
-  type toont in ontwikkeling een melding met het type erin en rendert in
-  productie niets. De `default`-tak bevat een exhaustiviteitscontrole: een type
-  dat wel in de union staat maar geen `case` heeft, is een compileerfout.
+- **`src/lib/SectionRenderer.tsx`** — sectietype naar component, plus het
+  kopniveau over de hele lijst. Een onbekend type toont in ontwikkeling een
+  melding met het type erin en rendert in productie niets. De `default`-tak
+  bevat een exhaustiviteitscontrole: een type dat wel in de union staat maar
+  geen `case` heeft, is een compileerfout.
+- **`src/lib/pagina.ts`** — CMS-data naar sectieprops. Zie *De zes pagina's*.
 
 ## Componenten
 
-React, want `SectionRenderer.tsx` en de secties zijn dat ook. Ze worden statisch
-voorgerenderd, dus er gaat geen JavaScript naar de browser.
+React, want `SectionRenderer.tsx` en de secties zijn dat ook.
 
 | Component | Map | Waarvoor |
 |---|---|---|
@@ -210,12 +216,40 @@ voorgerenderd, dus er gaat geen JavaScript naar de browser.
 | `Kaart` | `components/basis/` | Alles wat in een raster staat |
 | `Bovenkop` | `components/basis/` | Het labeltje boven een sectiekop |
 | `Scheiding` | `components/basis/` | Vervangt de `<hr>`, eventueel met schicht |
+| `Teller` | `components/basis/` | Kop waarin een getal naar boven telt |
 | `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
 | `Bliksem` | `components/merk/` | De schicht, in drie rollen |
 
 De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
 React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
 `fill="currentColor"` en nemen geen props aan.
+
+**Twee bestanden worden nergens geïmporteerd:** `basis/Scheiding.tsx` en
+`sections/KaartenRij.tsx`. `Scheiding` hoort bij het design system en is af, er
+is alleen nog geen sectie die hem inzet. `KaartenRij` komt uit het sjabloon,
+gebruikt tokennamen die hier niet bestaan (`font-kop`, `rounded-zacht`,
+`shadow-diepte-1`) en is geen sectietype — hij staat niet in `SectionRenderer`.
+Ga er niet van uit dat ze werken zonder ze eerst te draaien.
+
+### Er gaat wél JavaScript naar de browser
+
+Twee bestanden, samen ongeveer 2 kB, allebei uit een Astro-component:
+
+| Bestand | Waarvoor |
+|---|---|
+| `components/navigatie/Navigatie.astro` | De menuknop onder 900px, met focusval |
+| `components/basis/TellerScript.astro` | De teller in de openingskop |
+
+**Een `<script>` hoort in een `.astro`-bestand, nooit in een `.tsx`.** Astro
+bundelt een script uit een Astro-component tot een gewoon bestand; een `<script>`
+in een React-component belandt inline in de HTML en loopt op `script-src 'self'`
+stuk. `Teller` is daarom gesplitst: markup in `Teller.tsx`, script in
+`TellerScript.astro`.
+
+**En `vite.build.assetsInlineLimit` staat op 0.** Astro bakt een gebundeld script
+anders alsnog in de HTML zodra het onder de grens van 4 kB blijft — het
+navigatiescript is 891 bytes en verdween er zo in. Dat is precies het geval dat
+`check-csp` ving.
 
 **Beeldvlak dwingt de sluier af.** Er is geen prop die hem weglaat en geen tak
 die hem overslaat. Zonder behandeling haalt witte tekst op deze fotografie nooit
@@ -238,24 +272,55 @@ Acht, allemaal in `src/components/sections/` en gekoppeld in
 | `oproep` | `Oproep` | Afsluitend blok met een actie |
 | `rijke-tekst` | `RijkeTekst` | Lopende tekst met koppen en lijsten |
 
-**`hero` is de enige sectie met een `<h1>`.** Alle andere openen op `<h2>`.
-Zolang een pagina precies één hero heeft, kloppen de koppenvolgorde en de regel
-"één `display-xl` per pagina" vanzelf; twee heroes op één pagina breken allebei.
-
 Met beeld loopt de kop door `Beeldvlak` en vervalt de schicht. De grote schicht
 is een uitgesneden vlak op een egale achtergrond — over een foto is dat geen
 van de drie toegestane rollen, en de sluier zou hem toch opeten.
 
+### Het kopniveau komt uit de lijst, niet uit de sectie
+
+**Render een sectie nooit los.** `SectieLijst` in `SectionRenderer.tsx` is de
+enige juiste ingang: alleen daar is te zien wat er vóór een sectie staat, en dat
+bepaalt het kopniveau. Een losse `SectionRenderer` valt terug op niveau 2 en
+levert dus een pagina zonder `<h1>` op.
+
+De eerste sectie die een kop kán dragen krijgt niveau 1, de rest niveau 2. Wat
+een sectie binnenin heeft zakt mee: kaartkoppen hangen onder de sectiekop, en in
+rijke tekst landt een `##` op het niveau eronder.
+
+`draagtPaginakop()` bepaalt wie in aanmerking komt. `splitscreen` en `citaten`
+slaan hun beurt over — twee koppen naast elkaar is geen paginakop en citaten
+hebben er geen. `drie-kolommen` en `rijke-tekst` doen alleen mee als ze een
+sectiekop hebben.
+
+Daarmee gelden deze drie vanzelf, en `check-koppen` houdt ze vast:
+
+- elke pagina heeft precies één `<h1>`, en die staat vooraan
+- een tweede hero levert geen tweede `<h1>` en geen tweede `display-xl`; die
+  zakt naar een gewone sectiekop op `display-l`
+- het niveau gaat nooit omhoog halverwege de pagina
+
+Staat er geen enkele sectie die een kop kan dragen, dan heeft de pagina geen
+`<h1>`. Dat wordt niet stilletjes gerepareerd — er valt niets te kiezen — maar
+`check-koppen` laat de build erop vallen.
+
 ### Een nieuwe sectie toevoegen
 
-Een nieuwe sectie landt altijd op drie plekken. Sla er één over en je merkt het
-pas laat:
+Een nieuwe sectie landt op vijf plekken. Sla er één over en je merkt het pas
+laat:
 
 1. `src/components/sections/<Naam>.tsx` — de sectie zelf, volgens regel 3 en 4.
-2. `src/lib/SectionRenderer.tsx` — het type in de union én een `case` in de
-   switch.
-3. `src/pages/secties.astro` — vier keer renderen, onder de omstandigheden waar
+2. `src/lib/SectionRenderer.tsx` — het type in de union, een `case` in de
+   switch, én een tak in `draagtPaginakop()`.
+3. `src/lib/pagina.ts` — een `case` die het CMS-blok naar sectieprops vertaalt.
+4. `keystatic.config.ts` — een blok met dezelfde naam, met labels en
+   beschrijvingen in het Nederlands.
+5. `src/pages/secties.astro` — vier keer renderen, onder de omstandigheden waar
    een sjabloon op stukloopt.
+
+Nummer 2 en 3 hebben allebei een exhaustiviteitscontrole, dus die vergeet je
+niet: dat is meteen een compileerfout. Nummer 4 en 5 niet — een sectietype
+zonder blok in het CMS is onzichtbaar voor de redacteur, en zonder variant in
+het overzicht ongetest.
 
 Nieuwe kleuren of maten horen eerst in `tokens.css` en dan in `tokens.ts`, niet
 rechtstreeks in de sectie.
@@ -263,10 +328,18 @@ rechtstreeks in de sectie.
 ### Het sectieoverzicht
 
 `src/pages/secties.astro` is de beheerbaarheidstest: elk type onder een te lange
-kop, een lege tekst, weinig items en veel items, plus een regressievariant voor
-de overflow-bug in `Beeldvlak`. De pagina routeert zodat je hem kunt bekijken en
-is afgeschermd met een `noindex`-meta plus `Disallow: /secties` in
-`public/robots.txt`.
+kop, een lege tekst, weinig items en veel items. Daarnaast staan er vaste
+regressiegevallen, elk voor een fout die een keer stil is misgegaan: de
+overflow in `Beeldvlak`, een staande foto op 4:5 tegenover 16:9, de drie
+manieren waarop de koppenvolgorde sneuvelde, en de teller. Haal die niet weg —
+ze staan er omdat het een keer fout ging, niet ter illustratie.
+
+De pagina routeert zodat je hem kunt bekijken en is afgeschermd met een
+`noindex`-meta plus `Disallow: /secties` in `public/robots.txt`.
+
+Elk geval gaat als eigen `SectieLijst` door de renderer en heeft dus zijn eigen
+`<h1>`. Op een echte pagina zou dat fout zijn; hier is het de bedoeling, en
+`check-koppen` slaat deze pagina daarom over.
 
 Meet responsieve fouten, kijk er niet naar. De vier gebreken die in B2 boven
 kwamen waren geen van alle zichtbaar op een screenshot; ze kwamen uit
@@ -279,7 +352,7 @@ van 753, en dan vuurt `md:` niet.
 `index.astro`, `opdrachtgevers.astro`, `de-100.astro`, `contact.astro`,
 `voorwaarden.astro` en `privacy.astro`. Elk paginabestand is nog maar een paar
 regels: het leest zijn inhoud met `leesPagina()` uit `src/lib/pagina.ts` en laat
-`SectionRenderer` de secties tekenen.
+`SectieLijst` de secties tekenen.
 
 De inhoud staat als yaml in `src/content/paginas/`, één bestand per pagina, en
 wordt beheerd via Keystatic. Een singleton zonder contentveld schrijft naar
@@ -337,11 +410,30 @@ heeft opgegeven, en het is ook waar de inzending van het formulier heen gaat.
 `info@declubvan.nl` kwam uit de UI kit van het design system en was daar een
 plaatshouder; dat adres staat nergens meer in `src/`.
 
-**De mobiele navigatie landt in B4.** Het design system wil onder 900px een
-hamburger met uitklappaneel — `.c100-nav__knop` en `.c100-nav__paneel`, oftewel
-de `Navigatie`-component. Tot die tijd breken de vier links in de header af op
-smalle schermen. Dat haalt de horizontale scroll weg maar is niet de bedoelde
-oplossing. In B4 verhuist de navigatie tegelijk naar het CMS.
+## De navigatie
+
+Staat er sinds B4, in `src/components/navigatie/Navigatie.astro`. Boven 900px
+een rij links, daaronder een menuknop met uitklappaneel. De links komen uit de
+site-instellingen in het CMS.
+
+Astro-component en geen React, net als de logo's: het hoort bij de layout, en zo
+gaat er geen React naar de browser voor één menu.
+
+Drie dingen die je niet moet weghalen:
+
+- **900px is een token**, `--breakpoint-nav` in `tokens.css`, met de variant
+  `nav:`. Het valt tussen `md` en `lg` en heeft daarom een eigen naam.
+- **Het script kent dat getal niet.** Het kijkt of de menuknop nog zichtbaar is
+  (`offsetParent === null`); die staat op `nav:hidden`, dus zodra hij weg is
+  zijn we boven het breekpunt. Het getal op twee plekken zetten zou de
+  tokencontrole terecht laten vallen.
+- **De knop zit in de focusval.** Hij is ook de sluitknop; laat je hem eruit,
+  dan loop je met shift+tab het menu uit zonder het te sluiten. Escape sluit én
+  geeft de focus terug aan de knop — zonder dat laatste valt de focus terug op
+  `<body>` en begint de volgende tab weer bovenaan.
+
+Gemeten met echte toetsaanslagen, niet met synthetische events: die laatste
+verplaatsen de focus niet, dus daar meet je niets mee.
 
 ## Niet upgraden: Keystatic staat vast op 0.6.4
 
