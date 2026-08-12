@@ -371,6 +371,28 @@ Gemeld als [Thinkmill/keystatic#1593](https://github.com/Thinkmill/keystatic/iss
 **Zodra dat issue dicht is, kan de pin eraf** — meet dan opnieuw of een
 blocks-rij opengaat voordat je hem weghaalt.
 
+### Een oud lokaal concept overschaduwt het bestand
+
+Los van de pin, en niet opgelost. Keystatic bewaart een niet-opgeslagen
+bewerking in IndexedDB. Kom je later terug op die pagina, dan toont de admin dat
+concept in plaats van het bestand op schijf, met `Unsaved` erboven. Was het
+concept van vóór de inhoud, dan zie je een lege lijst — en `Save` schrijft die
+leegte dan over de echte secties heen.
+
+We zagen het op opdrachtgevers: vijf secties in de yaml, "Empty list" in het
+paneel. `Reset` bracht ze meteen terug.
+
+**Er is geen instelling om dit uit te zetten.** `CommonConfig` kent alleen
+`locale`, `cloud` en `ui`, en er zit geen vervaltermijn op een concept — in de
+bundel is geen verloop- of `maxAge`-logica te vinden die eraan hangt.
+`showDraftRestore` klinkt als een optie maar is een interne functie voor de
+melding. Bouw er dus niets omheen: een eigen laag zou de opslag van het pakket
+moeten opruimen en gaat bij de eerste update stuk.
+
+De redacteur is er wel voor gewaarschuwd — het staat als eerste blok in
+`overdracht.md`, als handeling. Gemeld als
+[Thinkmill/keystatic#1594](https://github.com/Thinkmill/keystatic/issues/1594).
+
 ### Waarom `vite` ook in overrides staat
 
 Niet hetzelfde probleem, wel dezelfde soort. `astro` wil vite 7,
