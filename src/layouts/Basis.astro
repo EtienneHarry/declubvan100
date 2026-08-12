@@ -19,6 +19,7 @@ import { basisUrl } from '../lib/site';
 import LogoHorizontaal from '../components/logo/LogoHorizontaal.astro';
 import Navigatie from '../components/navigatie/Navigatie.astro';
 import TellerScript from '../components/basis/TellerScript.astro';
+import OnthulScript from '../components/beweging/OnthulScript.astro';
 
 // De merkkleur hoort niet als losse hex in dit bestand, dus lezen we hem bij
 // het bouwen uit de tokenlaag. Verdwijnt of hernoemt --inkt, dan breekt de
@@ -244,5 +245,6 @@ const jaar = new Date().getFullYear();
     </footer>
 
     <TellerScript />
+    <OnthulScript />
   </body>
 </html>
