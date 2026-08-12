@@ -74,6 +74,19 @@ export default function RijkeTekst({
 
   const boom = Markdoc.transform(inhoud);
 
+  /*
+   * Niets erin, dus ook niets eruit — zelfde regel als bij een ontbrekend
+   * beeld. De sectie rendert dan helemaal niet, en er blijft geen vlak van een
+   * paar honderd pixels leegte achter.
+   *
+   * Een aangemaakte maar nooit gevulde sectie komt uit een CMS vaker voorbij
+   * dan je denkt: de redacteur voegt er een toe, wordt gestoord, en slaat op.
+   */
+  const heeftInhoud =
+    Markdoc.Tag.isTag(boom) && Array.isArray(boom.children) && boom.children.length > 0;
+
+  if (!heeftSectieKop && !heeftInhoud) return null;
+
   function render(knoop: RenderableTreeNode, sleutel: string): ReactNode {
     if (knoop === null || knoop === undefined || typeof knoop === 'boolean') return null;
     if (typeof knoop === 'string' || typeof knoop === 'number') return knoop;
