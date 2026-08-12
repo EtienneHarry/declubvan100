@@ -10,6 +10,7 @@ import {
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import Bovenkop from '../basis/Bovenkop';
+import Teller from '../basis/Teller';
 import Knop from '../basis/Knop';
 import Beeldvlak from '../beeld/Beeldvlak';
 import Bliksem from '../merk/Bliksem';
@@ -85,8 +86,13 @@ export default function Hero({
         nette streep, en break-words blijft eronder liggen voor wat zelfs dan
         niet past.
       */}
+      {/*
+        De kop loopt door Teller. Zit er een getal in, dan telt dat bij het in
+        beeld komen naar boven; zit er geen getal in, dan verandert er niets aan
+        de uitvoer. Hero weet daar verder niets van.
+      */}
       <Kop className={`mt-4 ${kopKlasse} text-balance hyphens-auto break-words first:mt-0`}>
-        {kop}
+        <Teller tekst={kop} />
       </Kop>
       {tekst?.trim() ? (
         <p className={`mt-6 text-lopend-l text-tekst-zacht ${maatRegelKlasse[achtergrond]}`}>

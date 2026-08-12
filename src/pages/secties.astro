@@ -548,6 +548,39 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     ],
   },
   {
+    /*
+     * De teller in de openingskop. Twee heroes naast elkaar: één met een getal
+     * en één zonder.
+     *
+     * Waar je op let: in de broncode staat 100 en niet 0 — het script telt
+     * ernaartoe, niet ervandaan. De kop mag niet wiebelen terwijl hij telt; de
+     * breedte van drie cijfers is gereserveerd met --maat-teller plus
+     * tabular-nums. En de kop zonder getal hoort geen extra elementen te
+     * krijgen.
+     */
+    naam: 'teller · kop met en zonder getal',
+    secties: [
+      {
+        type: 'hero',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Met getal',
+        kop: 'Een van de 100',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'hero',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Zonder getal',
+        kop: 'Honderd plekken',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
+  {
     naam: 'regressie · sectie met kop vóór de hero',
     secties: [
       {

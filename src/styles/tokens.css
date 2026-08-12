@@ -76,6 +76,10 @@
   --lijn-dikte-sterk: 2px;
   --maat-regel: 66ch; /* lopende tekst op licht */
   --maat-regel-donker: 60ch; /* op zwart korter houden */
+  /* Breedte van het tellende getal: drie cijfers, zodat de kop niet wiebelt
+     terwijl hij van 0 naar 100 loopt. Werkt alleen samen met tabular-nums,
+     want anders is een cijfer niet zo breed als het volgende. */
+  --maat-teller: 3ch;
 
   /* Beweging. Kort en zakelijk; geen bounce, geen veer, geen parallax. */
   --duur-1: 120ms; /* kleur- en lijnwissel: hover, focus */
