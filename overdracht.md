@@ -7,6 +7,27 @@ te leggen.
 > dat moment vaststond. Vul het aan zodra er meer bij komt — het formulier, de
 > GitHub-modus van het CMS.
 
+## Lees dit eerst: zie je "Unsaved" of een lege lijst?
+
+Open je een pagina en staat er **"Unsaved"** bovenaan, of is de lijst met
+secties leeg terwijl er inhoud hoort te staan — doe dan dit:
+
+1. **Sla niets op.** Niet op Save drukken.
+2. Klik op **Reset**, het pijltje linksboven naast de opslaanknop.
+3. De inhoud verschijnt. Nu kun je gewoon verder.
+
+Wat je ziet is een oude, half afgemaakte bewerking die je browser heeft
+onthouden — van jou, op deze computer, misschien weken geleden. Die versie legt
+zich over wat er werkelijk op de site staat. Reset gooit dat weg en haalt de
+echte inhoud terug.
+
+**Druk je in die toestand op Save, dan overschrijf je de pagina met wat je ziet.**
+Bij een lege lijst betekent dat: alle secties weg.
+
+Dit is niet iets wat wij hebben ingebouwd en het is niet uit te zetten; het zit
+in het CMS zelf. Twijfel je of wat je ziet klopt, klik Reset — je verliest er
+nooit iets echts mee, alleen een niet-opgeslagen bewerking.
+
 ## Waar je inlogt
 
 Het CMS zit op `/keystatic`. Zolang het in local mode staat, werkt dat alleen op
