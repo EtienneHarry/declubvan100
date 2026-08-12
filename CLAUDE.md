@@ -125,6 +125,7 @@ Wie bewaakt wat:
 | Import via `index.js` | oxlint, `no-restricted-imports` |
 | Onbekende tokennaam | TypeScript, via de union-types in `tokens.ts` |
 | CSP per pad, en inline script of stijl in de uitvoer | `scripts/check-csp.mjs` |
+| Vertraging per element zonder `style`-attribuut | `scripts/check-csp.mjs` |
 | Blokelement binnen een inline-element | `scripts/check-nesting.mjs` |
 | Eén `<h1>` vooraan, geen overgeslagen kopniveau | `scripts/check-koppen.mjs` |
 
@@ -206,6 +207,9 @@ van deze drie bestanden en nergens anders:
   geen `case` heeft, is een compileerfout.
 - **`src/lib/pagina.ts`** — CMS-data naar sectieprops. Zie *De zes pagina's*.
 
+`src/lib/` heeft er nog twee die geen koppelbestand zijn: `site.ts` voor de
+basis-URL en `beweging.ts` voor de ploegteller van de scrollonthulling.
+
 ## Componenten
 
 React, want `SectionRenderer.tsx` en de secties zijn dat ook.
@@ -230,12 +234,13 @@ heeft ze nog als je ze terug wilt.
 
 ### Er gaat wél JavaScript naar de browser
 
-Twee bestanden, samen ongeveer 2 kB, allebei uit een Astro-component:
+Drie bestanden, samen ongeveer 3 kB, alle drie uit een Astro-component:
 
 | Bestand | Waarvoor |
 |---|---|
 | `components/navigatie/Navigatie.astro` | De menuknop onder 900px, met focusval |
 | `components/basis/TellerScript.astro` | De teller in de openingskop |
+| `components/beweging/OnthulScript.astro` | De scrollonthulling |
 
 **Een `<script>` hoort in een `.astro`-bestand, nooit in een `.tsx`.** Astro
 bundelt een script uit een Astro-component tot een gewoon bestand; een `<script>`
@@ -305,7 +310,8 @@ Staat er geen enkele sectie die een kop kan dragen, dan heeft de pagina geen
 Een nieuwe sectie landt op vijf plekken. Sla er één over en je merkt het pas
 laat:
 
-1. `src/components/sections/<Naam>.tsx` — de sectie zelf, volgens regel 3 en 4.
+1. `src/components/sections/<Naam>.tsx` — de sectie zelf, volgens regel 3 en 4,
+   met haar onderdelen in de ploeg. Zie *De beweging*.
 2. `src/lib/SectionRenderer.tsx` — het type in de union, een `case` in de
    switch, én een tak in `draagtPaginakop()`.
 3. `src/lib/pagina.ts` — een `case` die het CMS-blok naar sectieprops vertaalt.
@@ -343,6 +349,79 @@ kwamen waren geen van alle zichtbaar op een screenshot; ze kwamen uit
 `getBoundingClientRect()` in de browser. Let op dat het `md:`-breekpunt op de
 viewport slaat: met een klassieke scrollbar is een venster van 768 een viewport
 van 753, en dan vuurt `md:` niet.
+
+## De beweging
+
+Staat er sinds B7. Het concept is **Inslag als karakter, Ploeg als ritme**:
+elementen komen hard binnen met een scherpe afremming en zonder naloop, maar
+nooit tegelijk. Het motion-hoofdstuk van `design-system.md` legt uit waarom elke
+waarde is wat hij is; hier staat hoe het in elkaar zit.
+
+Drie bestanden, en dat zijn ze alle drie:
+
+| Bestand | Wat erin staat |
+|---|---|
+| `src/styles/tokens.css` | de waardes: curve, twee duren, de stap, de afstand, het masker, de zoom |
+| `src/styles/beweging.css` | het mechanisme: de animaties en de vertraging per stap |
+| `src/components/beweging/OnthulScript.astro` | de waarnemer die zegt wanneer |
+
+Een sectie doet mee door twee attributen op een element te zetten:
+`data-onthul="blok"` of `="kop"`, en `data-onthul-stap="0"` tot en met `8`. Het
+nummer komt uit `ploeg()` in `src/lib/beweging.ts`, een teller per sectie: elk
+aanwezig onderdeel schuift één stap op, en wat ontbreekt telt niet mee. Roep hem
+aan in de volgorde waarin de onderdelen in het ritme horen — bij `beeld-tekst`
+staat het beeld soms vooraan in de DOM en telt het toch als laatste mee, want
+daar is het het item.
+
+Vijf dingen die je niet moet weghalen:
+
+- **Alles hangt aan `data-beweging="aan"` op `<html>`.** Dat attribuut zet het
+  script, en alleen als de bezoeker geen gereduceerde beweging vraagt. Zonder
+  JavaScript blijft het weg en staat er dus niets verborgen. Een begintoestand
+  die niet aan dat vlagje hangt, maakt van een uitgevallen script een lege
+  pagina.
+- **Het script meet eerst alles en zet daarna pas het vlagje.** In die volgorde
+  krijgt wat al in beeld staat de verborgen toestand nooit te zien: op het
+  moment dat `beweging.css` gaat gelden, staat er al `klaar` op. Andersom
+  flikkert de hele bovenkant van de pagina.
+- **Het is een animatie en geen transitie.** Met `animation-fill-mode: backwards`
+  valt een element na afloop terug op zijn eigen stijl. Een transitie zou het
+  masker van een kop permanent moeten aanhouden, en dat knipt de staarten van
+  een `p` en een `g` af.
+- **De vertraging staat als attribuutselector**, één regel per stap. Een
+  `style`-attribuut per element zou de CSP breken; `beweging.css` en
+  `beweging.ts` klemmen daarom allebei op acht.
+- **De waarnemer kent twee drempels, `0` en `0.2`.** Die eerste is er voor een
+  element dat zelf hoger is dan het venster — een splitscreen-deur met een lange
+  kop op een telefoon. Dat haalt die 0.2 nooit en zou zonder de tweede drempel
+  helemaal geen melding meer krijgen, en dus voorgoed onzichtbaar blijven.
+
+De zoom bij hover zit in `Beeldvlak` achter `zoom`, en staat alleen aan waar het
+beeld ergens heen gaat: in de praktijk een splitscreen-deur mét knop. Let op dat
+Tailwind 4 `scale-[…]` op de losse `scale`-property zet — een transitie op
+`transform` raakt die niet en dan springt de zoom in één beeldje. Dat is niet te
+zien aan de klassenaam.
+
+### Beweging meet je niet in een pane die niet composit
+
+De Browser-pane rendert alleen als hij in beeld staat. Staat hij dicht, dan is
+`document.visibilityState` `hidden`, vuurt `requestAnimationFrame` niet, gaat
+geen enkele `IntersectionObserver` af en levert een `layout-shift`-waarnemer nul
+regels op. Een CLS van 0 betekent daar dus niets, en een onthulling die niet
+afgaat is geen bewijs dat ze stuk is.
+
+Wat je daar wél kunt meten, en dat is meer dan het klinkt:
+
+- **Layout tegenover verf.** `offsetTop`, `offsetLeft`, `offsetWidth` en
+  `offsetHeight` negeren transforms; `getBoundingClientRect()` niet. Verschillen
+  die alleen in de tweede zitten, zijn per definitie geen layout-verschuiving.
+- **De eindtoestand.** Zet `data-onthul-staat="klaar"` op alles en vergelijk.
+- **De gereduceerde-bewegingstak.** Haal `data-beweging` van `<html>` af: dat is
+  precies wat het script bij `reduce` doet, dus wat je dan ziet, is wat die
+  bezoeker krijgt.
+- **Welke eigenschappen bewegen.** Loop `document.styleSheets` langs en lees uit
+  de keyframes welke properties er in staan. Let op dat je in `@layer`-blokken
+  moet afdalen, anders mis je alles wat Tailwind genereert.
 
 ## De zes pagina's
 
