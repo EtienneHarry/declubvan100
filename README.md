@@ -14,6 +14,25 @@ git clone <deze-repo> klant-naam && cd klant-naam && rm -rf .git && git init && 
 Vul daarna `design-system.md` in — dat document is de bron, `tokens.css` de
 uitwerking ervan. Werk pas daarna de tokens bij, en bouw dan de pagina's.
 
+### Bij elke nieuwe afhankelijkheid: verse installatie
+
+Zodra je iets toevoegt met `npm install <pakket>`, controleer je de boom
+opnieuw vanaf nul:
+
+```bash
+rm -rf node_modules package-lock.json && npm install && npm ls <pakket>
+```
+
+**Een bestaande lockfile verbergt dubbele majors.** Hij houdt vast wat er ooit
+is opgelost, dus alles blijft werken tot iemand anders — of de CI — voor het
+eerst zonder lockfile installeert. Dan pas komen er twee versies van hetzelfde
+pakket naast elkaar te staan, en dat kost een half uur zoeken omdat het
+nergens op een versieprobleem lijkt.
+
+In dit project gebeurde dat drie keer: bij markdoc, bij vite en bij Keystatic.
+Zie *Twee kopieën van hetzelfde pakket* in `CLAUDE.md` voor de symptomen en de
+oplossing.
+
 ## Wat je per klant vervangt
 
 | Bestand | Wat je verandert |
@@ -31,10 +50,12 @@ uitwerking ervan. Werk pas daarna de tokens bij, en bouw dan de pagina's.
 | `npm run build` | Productiebuild naar `dist/` en `.vercel/output/` |
 | `npm run preview` | Build lokaal bekijken |
 | `npm run lint` | oxlint |
-| `npm run check` | oxlint → check-tokens → `astro check` → build. Dit draait ook in CI |
+| `npm run check` | oxlint → check-tokens → `astro check` → build → check-csp → check-nesting. Dit draait ook in CI |
 
-`security.csp` staat aan: de build zet een Content-Security-Policy-meta uit met
-een hash per script. Dat werkt in `build` en `preview`, niet in `dev`.
+Het Content-Security-Policy staat per pad in `vercel.json` en niet in
+`astro.config.mjs`. Die headers komen van Vercel, dus je ziet ze lokaal nooit —
+niet in `dev` en niet in `preview`. `check-csp` is daar de vervanging voor. Zie
+`CLAUDE.md` voor waarom het beleid daar staat.
 
 `npm run check` is de poort: hij moet groen zijn voor je commit. GitHub Actions
 draait hem bij elke push en pull request.
