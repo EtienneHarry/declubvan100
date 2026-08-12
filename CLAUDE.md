@@ -215,7 +215,6 @@ React, want `SectionRenderer.tsx` en de secties zijn dat ook.
 | `Knop` | `components/basis/` | Elke actie. Varianten `vol`, `lijn`, `kaal`; maten `s`, `m`, `l` |
 | `Kaart` | `components/basis/` | Alles wat in een raster staat |
 | `Bovenkop` | `components/basis/` | Het labeltje boven een sectiekop |
-| `Scheiding` | `components/basis/` | Vervangt de `<hr>`, eventueel met schicht |
 | `Teller` | `components/basis/` | Kop waarin een getal naar boven telt |
 | `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
 | `Bliksem` | `components/merk/` | De schicht, in drie rollen |
@@ -224,12 +223,10 @@ De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
 React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
 `fill="currentColor"` en nemen geen props aan.
 
-**Twee bestanden worden nergens geïmporteerd:** `basis/Scheiding.tsx` en
-`sections/KaartenRij.tsx`. `Scheiding` hoort bij het design system en is af, er
-is alleen nog geen sectie die hem inzet. `KaartenRij` komt uit het sjabloon,
-gebruikt tokennamen die hier niet bestaan (`font-kop`, `rounded-zacht`,
-`shadow-diepte-1`) en is geen sectietype — hij staat niet in `SectionRenderer`.
-Ga er niet van uit dat ze werken zonder ze eerst te draaien.
+**Elk bestand in `components/` wordt gebruikt.** `Scheiding` en `KaartenRij`
+stonden er ongebruikt bij en zijn weggehaald; staat hier weer iets dat nergens
+geïmporteerd wordt, dan is dat een fout en geen voorraad. De git-geschiedenis
+heeft ze nog als je ze terug wilt.
 
 ### Er gaat wél JavaScript naar de browser
 

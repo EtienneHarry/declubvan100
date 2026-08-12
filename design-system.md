@@ -82,9 +82,19 @@ kaart krijgt daar bij hover `shadow-licht-2`.
 
 ## Componenten
 
-Zes gebouwd: `Knop`, `Kaart`, `Bovenkop`, `Scheiding` (`components/basis/`),
-`Beeldvlak` (`components/beeld/`) en `Bliksem` (`components/merk/`). De
-propscontracten staan in de bron; hieronder alleen waar de uitwerking afwijkt.
+Vijf gebouwd: `Knop`, `Kaart`, `Bovenkop` (`components/basis/`), `Beeldvlak`
+(`components/beeld/`) en `Bliksem` (`components/merk/`). De propscontracten
+staan in de bron; hieronder alleen waar de uitwerking afwijkt.
+
+**Afwijking — `Scheiding` is er niet.** De bron kent hem als vervanger van de
+`<hr>`, met de schicht erin. Hij is in B2 gebouwd en in B4 weer weggehaald: geen
+enkele sectie zette hem in, en een component dat nergens wordt aangeroepen is
+niet af maar onbewezen. Komt er een sectie die een scheiding nodig heeft, dan
+staat hij in de git-geschiedenis.
+
+Gevolg voor het motief: rol 2 van de bliksemschicht — de scheiding tussen
+secties — heeft daarmee geen gebruiker meer. `Bliksem` ondersteunt hem nog wel.
+Van de drie rollen zijn `groot` en `opsomming` in gebruik.
 
 Alle drie de afwijkingen hebben dezelfde oorzaak: **`security.csp` blokkeert
 inline stijl**, en dit project staat geen spread-attributen, `className` of
