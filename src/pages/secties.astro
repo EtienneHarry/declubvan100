@@ -24,6 +24,10 @@ import foto from '../assets/photo/proost-tap.jpg';
  * Onderaan staat een vijfde blok dat geen variant is maar een regressietest:
  * één splitscreen met een extreem lange kop, die de overflow-bug in Beeldvlak
  * moet blootleggen zodra iemand daar grid-cols-1 of w-full weghaalt.
+ *
+ * Daarna volgt "beweging": elk sectietype staat hier ver genoeg onder de vouw
+ * om de scrollonthulling echt af te zien gaan, en één geval is er alleen voor
+ * het ritme, het masker en de zoom.
  */
 
 const LANGE_KOP =
@@ -576,6 +580,70 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         breedte: 'basis',
         bovenkop: 'Zonder getal',
         kop: 'Honderd plekken',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
+  {
+    /*
+     * Beweging. Deze pagina is de enige plek waar elk sectietype in bewegende
+     * toestand langskomt; op de zes echte pagina's staat nooit alles bij elkaar.
+     *
+     * Waar je op let, en dat is niet te zien op een screenshot — scroll ernaar
+     * toe en kijk:
+     *
+     *   - de ploeg loopt door: bovenkop, kop, dan kaart na kaart, 70ms uit
+     *     elkaar. Vanaf de negende kaart delen ze de laatste stap.
+     *   - de kop fadet niet in maar komt uit een masker omhoog, en de staarten
+     *     van de p en de g blijven heel in het laatste beeldje.
+     *   - de linkerdeur zoomt onder de muis, de rechter niet: die heeft geen
+     *     knop en verwijst dus nergens naar.
+     *   - niets verspringt. De onthulling loopt op transform en opacity, dus de
+     *     hoogte van de pagina verandert er niet van.
+     *
+     * Met "beweging beperken" aan in het systeem staat alles er meteen: geen
+     * verschuiving, geen wachttijd, geen masker en geen zoom.
+     */
+    naam: 'beweging · onthulling, ritme en zoom',
+    secties: [
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Het ritme',
+        kop: 'Acht kaarten na elkaar',
+        items: kolommen(8),
+      },
+      {
+        type: 'splitscreen',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        deuren: [
+          {
+            bovenkop: 'Met knop',
+            kop: 'Deze deur zoomt onder de muis',
+            tekst: LOPENDE_TEKST,
+            knop: { label: 'Ik zoek personeel', href: '/opdrachtgevers' },
+            beeld: BEELD,
+          },
+          {
+            bovenkop: 'Zonder knop',
+            kop: 'Deze gaat nergens heen en beweegt dus niet',
+            tekst: LOPENDE_TEKST,
+            beeld: BEELD,
+          },
+        ],
+      },
+      {
+        type: 'kop-tekst',
+        achtergrond: 'papier',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Het masker',
+        // Staarten in de kop: de p, de g en de j moeten heel blijven.
+        kop: 'Opdrachtgevers, jongens en groepen',
         tekst: LOPENDE_TEKST,
       },
     ],
