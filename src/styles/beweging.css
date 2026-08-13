@@ -50,6 +50,16 @@
     animation-duration: var(--duur-inslag-dekking), var(--duur-inslag-hef);
   }
 
+  /*
+   * De naad tussen twee secties. Geen dekking en geen verplaatsing: er beweegt
+   * hier niets dat gelezen moet worden, dus de 24px-regel is niet in het
+   * geding. De lijn tekent zichzelf van de marge naar buiten.
+   */
+  [data-beweging='aan'] [data-onthul='naad'] {
+    animation-name: inslag-naad;
+    animation-duration: var(--duur-inslag-hef);
+  }
+
   /* In beeld gekomen: de waarnemer laat hem los. */
   [data-beweging='aan'] [data-onthul][data-onthul-staat='loopt'] {
     animation-play-state: running;
@@ -117,6 +127,17 @@
 @keyframes inslag-hef {
   from {
     transform: translateY(var(--inslag-hef));
+  }
+}
+
+/*
+ * De naad. De oorsprong staat als klasse op het element zelf (origin-left), zo
+ * blijft dit beeldje één regel en is aan de naad te zien welke kant hij op
+ * groeit.
+ */
+@keyframes inslag-naad {
+  from {
+    transform: scaleX(0);
   }
 }
 
