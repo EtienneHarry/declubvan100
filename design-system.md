@@ -86,15 +86,30 @@ Vijf gebouwd: `Knop`, `Kaart`, `Bovenkop` (`components/basis/`), `Beeldvlak`
 (`components/beeld/`) en `Bliksem` (`components/merk/`). De propscontracten
 staan in de bron; hieronder alleen waar de uitwerking afwijkt.
 
-**Afwijking — `Scheiding` is er niet.** De bron kent hem als vervanger van de
-`<hr>`, met de schicht erin. Hij is in B2 gebouwd en in B4 weer weggehaald: geen
-enkele sectie zette hem in, en een component dat nergens wordt aangeroepen is
-niet af maar onbewezen. Komt er een sectie die een scheiding nodig heeft, dan
-staat hij in de git-geschiedenis.
+**Afwijking — `Scheiding` heet hier `Naad`, en heeft nog geen schicht.** De bron
+kent hem als vervanger van de `<hr>`, met de schicht erin. Hij is in B2 gebouwd
+en in B4 weggehaald omdat geen enkele sectie hem inzette; in B7 is hij
+teruggekomen als `Naad` (`components/basis/`), en nu met een gebruiker: hij
+staat op elke sectiegrens.
 
-Gevolg voor het motief: rol 2 van de bliksemschicht — de scheiding tussen
-secties — heeft daarmee geen gebruiker meer. `Bliksem` ondersteunt hem nog wel.
-Van de drie rollen zijn `groot` en `opsomming` in gebruik.
+Wat er anders is dan in de bron:
+
+- **Hij wordt niet door een sectie ingezet maar door `SectieLijst`.** Een
+  scheiding is de enige plek die per definitie twee buren heeft, en dat is
+  precies wat een sectie volgens regel 4 niet mag weten. `SectieLijst` weet het
+  wel — daar wordt het kopniveau ook al over de hele lijst berekend.
+- **Hij hoort bij de sectie eronder** en krijgt haar achtergrond en haar
+  breedte. Hij is de bovenrand van wat er komt, niet de voet van wat er was.
+- **De schicht zit er nog niet in.** De richtlijn staat er hoogstens twee per
+  pagina toe; welke twee dat op een pagina zijn, is een redactionele keuze en
+  geen instelling van het component. Zolang die keuze niet gemaakt is, is de
+  naad alleen de lijn.
+- **Geen `role="separator"`.** De koppen structureren de pagina al, en zestien
+  separators erbij zijn ruis voor wie met een schermlezer door de elementen
+  loopt. Hij staat op `aria-hidden`.
+
+Van de drie rollen van de schicht zijn `groot` en `opsomming` in gebruik. Rol 2
+heeft in de lijn zijn plek terug; de schicht erin wacht op die keuze.
 
 Alle drie de afwijkingen hebben dezelfde oorzaak: **`security.csp` blokkeert
 inline stijl**, en dit project staat geen spread-attributen, `className` of
@@ -164,6 +179,17 @@ een regelhoogte onder 1 en op precies 100% knipt het masker de staarten van de
 bovenkop, kop, tekst, dan de items. Onderdelen die er niet zijn tellen niet mee,
 dus een sectie zonder bovenkop begint gewoon op nul en heeft geen gat aan het
 begin. Kaarten en citaten lopen in datzelfde ritme door.
+
+**De naad tussen twee secties trekt zichzelf.** Een haarlijn in `--lijn`, van de
+marge naar rechts, `scaleX` van 0 naar 1 in `--duur-inslag-hef`. Geen dekking en
+geen verplaatsing: er beweegt niets dat gelezen moet worden, dus de regel dat
+verplaatsing altijd omhoog gaat is hier niet in het geding.
+
+Hij krijgt geen eigen stap in de ploeg. Hij staat hoger op de pagina dan de
+bovenkop eronder en haalt de drempel dus vanzelf eerder — daarmee is hij de
+nulde tel zonder dat iemand hem hoeft in te delen. Dat is ook de reden dat hij
+bij herhaling blijft werken: hij is geen gebeurtenis náást de sectie maar de
+eerste beweging ván de sectie. Er staan er zestien op de site.
 
 **Op beeld dat ergens heen gaat staat een lichte zoom.** 1.05 in 700ms, en dus
 ruim trager dan een binnenkomst — die is over voor de zoom halverwege is. Alleen
