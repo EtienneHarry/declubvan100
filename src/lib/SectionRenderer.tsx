@@ -1,3 +1,6 @@
+import { Fragment } from 'react';
+
+import Naad from '../components/basis/Naad';
 import BeeldTekst, { type BeeldTekstProps } from '../components/sections/BeeldTekst';
 import Citaten, { type CitatenProps } from '../components/sections/Citaten';
 import DrieKolommen, { type DrieKolommenProps } from '../components/sections/DrieKolommen';
@@ -108,11 +111,17 @@ export function SectieLijst({ secties }: { secties: Sectie[] }) {
         if (opentPagina) kopGebruikt = true;
 
         return (
-          <SectionRenderer
-            key={`${sectie.type}-${index}`}
-            sectie={sectie}
-            kopNiveau={opentPagina ? 1 : 2}
-          />
+          <Fragment key={`${sectie.type}-${index}`}>
+            {/*
+              De naad hoort bij de sectie eronder en krijgt daarom haar
+              achtergrond en haar breedte: hij is de bovenrand van wat er komt,
+              niet de voet van wat er was. Dit is de enige plek die weet dat er
+              iets boven staat — dezelfde reden waarom het kopniveau hier wordt
+              uitgerekend.
+            */}
+            {index > 0 ? <Naad achtergrond={sectie.achtergrond} breedte={sectie.breedte} /> : null}
+            <SectionRenderer sectie={sectie} kopNiveau={opentPagina ? 1 : 2} />
+          </Fragment>
         );
       })}
     </>

@@ -1,0 +1,166 @@
+/*
+ * Scrollonthulling — Inslag als karakter, Ploeg als ritme.
+ *
+ * Eén mechanisme voor de hele site, geen animatie per sectie. Een element dat
+ * mee wil doen zet twee attributen:
+ *
+ *   data-onthul="blok"   dekking en verplaatsing
+ *   data-onthul="kop"    masker en verplaatsing, zonder dekking
+ *   data-onthul-stap="n" plek in de ploeg, 0 tot en met 8
+ *
+ * De waardes staan in src/styles/tokens.css; hier staat alleen hoe ze werken.
+ * Het motion-hoofdstuk van design-system.md legt uit waarom ze zijn wat ze zijn.
+ *
+ * Drie dingen die eruitzien alsof ze eenvoudiger kunnen en dat niet kunnen:
+ *
+ * 1. ALLES HANGT AAN [data-beweging="aan"] OP <html>. Dat attribuut zet
+ *    OnthulScript.astro, en alleen als de bezoeker geen gereduceerde beweging
+ *    vraagt. Zonder JavaScript blijft het weg en staat er dus niets verborgen.
+ *    Een begintoestand die niet aan een vlagje hangt, maakt van een uitgevallen
+ *    script een lege pagina.
+ *
+ * 2. HET IS EEN ANIMATIE EN GEEN TRANSITIE. Met animation-fill-mode: backwards
+ *    valt een element na afloop terug op zijn eigen stijl: geen clip-path meer,
+ *    geen transform meer, niets dat blijft hangen. Een transitie zou het masker
+ *    permanent moeten aanhouden, en dat knipt de staarten van een p en een g af.
+ *
+ * 3. DE BEGINTOESTAND IS animation-play-state: paused. Een gepauzeerde animatie
+ *    staat op zijn 0%-beeldje, dus dat beeldje is meteen de verborgen toestand
+ *    en die staat maar op één plek. De waarnemer zet hem op running; daarna
+ *    telt de vertraging van de ploeg pas af.
+ *
+ * De vertraging staat als attribuutselector en niet als losse waarde per
+ * element: een style-attribuut wordt door de CSP geblokkeerd. Zie CLAUDE.md.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-beweging='aan'] [data-onthul] {
+    animation-play-state: paused;
+    animation-fill-mode: backwards;
+    animation-timing-function: var(--inslag);
+  }
+
+  [data-beweging='aan'] [data-onthul='blok'] {
+    animation-name: inslag-dekking, inslag-hef;
+    animation-duration: var(--duur-inslag-dekking), var(--duur-inslag-hef);
+  }
+
+  [data-beweging='aan'] [data-onthul='kop'] {
+    animation-name: inslag-masker, inslag-hef;
+    animation-duration: var(--duur-inslag-dekking), var(--duur-inslag-hef);
+  }
+
+  /*
+   * De naad tussen twee secties. Geen dekking en geen verplaatsing: er beweegt
+   * hier niets dat gelezen moet worden, dus de 24px-regel is niet in het
+   * geding. De lijn tekent zichzelf van de marge naar buiten.
+   */
+  [data-beweging='aan'] [data-onthul='naad'] {
+    animation-name: inslag-naad;
+    animation-duration: var(--duur-inslag-hef);
+  }
+
+  /* In beeld gekomen: de waarnemer laat hem los. */
+  [data-beweging='aan'] [data-onthul][data-onthul-staat='loopt'] {
+    animation-play-state: running;
+  }
+
+  /*
+   * Stond al in beeld bij het laden. Geen animatie en geen wachttijd: wie de
+   * pagina opent, kijkt naar iets dat er is en niet naar iets dat nog moet
+   * beginnen.
+   */
+  [data-beweging='aan'] [data-onthul][data-onthul-staat='klaar'] {
+    animation: none;
+  }
+
+  /*
+   * De ploeg. Acht stappen is de bovengrens; daarboven zou een kaart onderaan
+   * een raster van tien meer dan een halve seconde stilstaan nadat hij in beeld
+   * is gekomen. src/lib/beweging.ts klemt op hetzelfde getal.
+   */
+  [data-beweging='aan'] [data-onthul-stap='1'] {
+    animation-delay: calc(1 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='2'] {
+    animation-delay: calc(2 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='3'] {
+    animation-delay: calc(3 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='4'] {
+    animation-delay: calc(4 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='5'] {
+    animation-delay: calc(5 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='6'] {
+    animation-delay: calc(6 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='7'] {
+    animation-delay: calc(7 * var(--ploeg));
+  }
+
+  [data-beweging='aan'] [data-onthul-stap='8'] {
+    animation-delay: calc(8 * var(--ploeg));
+  }
+}
+
+/*
+ * De beeldjes zelf. Twee ervan hebben alleen een `from`: het eindbeeldje is dan
+ * de eigen stijl van het element, dus de onthulling weet niets van de kop of de
+ * kaart waar hij op landt.
+ */
+
+@keyframes inslag-dekking {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes inslag-hef {
+  from {
+    transform: translateY(var(--inslag-hef));
+  }
+}
+
+/*
+ * De naad. De oorsprong staat als klasse op het element zelf (origin-left), zo
+ * blijft dit beeldje één regel en is aan de naad te zien welke kant hij op
+ * groeit.
+ */
+@keyframes inslag-naad {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/*
+ * Het masker onder een kop. Een polygoon en geen inset(), want de vier punten
+ * mogen buiten het element vallen en een negatieve inset niet: het eindbeeldje
+ * loopt onder de kop door zodat de staarten van een p en een g heel blijven.
+ *
+ * Dit beeldje heeft wél een `to`. De eigen stijl van een kop is clip-path: none
+ * en daar valt niet naartoe te interpoleren; na afloop valt hij er vanzelf op
+ * terug, want de vulling staat op backwards.
+ */
+@keyframes inslag-masker {
+  from {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  }
+
+  to {
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% var(--inslag-masker),
+      0% var(--inslag-masker)
+    );
+  }
+}

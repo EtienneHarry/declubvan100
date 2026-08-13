@@ -3,3 +3,6 @@
 @import '@fontsource-variable/archivo/wdth.css';
 @import 'tailwindcss';
 @import './tokens.css';
+/* De scrollonthulling. Staat los van de tokenlaag: hier staat het mechanisme,
+   daar de waardes. Zie src/styles/beweging.css. */
+@import './beweging.css';

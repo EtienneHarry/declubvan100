@@ -19,6 +19,12 @@ export interface BeeldvlakProps {
   verhouding?: Verhouding;
   /** onder = tekst onderin; zij = tekst links gecentreerd. */
   positie?: 'onder' | 'zij';
+  /**
+   * Lichte zoom bij hover over het hele vlak. Alleen aanzetten waar het beeld
+   * klikbaar is of ergens naar verwijst — een foto die nergens heen gaat, hoort
+   * niet te reageren op een muis die er langs komt.
+   */
+  zoom?: boolean;
   children?: ReactNode;
 }
 
@@ -47,11 +53,38 @@ export default function Beeldvlak({
   sluier = 'onder',
   verhouding = 'breed',
   positie = 'onder',
+  zoom = false,
   children,
 }: BeeldvlakProps) {
+  /*
+   * De zoom hangt aan de hover van het hele vlak en niet aan die van de foto:
+   * de bezoeker ziet één deur, niet een foto met tekst erover.
+   *
+   * Op motion-safe, net als de spinner en het skelet. De globale regel voor
+   * gereduceerde beweging zet elke duur op 1ms, en dat zou van deze zoom een
+   * sprong maken in plaats van hem weg te laten.
+   *
+   * 700ms tegen de 340 en 420 van een binnenkomst: de zoom loopt trager uit dan
+   * iets dat binnenkomt. De curve is --soepel-uit, de bestaande uitloop van het
+   * design system; de bron geeft er voor deze zoom geen eigen curve bij.
+   *
+   * De transitie staat op `scale` en niet op `transform`. Tailwind 4 zet
+   * `scale-[…]` op de losse scale-property, en die valt niet onder een
+   * transitie op transform — dan springt de zoom in één beeldje in plaats van
+   * er 700ms over te doen. Dat is niet te zien aan de klassenaam.
+   */
+  const zoomKlassen = zoom
+    ? 'motion-safe:[transition:scale_var(--duur-zoom)_var(--soepel-uit)] ' +
+      'motion-safe:group-hover:scale-[var(--zoom-beeld)]'
+    : '';
+
   return (
-    <div className="relative block overflow-hidden bg-inkt">
-      <img src={bron} alt={alt} className="absolute inset-0 size-full object-cover" />
+    <div className={`relative block overflow-hidden bg-inkt ${zoom ? 'group' : ''}`}>
+      <img
+        src={bron}
+        alt={alt}
+        className={`absolute inset-0 size-full object-cover ${zoomKlassen}`}
+      />
       <span aria-hidden="true" className={`absolute inset-0 ${sluierKlasse[sluier]}`} />
       {/*
         Beeld en inhoud liggen op dezelfde rastercel, zodat de verhouding een

@@ -8,6 +8,7 @@ import {
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
+import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
 
 export interface Citaat {
@@ -40,17 +41,24 @@ export default function Citaten({
 }: CitatenProps) {
   const raster = items.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2';
 
+  // Bovenkop, dan citaat na citaat — hetzelfde ritme als de kaarten.
+  const volgende = ploeg();
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
     >
       <div className={breedteKlasse[breedte]}>
-        {bovenkop?.trim() ? <Bovenkop>{bovenkop}</Bovenkop> : null}
+        {bovenkop?.trim() ? <Bovenkop stap={volgende()}>{bovenkop}</Bovenkop> : null}
         {items.length > 0 ? (
           <ul className={`mt-10 grid list-none gap-10 p-0 first:mt-0 ${raster}`}>
             {items.map((item, index) => (
-              <li key={`${item.naam ?? 'citaat'}-${index}`}>
+              <li
+                key={`${item.naam ?? 'citaat'}-${index}`}
+                data-onthul="blok"
+                data-onthul-stap={volgende()}
+              >
                 <figure className="border-l border-lijn-sterk pl-6">
                   {/*
                     De leesmaat hoort ook op een citaat. Bij meerdere citaten

@@ -91,6 +91,29 @@
   --soepel-inuit: cubic-bezier(0.65, 0, 0.35, 1);
   --verschuif: 8px; /* standaard intree-afstand */
   --indruk: 0.985; /* scale bij :active */
+
+  /*
+   * Inslag als karakter, Ploeg als ritme.
+   *
+   * Het gedrag van de bliksemschicht, vertaald naar timing: een element komt
+   * hard binnen, remt scherp af en staat dan stil. Kort en zeker, niet zacht en
+   * niet traag — maar nooit met z'n allen tegelijk. Binnen een sectie volgen ze
+   * elkaar op in een strak ritme.
+   *
+   * Deze zeven horen bij elkaar en bij src/styles/beweging.css. Zie het
+   * motion-hoofdstuk in design-system.md voor de reden achter elke waarde.
+   */
+  --inslag: cubic-bezier(0.12, 0.9, 0.1, 1); /* alles wat binnenkomt */
+  --duur-inslag-dekking: 340ms; /* de dekking, en het masker onder een kop */
+  --duur-inslag-hef: 420ms; /* de verplaatsing */
+  --ploeg: 70ms; /* tussen twee opeenvolgende elementen in één sectie */
+  --inslag-hef: 24px; /* de afstand, altijd van onder naar boven */
+  /* Hoe ver het masker onder de kop doorloopt. Een kop staat op een
+     regelhoogte onder 1, dus het masker knipt op precies 100% de staarten van
+     de p en de g af in het laatste beeldje. Deze marge houdt ze heel. */
+  --inslag-masker: 112%;
+  --zoom-beeld: 1.05; /* hover op een beeld dat ergens heen gaat */
+  --duur-zoom: 700ms; /* diezelfde zoom, trager dan de binnenkomst */
 }
 
 /* ---------------------------------------------------------------------------
@@ -358,6 +381,18 @@
     --duur-4: 1ms;
     --verschuif: 0px;
     --indruk: 1;
+
+    /* De scrollonthulling hangt hier niet aan: beweging.css staat helemaal
+       binnen (prefers-reduced-motion: no-preference) en het script zet zijn
+       vlagje niet. Deze zes zijn de tweede lijn — komt een van deze tokens
+       ooit ergens buiten dat mediablok te staan, dan blijft de uitkomst dat er
+       niets verschuift, niets wacht en niets zoomt. */
+    --duur-inslag-dekking: 1ms;
+    --duur-inslag-hef: 1ms;
+    --duur-zoom: 1ms;
+    --ploeg: 0ms;
+    --inslag-hef: 0px;
+    --zoom-beeld: 1;
   }
 
   *,

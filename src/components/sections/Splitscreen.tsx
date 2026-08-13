@@ -7,6 +7,7 @@ import {
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
+import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
 import Knop from '../basis/Knop';
 import Beeldvlak from '../beeld/Beeldvlak';
@@ -43,6 +44,14 @@ export default function Splitscreen({
   breedte,
   deuren,
 }: SplitscreenProps) {
+  /*
+   * De deur is hier het element in het ritme, niet zijn onderdelen. Een
+   * splitscreen heeft geen sectiekop en geen sectietekst; wat de bezoeker ziet
+   * zijn twee vlakken, en die horen na elkaar binnen te komen en niet ieder in
+   * acht stukjes. De bovenkop binnenin krijgt daarom geen eigen stap.
+   */
+  const volgende = ploeg();
+
   return (
     <section
       className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
@@ -72,7 +81,12 @@ export default function Splitscreen({
               );
 
               return (
-                <li key={`${deur.kop}-${index}`} className="flex">
+                <li
+                  key={`${deur.kop}-${index}`}
+                  data-onthul="blok"
+                  data-onthul-stap={volgende()}
+                  className="flex"
+                >
                   {deur.beeld?.bron.trim() ? (
                     <div className="w-full">
                       {/*
@@ -82,11 +96,17 @@ export default function Splitscreen({
                         deel van het verloop, oftewel op onbehandelde foto. De
                         vlakke sluier van 62% dekt overal.
                       */}
+                      {/*
+                        De zoom alleen als de deur ergens heen gaat. Zonder knop
+                        is het een vlak met tekst en verwijst het nergens naar;
+                        dan hoort er ook niets te bewegen onder de muis.
+                      */}
                       <Beeldvlak
                         bron={deur.beeld.bron}
                         alt={deur.beeld.alt}
                         sluier="vlak"
                         verhouding="breed"
+                        zoom={Boolean(deur.knop)}
                       >
                         {inhoud}
                       </Beeldvlak>
