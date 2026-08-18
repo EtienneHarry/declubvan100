@@ -877,6 +877,31 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   },
   {
     /*
+     * Fotokaarten: het drieluik uit de mockup. Drie staande foto's op 4:5 met
+     * de Engelse regel eronder, en een vierde kaart zónder foto ernaast — de
+     * rij moet heel blijven als een redacteur er één vergeet.
+     */
+    naam: 'restyle · fotokaarten op 4:5',
+    secties: [
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Het drieluik',
+        kop: 'Drie fotokaarten en een kale kaart',
+        items: [
+          { kop: 'Work when you want.', beeld: STAAND_BEELD },
+          { kop: 'Where you want.', beeld: STAAND_BEELD },
+          { kop: 'With people you like.', beeld: STAAND_BEELD },
+          { kop: 'Zonder foto', tekst: LOPENDE_TEKST },
+        ],
+        handschrift: 'Work when you want. Where you want. With people you like.',
+      },
+    ],
+  },
+  {
+    /*
      * De landingshero: foto van rand tot rand, het eerste scherm hoog, inhoud
      * onderin op de containerbreedte. De tweede hero heeft hetzelfde vinkje
      * aan en is geen opening meer: die hoort terug te vallen op de gewone

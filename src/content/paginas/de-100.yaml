@@ -64,14 +64,29 @@ secties:
           kop: Work when you want.
           tekst: ""
           href: ""
+          beeld:
+            discriminant: true
+            value:
+              bron: /beeld/lach-deur.jpg
+              alt: Clublid lacht in een deuropening, de schicht op zijn borst
         - nummer: ""
           kop: Where you want.
           tekst: ""
           href: ""
+          beeld:
+            discriminant: true
+            value:
+              bron: /beeld/staff-wanted.jpg
+              alt: Aanplakbiljet met de tekst staff wanted tegen een muur
         - nummer: ""
           kop: With people you like.
           tekst: ""
           href: ""
+          beeld:
+            discriminant: true
+            value:
+              bron: /beeld/shirt-logo.jpg
+              alt: Clublid toont het shirt met De Club van 100 op de borst
       handschrift: Work when you want. Where you want. With people you like.
   - discriminant: kop-tekst
     value:

@@ -137,6 +137,7 @@ export async function leesPagina(naam: PaginaNaam) {
             kop: item.kop,
             tekst: tekstUit(item.tekst),
             href: tekstUit(item.href),
+            beeld: item.beeld.discriminant ? (beeldUit(item.beeld.value) ?? undefined) : undefined,
           })),
           handschrift: tekstUit(blok.value.handschrift),
         };

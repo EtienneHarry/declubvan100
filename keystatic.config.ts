@@ -222,12 +222,11 @@ function beeldVeld() {
  * het veld leeg mag blijven — zou precies de controle slopen die de
  * toegankelijkheid bewaakt.
  */
-function optioneelBeeldVeld() {
+function optioneelBeeldVeld(label: string, beschrijving: string) {
   return fields.conditional(
     fields.checkbox({
-      label: 'Foto op de achtergrond',
-      description:
-        'Met een foto komt de tekst op het beeld te staan, met een donkere laag ertussen. Zonder foto staat de sectie op een egaal vlak.',
+      label,
+      description: beschrijving,
       defaultValue: false,
     }),
     {
@@ -266,7 +265,10 @@ const sectieBlokken = fields.blocks(
             'Tweede knop — mag je overslaan',
             'Een tweede actie, minder opvallend dan de eerste.',
           ),
-          beeld: optioneelBeeldVeld(),
+          beeld: optioneelBeeldVeld(
+            'Foto op de achtergrond',
+            'Met een foto komt de tekst op het beeld te staan, met een donkere laag ertussen. Zonder foto staat de sectie op een egaal vlak.',
+          ),
           schicht: fields.checkbox({
             label: 'Bliksemschicht op de achtergrond',
             description:
@@ -395,6 +397,10 @@ const sectieBlokken = fields.blocks(
                 validation: { length: { min: 1 } },
               }),
               tekst: tekstVeld('De tekst op de kaart.'),
+              beeld: optioneelBeeldVeld(
+                'Foto boven de kaart',
+                'De foto staat boven de tekst, altijd staand op 4:5. De kaarten naast elkaar houden zo dezelfde vorm.',
+              ),
               href: fields.text({
                 label: 'Waar de kaart heen gaat — mag je overslaan',
                 description: 'Vul je dit in, dan wordt de hele kaart klikbaar.',

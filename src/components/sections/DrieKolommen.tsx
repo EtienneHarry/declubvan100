@@ -19,6 +19,8 @@ export interface Kolom {
   kop: string;
   tekst?: string;
   href?: string;
+  /** Foto boven de kaart, altijd 4:5. Zie Kaart. */
+  beeld?: { bron: string; alt: string };
 }
 
 export interface DrieKolommenProps {
@@ -105,6 +107,7 @@ export default function DrieKolommen({
               >
                 <div className="flex w-full flex-col">
                   <Kaart
+                    beeld={item.beeld}
                     nummer={item.nummer}
                     kop={item.kop}
                     tekst={item.tekst}
