@@ -46,7 +46,33 @@ secties:
       kop: >-
         Voor mensen die graag werken, maar niet willen dat hun *[hele agenda]
         wordt bepaald door hun bijbaan.*
-      tekst: ""
+      # Letterlijk uit de FAQ in de brief; er is niets bijverzonnen.
+      tekst: >-
+        Geen vast rooster, geen minimum aantal diensten, geen verplicht aantal
+        uren. Je kiest zelf welke diensten je aanneemt — maar een aangenomen
+        dienst is wel een afspraak.
+  - discriminant: drie-kolommen
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: ""
+      kop: ""
+      items:
+        - nummer: ""
+          kop: Work when you want.
+          tekst: ""
+          href: ""
+        - nummer: ""
+          kop: Where you want.
+          tekst: ""
+          href: ""
+        - nummer: ""
+          kop: With people you like.
+          tekst: ""
+          href: ""
+      handschrift: Work when you want. Where you want. With people you like.
   - discriminant: kop-tekst
     value:
       weergave:
@@ -75,28 +101,6 @@ secties:
         alt: Vuurkorf op het festivalterrein in tegenlicht
       verhouding: breed
       beeldPositie: rechts
-  - discriminant: drie-kolommen
-    value:
-      weergave:
-        achtergrond: bruin
-        ruimte: sectie-m
-        breedte: basis
-      bovenkop: ""
-      kop: ""
-      items:
-        - nummer: ""
-          kop: Work when you want.
-          tekst: ""
-          href: ""
-        - nummer: ""
-          kop: Where you want.
-          tekst: ""
-          href: ""
-        - nummer: ""
-          kop: With people you like.
-          tekst: ""
-          href: ""
-      handschrift: Work when you want. Where you want. With people you like.
   - discriminant: accordeon
     value:
       weergave:

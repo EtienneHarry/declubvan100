@@ -29,7 +29,11 @@ secties:
         breedte: basis
       bovenkop: ""
       kop: Geen nummertjes, maar [1 van de 100]
-      tekst: ""
+      # Stond op de home in de splitscreen-deur; die sectie is met de
+      # landingspagina vervallen en de zin hoort hier.
+      tekst: >-
+        Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe
+        een tap onder druk werkt.
   - discriminant: drie-kolommen
     value:
       weergave:
