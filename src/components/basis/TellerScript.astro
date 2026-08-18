@@ -22,7 +22,22 @@
     // Niet "heel snel tellen" — dat is precies wat deze bezoeker niet vraagt.
     const rustig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (Number.isFinite(doel) && !rustig) {
+    /*
+     * Eén keer per bezoek, niet één keer per paginalading. Wie tijdens dezelfde
+     * sessie terugkomt op de home heeft de telling al gezien; dan staat er
+     * meteen 100. sessionStorage en niet localStorage, want een nieuw bezoek
+     * mag hem wél opnieuw krijgen — en het zit in een try, want in een privé-
+     * venster kan elke toegang gooien en dan telt hij gewoon weer.
+     */
+    const alGeteld = (() => {
+      try {
+        return window.sessionStorage.getItem('teller-geteld') === 'ja';
+      } catch {
+        return false;
+      }
+    })();
+
+    if (Number.isFinite(doel) && !rustig && !alGeteld) {
       /*
        * Duur en curve komen uit de tokenlaag, niet uit dit bestand. --duur-4 is
        * in het design system de duur voor "beeld dat in beeld komt", en dat is
@@ -72,6 +87,12 @@
       let gestart = false;
 
       function tel() {
+        try {
+          window.sessionStorage.setItem('teller-geteld', 'ja');
+        } catch {
+          // Geen opslag is geen bezwaar; dan telt hij volgende keer opnieuw.
+        }
+
         const begin = performance.now();
 
         function stap(nu: number) {
