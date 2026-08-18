@@ -77,6 +77,30 @@ secties:
           tekst: ""
           href: ""
       handschrift: Work when you want. Where you want. With people you like.
+  - discriminant: accordeon
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: smal
+      bovenkop: ""
+      kop: Veelgestelde vragen
+      items:
+        - vraag: Wat verdien ik?
+          antwoord: |
+            Je wordt verloond via 365Werk. Je loon hangt af van je leeftijd en de functie, en je ziet vooraf wat een dienst je oplevert. De week na je gewerkte dienst staat het op je rekening — uitbetaling is altijd op donderdag.
+        - vraag: Wat zijn de eisen?
+          antwoord: |
+            Je bent minimaal 18, sociaal en representatief, en je komt afspraken na. Horeca-ervaring vermeld je bij je aanmelding; een horecadiploma is niet nodig. Vertel vooral waar je enthousiast van wordt.
+        - vraag: Hoe werkt aanmelden en hoe lang duurt het?
+          antwoord: |
+            Je meldt je online aan, vult je horeca-ervaring in en vertelt waar je enthousiast van wordt. Daarna volgt een korte kennismaking en beoordelen we of je bij De Club past. Past het? Dan kun je aan de slag.
+        - vraag: Zit ik ergens aan vast?
+          antwoord: |
+            Nee. Geen vast rooster, geen minimum aantal diensten, geen verplicht aantal uren. Je kiest zelf welke diensten je aanneemt — maar een aangenomen dienst is wel een afspraak.
+        - vraag: Hoe word ik uitbetaald en wanneer?
+          antwoord: |
+            Via 365Werk, geen zzp-constructie. Je gewerkte uren worden doorgegeven en de week na je dienst uitbetaald, altijd op donderdag.
   - discriminant: oproep
     value:
       weergave:
