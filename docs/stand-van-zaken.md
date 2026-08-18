@@ -166,24 +166,6 @@ redenering, geen meting.
 langs en lees een `PerformanceObserver` op `layout-shift` uit. Zie *Beweging
 meet je niet in een pane die niet composit* in `CLAUDE.md` voor waar je in loopt.
 
-### Welke twee naden krijgen de schicht
-
-Uit B7, en het is een redactionele keuze en geen technische. Op elke sectiegrens
-staat sinds B7 een haarlijn (`Naad`), maar dat is alleen de lijnhelft van rol 2
-van de bliksemschicht. De richtlijn staat de schicht in die lijn **hoogstens
-twee keer per pagina** toe.
-
-**Wat er moet gebeuren.** Per pagina aanwijzen welke twee grenzen dat verdienen
-— de plekken waar de pagina echt van onderwerp wisselt — en pas dan bouwen. De
-schicht komt in `Naad` binnen, niet in een tweede component; `Bliksem`
-ondersteunt `rol="scheiding"` al.
-
-**De valkuil.** De naad staat vlak boven de bovenkop van de volgende sectie, dus
-allebei de waarnemers gaan binnen ongeveer honderd milliseconde af. Wordt de
-schicht een eigen gebeurtenis met een eigen duur, dan krijg je bij elke
-overgang een keten van vier of vijf tellen. Bij twee per pagina is dat te
-verdedigen; het is precies de reden dat het er niet zestien mogen zijn.
-
 ### Kleine dingen
 
 - **Enthousiast, Ervaren en Trots** op `/de-100` dragen alleen het woord. Bron

@@ -672,45 +672,6 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   },
   {
     /*
-     * De naad, acht keer achter elkaar.
-     *
-     * De rest van deze pagina levert er al ruim dertig, maar verspreid: één per
-     * sectiegrens, met hele schermen ertussen. Hier staan ze dicht op elkaar,
-     * want de vraag bij een element dat op élke grens terugkomt is niet of het
-     * de eerste keer mooi is maar of het de zevende keer nog wegvalt.
-     *
-     * Waar je op let:
-     *
-     *   - hij trekt zichzelf van de marge naar rechts, in 420ms, en staat dan
-     *     stil. Geen dekking, geen verschuiving.
-     *   - hij lijnt uit met de tekst van de sectie eronder, want hij is haar
-     *     bovenrand en niet de voet van de vorige.
-     *   - hij komt niet vóór de eerste sectie en niet na de laatste.
-     *   - de laatste twee staan op papier: daar kantelt --lijn mee en wordt de
-     *     lijn donker op licht in plaats van licht op donker.
-     */
-    naam: 'naad · acht op een rij',
-    secties: [
-      ...Array.from({ length: 6 }, (_, index) => ({
-        type: 'kop-tekst' as const,
-        achtergrond: 'bruin' as const,
-        ruimte: 'sectie-s' as const,
-        breedte: 'basis' as const,
-        kop: `Sectie ${index + 1} van 8`,
-        tekst: LOPENDE_TEKST,
-      })),
-      ...Array.from({ length: 2 }, (_, index) => ({
-        type: 'kop-tekst' as const,
-        achtergrond: 'papier' as const,
-        ruimte: 'sectie-s' as const,
-        breedte: 'basis' as const,
-        kop: `Sectie ${index + 7} van 8, op papier`,
-        tekst: LOPENDE_TEKST,
-      })),
-    ],
-  },
-  {
-    /*
      * Het accordeon, in de vier omstandigheden waar een sjabloon op stukloopt.
      * Dezelfde vier als bij de andere acht types: een te lange kop, een lege
      * tekst, weinig items en veel items.

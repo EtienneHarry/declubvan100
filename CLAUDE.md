@@ -220,7 +220,6 @@ React, want `SectionRenderer.tsx` en de secties zijn dat ook.
 | `Kaart` | `components/basis/` | Alles wat in een raster staat |
 | `Bovenkop` | `components/basis/` | Het labeltje boven een sectiekop |
 | `Teller` | `components/basis/` | Kop waarin een getal naar boven telt |
-| `Naad` | `components/basis/` | De haarlijn tussen twee secties |
 | `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
 | `Bliksem` | `components/merk/` | De schicht, in drie rollen |
 | `Koptekst` | `components/basis/` | Vertaalt `[...]` en `{...}` in een sectiekop naar een haal |
@@ -431,7 +430,7 @@ De haal — de ovaal en het onderstreepje uit B8 — hangt eraan maar staat er
 naast; zie *De haal* hieronder.
 
 Een sectie doet mee door twee attributen op een element te zetten:
-`data-onthul="blok"`, `="kop"` of `="naad"`, en `data-onthul-stap="0"` tot en met `8`. Het
+`data-onthul="blok"` of `="kop"`, en `data-onthul-stap="0"` tot en met `8`. Het
 nummer komt uit `ploeg()` in `src/lib/beweging.ts`, een teller per sectie: elk
 aanwezig onderdeel schuift één stap op, en wat ontbreekt telt niet mee. Roep hem
 aan in de volgorde waarin de onderdelen in het ritme horen — bij `beeld-tekst`
@@ -461,32 +460,17 @@ Vijf dingen die je niet moet weghalen:
   kop op een telefoon. Dat haalt die 0.2 nooit en zou zonder de tweede drempel
   helemaal geen melding meer krijgen, en dus voorgoed onzichtbaar blijven.
 
-### De naad tussen twee secties
+### De naad is weg
 
-Sinds B7 staat op elke sectiegrens een haarlijn die zichzelf trekt: `Naad` in
-`components/basis/`, gerenderd door `SectieLijst`. Dat is de lijnhelft van rol 2
-van de bliksemschicht; de schicht zelf zit er nog niet in, want de richtlijn
-staat er hoogstens twee per pagina toe en welke twee dat zijn is een
-redactionele keuze. Zestien naden op de site, 43 op `/secties`.
+Van B7 tot B9 stond op elke sectiegrens een haarlijn die zichzelf trok (`Naad`).
+De mockup heeft geen scheidingslijnen, dus hij is verwijderd: het component, de
+aanroep in `SectieLijst`, het beeldje `inslag-naad` in `beweging.css` en het
+geval op `/secties`. De git-geschiedenis heeft hem nog, mét de vier
+ontwerpbeslissingen die erin zaten — wie hem terughaalt, leest eerst dat
+commentaar.
 
-Vier dingen die je niet moet weghalen:
-
-- **Hij hoort bij de sectie eronder** en krijgt haar `achtergrond` en haar
-  `breedte` mee. Hij schildert die achtergrond ook zelf: zonder dat staat de
-  strook van één pixel op de bodykleur, en dat is op een lichte pagina een
-  donkere streep tussen twee lichte vlakken.
-- **Hij staat in `SectieLijst` en nergens anders.** Een scheiding is het enige
-  element dat per definitie twee buren heeft, en dat is precies wat een sectie
-  volgens regel 4 niet mag weten.
-- **Hij krijgt geen `data-onthul-stap`.** Hij staat hoger op de pagina dan de
-  bovenkop eronder en haalt de drempel dus vanzelf eerder. Een eigen stap zou
-  betekenen dat elke sectie op 1 begint, en dat is een prop door alle acht
-  sectietypes voor 70ms winst.
-- **`[&:not(:has(+_section))]:hidden` is geen sierklasse.** Een rijke-tekst
-  zonder kop en zonder inhoud rendert niets, en dan blijft zijn naad achter als
-  losse streep. Gemeten op `/secties`: precies één geval, en die is nu verborgen.
-  Het alternatief was `SectieLijst` laten uitrekenen wat `RijkeTekst` gaat
-  renderen — dezelfde voorwaarde op twee plekken.
+Daarmee is rol 2 van de bliksemschicht (`scheiding`) opnieuw zonder gebruiker.
+`Bliksem` ondersteunt de rol nog; er is alleen geen plek meer die hem inzet.
 
 ### De haal — de ovaal en het onderstreepje
 
