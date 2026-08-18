@@ -134,6 +134,7 @@ export async function leesPagina(naam: PaginaNaam) {
             tekst: tekstUit(item.tekst),
             href: tekstUit(item.href),
           })),
+          handschrift: tekstUit(blok.value.handschrift),
         };
 
       case 'citaten':

@@ -632,6 +632,10 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         bovenkop: 'Het ritme',
         kop: 'Acht kaarten na elkaar',
         items: kolommen(8),
+        // De handgeschreven regel hoort achteraan in de ploeg: hij herhaalt wat
+        // de kaarten net gezegd hebben, dus hij komt pas als die er staan. Hij
+        // staat altijd op aria-hidden — zie Handschrift.
+        handschrift: 'Acht kaarten na elkaar',
       },
       {
         type: 'splitscreen',

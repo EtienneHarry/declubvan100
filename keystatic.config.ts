@@ -368,6 +368,11 @@ const sectieBlokken = fields.blocks(
               itemLabel: (props) => props.fields.kop.value || 'Kaart zonder kop',
             },
           ),
+          handschrift: fields.text({
+            label: 'Handgeschreven regel eronder — mag je overslaan',
+            description:
+              'Eén regel in het handschrift, onder de kaarten. Vul hier alleen iets in wat de kaarten hierboven al zeggen: de regel is versiering en wordt niet voorgelezen. Eén per pagina, niet één per sectie.',
+          }),
         },
         { label: 'Kaarten naast elkaar' },
       ),

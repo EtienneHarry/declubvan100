@@ -1,4 +1,4 @@
-titel: De 100 — De Club van 100
+titel: Voor wie is de club? — De Club van 100
 beschrijving: >-
   Honderd plekken. Niet iedereen komt erdoor. Iedereen die hier staat, heeft
   honderd avonden achter een bar gestaan.
@@ -10,8 +10,8 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: De 100
-      kop: Honderd plekken
-      tekst: Je hoort erbij of je hoort er niet bij.
+      kop: Voor wie is de club?
+      tekst: Honderd plekken. Je hoort erbij of je hoort er niet bij.
       knop:
         label: ""
         href: ""
@@ -39,6 +39,17 @@ secties:
         achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
+      bovenkop: ""
+      # De brief levert alleen de staart van deze zin, met het beletselteken
+      # erbij. De eerste helft staat niet in bron/ en is dus niet ingevuld.
+      kop: …maar niet willen dat hun [hele agenda] wordt bepaald door hun bijbaan
+      tekst: ""
+  - discriminant: kop-tekst
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: basis
       bovenkop: Waarom honderd
       kop: Het is de grens.
       tekst: >-
@@ -51,20 +62,21 @@ secties:
         ruimte: sectie-m
         breedte: basis
       bovenkop: ""
-      kop: Enthousiast, ervaren, trots
+      kop: ""
       items:
-        - nummer: "01"
-          kop: Enthousiast
+        - nummer: ""
+          kop: Work when you want.
           tekst: ""
           href: ""
-        - nummer: "02"
-          kop: Ervaren
+        - nummer: ""
+          kop: Where you want.
           tekst: ""
           href: ""
-        - nummer: "03"
-          kop: Trots
+        - nummer: ""
+          kop: With people you like.
           tekst: ""
           href: ""
+      handschrift: Work when you want. Where you want. With people you like.
   - discriminant: oproep
     value:
       weergave:
@@ -72,7 +84,7 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: Meld je
-      kop: Niet iedereen komt erdoor.
+      kop: Omdat groter niet altijd {beter is.}
       tekst: >-
         Denk je dat jij een van de betere achter de bar van de stad bent, laat
         het weten.

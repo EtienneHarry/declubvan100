@@ -12,18 +12,19 @@ secties:
         achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
-      bovenkop: In en rond Groningen
-      kop: Een van de 100
+      bovenkop: Meer dan een uitzendbureau. Echte mensen.
+      kop: De Club van 100
       tekst: >-
         Geen uitzendbureau, maar een selectie van honderd horeca- en
         eventprofessionals in en rond Groningen.
       knop:
-        label: ""
-        href: ""
+        label: Aanmelden
+        href: /de-100
       tweedeKnop:
-        label: ""
-        href: ""
+        label: Inhuren
+        href: /opdrachtgevers
       schicht: true
+      dubbellaags: true
   - discriminant: splitscreen
     value:
       weergave:

@@ -1,4 +1,4 @@
-titel: Opdrachtgevers — De Club van 100
+titel: Voor ondernemers — De Club van 100
 beschrijving: >-
   Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe een tap
   onder druk werkt. Wij regelen de mensen in en rond Groningen.
@@ -10,8 +10,10 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: Opdrachtgevers
-      kop: Jij hebt een avond te draaien
-      tekst: Wij regelen de mensen en zorgen dat er niets misgaat.
+      kop: Voor ondernemers
+      tekst: >-
+        Jij hebt een avond te draaien. Wij regelen de mensen en zorgen dat er
+        niets misgaat.
       knop:
         label: ""
         href: ""
@@ -19,6 +21,15 @@ secties:
         label: ""
         href: ""
       schicht: true
+  - discriminant: kop-tekst
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: ""
+      kop: Geen nummertjes, maar [1 van de 100]
+      tekst: ""
   - discriminant: drie-kolommen
     value:
       weergave:
@@ -82,7 +93,7 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: Aan de slag
-      kop: Vertel wat je nodig hebt.
+      kop: Goede mensen op het moment dat je ze {nodig hebt.}
       tekst: Mail wat het is en wanneer. Je hoort binnen een dag van ons.
       knop:
         label: Ik zoek personeel

@@ -148,23 +148,25 @@ export default function Hero({
           className="mt-10 flex flex-wrap items-center gap-4"
         >
           {/*
-            De primaire actie staat sinds de restyle op vuur. Dat is de knop uit de
-            mockup, en het is de enige plek waar die kleur op de site terechtkomt: als
-            vlak, met witte tekst, nooit als woord op bruin.
+            TWEE GEVULDE KNOPPEN, EN DAT IS HIER GEEN FOUT.
 
-            De tweede actie blijft een lijnknop. De mockup zet er twee gevulde naast
-            elkaar — zwart en rood — maar welke van de twee acties op deze pagina
-            welke kleur verdient, hangt aan de nieuwe koppen en die komen pas in
-            sessie 2. Tot die tijd blijft de regel staan die er al was: één gevulde
-            knop per blikveld.
+            De regel "één gevulde knop per blikveld" gaat over rangorde: van twee
+            acties is er één de belangrijkste. In de hero staan geen twee acties
+            van verschillend gewicht maar de twee deuren van de site — inhuren en
+            aanmelden — en die zijn even zwaar. De kleur is daar geen nadruk maar
+            een code: zwart voor wie zich aanmeldt, rood voor wie inhuurt, precies
+            zoals de mockup ze zet.
+
+            Overal anders geldt de regel gewoon. Oproep zet zijn tweede actie nog
+            steeds als lijnknop neer, want daar ís er wél een eerste.
           */}
           {knop ? (
-            <Knop variant="vuur" maat="l" href={knop.href}>
+            <Knop variant="inkt" maat="l" href={knop.href}>
               {knop.label}
             </Knop>
           ) : null}
           {tweedeKnop ? (
-            <Knop variant="lijn" maat="l" href={tweedeKnop.href}>
+            <Knop variant="vuur" maat="l" href={tweedeKnop.href}>
               {tweedeKnop.label}
             </Knop>
           ) : null}
