@@ -42,6 +42,16 @@ export interface BeeldvlakProps {
    * niet te reageren op een muis die er langs komt.
    */
   zoom?: boolean;
+  /**
+   * Het vlak vult het eerste scherm in plaats van een verhouding aan te houden.
+   * Voor de landingshero, en nergens anders: één beeldvullend vlak per pagina
+   * is een opening, twee is behang. De `verhouding` doet in deze stand niets.
+   *
+   * De horizontale marge vervalt hier ook: de inhoud levert zijn eigen
+   * container aan, zodat de tekst uitlijnt met de rest van de pagina in plaats
+   * van met de vaste binnenrand van het vlak.
+   */
+  vullend?: boolean;
   children?: ReactNode;
 }
 
@@ -99,6 +109,7 @@ export default function Beeldvlak({
   verhouding = 'breed',
   positie = 'onder',
   zoom = false,
+  vullend = false,
   children,
 }: BeeldvlakProps) {
   const licht = toon === 'licht';
@@ -156,16 +167,24 @@ export default function Beeldvlak({
         secties.astro bewaakt dit met een regressievariant.
       */}
       <div className="relative grid grid-cols-1">
+        {/*
+          De spacer bepaalt de maat: een verhouding in de gewone stand, het
+          eerste scherm in de vullende. min-h en geen h, want een lange kop op
+          een klein scherm moet het vlak kunnen oprekken — dezelfde
+          ondergrens-gedachte als bij de verhouding.
+        */}
         <div
           aria-hidden="true"
-          className={`col-start-1 row-start-1 w-full ${verhoudingKlasse[verhouding]}`}
+          className={`col-start-1 row-start-1 w-full ${vullend ? 'min-h-svh' : verhoudingKlasse[verhouding]}`}
         />
         {children ? (
           <div
             className={
-              positie === 'zij'
-                ? `col-start-1 row-start-1 flex flex-col items-start justify-center p-8 md:max-w-[62%] ${licht ? 'text-inkt' : 'text-krijt'}`
-                : `col-start-1 row-start-1 flex flex-col justify-end p-8 ${licht ? 'text-inkt' : 'text-krijt'}`
+              vullend
+                ? `col-start-1 row-start-1 flex flex-col justify-end py-sectie-s ${licht ? 'text-inkt' : 'text-krijt'}`
+                : positie === 'zij'
+                  ? `col-start-1 row-start-1 flex flex-col items-start justify-center p-8 md:max-w-[62%] ${licht ? 'text-inkt' : 'text-krijt'}`
+                  : `col-start-1 row-start-1 flex flex-col justify-end p-8 ${licht ? 'text-inkt' : 'text-krijt'}`
             }
           >
             {children}

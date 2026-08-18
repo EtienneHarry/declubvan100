@@ -877,6 +877,42 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   },
   {
     /*
+     * De landingshero: foto van rand tot rand, het eerste scherm hoog, inhoud
+     * onderin op de containerbreedte. De tweede hero heeft hetzelfde vinkje
+     * aan en is geen opening meer: die hoort terug te vallen op de gewone
+     * beeldbehandeling, met verhouding en containerbreedte.
+     */
+    naam: 'restyle · de beeldvullende hero',
+    secties: [
+      {
+        type: 'hero',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        bovenkop: 'Meer dan een uitzendbureau. Echte mensen.',
+        kop: 'De Club van 100',
+        tekst: LOPENDE_TEKST,
+        knop: { label: 'Aanmelden', href: '/de-100' },
+        tweedeKnop: { label: 'Inhuren', href: '/opdrachtgevers' },
+        beeld: BEELD,
+        vullend: true,
+        dubbellaags: true,
+      },
+      {
+        type: 'hero',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Tweede hero, zelfde vinkje',
+        kop: 'Deze valt terug op de gewone beeldbehandeling',
+        tekst: LOPENDE_TEKST,
+        beeld: BEELD,
+        vullend: true,
+      },
+    ],
+  },
+  {
+    /*
      * Het dubbellaagse hero-effect. Drie heroes met alle drie het vinkje aan;
      * er hoort er maar één te zijn waar je het aan ziet.
      *

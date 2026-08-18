@@ -88,6 +88,7 @@ export async function leesPagina(naam: PaginaNaam) {
           // te lezen, niet een leeg object.
           beeld: blok.value.beeld.discriminant ? beeldUit(blok.value.beeld.value) : undefined,
           schicht: blok.value.schicht,
+          vullend: blok.value.vullend,
           dubbellaags: blok.value.dubbellaags,
         };
 

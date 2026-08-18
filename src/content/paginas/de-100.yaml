@@ -58,6 +58,23 @@ secties:
       tekst: >-
         Honderd is geen willekeurig getal. Zit de honderd vol, dan bellen we als
         er een plek vrijkomt.
+  - discriminant: beeld-tekst
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: basis
+      bovenkop: Waarom we bestaan
+      kop: Mensen die er uitspringen
+      tekst: >-
+        Wij misten een plek waar mensen die veel ervaring hebben in de horeca en
+        events samen komen. Geen standaard uitzendkrachten, maar mensen die er
+        uitspringen.
+      beeld:
+        bron: /beeld/vuur-zonsondergang.jpg
+        alt: Vuurkorf op het festivalterrein in tegenlicht
+      verhouding: breed
+      beeldPositie: rechts
   - discriminant: drie-kolommen
     value:
       weergave:

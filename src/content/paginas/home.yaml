@@ -5,6 +5,10 @@ titel: De Club van 100
 beschrijving: >-
   Geen uitzendbureau, maar een selectie van honderd horeca- en
   eventprofessionals in en rond Groningen. Wij regelen de mensen.
+# De home is sinds B9 een landingspagina: het eerste scherm is de mockup-hero,
+# daaronder één blok met de kernpropositie, en verder niets. De twee knoppen
+# zijn de twee deuren van de site; wat hier verder stond is verhuisd of
+# vervallen — zie de commit die dit invoerde.
 secties:
   - discriminant: hero
     value:
@@ -26,61 +30,11 @@ secties:
       beeld:
         discriminant: true
         value:
-          bron: /beeld/ploeg-drie.jpg
-          alt: Drie Clubleden in zwart shirt achter de tap, arm om elkaar heen
+          bron: /beeld/Jor Sep achter.jpg
+          alt: Twee Clubleden op de rug gezien in een Groningse straat, één met de schicht op zijn shirt
       schicht: false
+      vullend: true
       dubbellaags: true
-  - discriminant: splitscreen
-    value:
-      weergave:
-        achtergrond: bruin
-        ruimte: sectie-m
-        breedte: basis
-      deuren:
-        - bovenkop: Opdrachtgevers
-          kop: Jij hebt een avond te draaien
-          tekst: >-
-            Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet
-            hoe een tap onder druk werkt.
-          knop:
-            label: Ik zoek personeel
-            href: /opdrachtgevers
-        - bovenkop: Professionals
-          kop: Honderd plekken
-          tekst: Niet iedereen komt erdoor.
-          knop:
-            label: Ik wil bij jullie werken
-            href: /de-100
-  - discriminant: beeld-tekst
-    value:
-      weergave:
-        achtergrond: bruin
-        ruimte: sectie-m
-        breedte: basis
-      bovenkop: Waarom we bestaan
-      kop: Mensen die er uitspringen
-      tekst: >-
-        Wij misten een plek waar mensen die veel ervaring hebben in de horeca en
-        events samen komen. Geen standaard uitzendkrachten, maar mensen die er
-        uitspringen.
-      beeld:
-        bron: /beeld/vuur-zonsondergang.jpg
-        alt: Vuurkorf op het festivalterrein in tegenlicht
-      verhouding: breed
-      beeldPositie: rechts
-  - discriminant: citaten
-    value:
-      weergave:
-        achtergrond: bruin
-        ruimte: sectie-m
-        breedte: basis
-      bovenkop: Wat opdrachtgevers zeggen
-      items:
-        - citaat: >-
-            "Zeker een leuke avond gehad en top mensen hebben jullie gestuurd.
-            Ze hebben het fantastisch gedaan."
-          naam: De Speld
-          rol: ""
   - discriminant: oproep
     value:
       weergave:
@@ -89,10 +43,12 @@ secties:
         breedte: basis
       bovenkop: ""
       kop: Wij regelen de mensen.
-      tekst: ""
+      tekst: >-
+        Honderd horeca- en eventprofessionals, in en rond Groningen. Jij regelt
+        de rest.
       knop:
         label: Ik zoek personeel
-        href: /contact
+        href: /opdrachtgevers
       tweedeKnop:
         label: Ik wil bij jullie werken
         href: /de-100

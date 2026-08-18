@@ -273,6 +273,12 @@ const sectieBlokken = fields.blocks(
               'De grote schicht achter de tekst. Zet hem op één sectie per pagina, niet op meer.',
             defaultValue: false,
           }),
+          vullend: fields.checkbox({
+            label: 'Foto vult het eerste scherm',
+            description:
+              'De landingsopening: het beeld loopt van rand tot rand en vult het scherm. Werkt alleen met een foto, en alleen op de openingssectie bovenaan de pagina.',
+            defaultValue: false,
+          }),
           dubbellaags: fields.checkbox({
             label: 'Kop met een donkere laag eronder',
             description:

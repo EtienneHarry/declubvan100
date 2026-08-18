@@ -38,6 +38,13 @@ export interface HeroProps {
    */
   dubbellaags?: boolean;
   /**
+   * De foto vult het eerste scherm, van rand tot rand — de landingshero uit de
+   * mockup. Doet alleen iets mét een foto, en hangt net als de dubbellaagse
+   * laag aan `kopNiveau === 1`: een tweede hero is geen opening en krijgt de
+   * gewone beeldbehandeling.
+   */
+  vullend?: boolean;
+  /**
    * Gezet door SectieLijst. 1 als deze hero de pagina opent, 2 als er al een
    * kop boven staat. Een tweede hero op dezelfde pagina zakt daarmee naar een
    * gewone sectiekop, zodat er één <h1> en één display-xl overblijft.
@@ -94,6 +101,7 @@ export default function Hero({
   beeld,
   schicht = false,
   dubbellaags = false,
+  vullend = false,
   kopNiveau = 1,
 }: HeroProps) {
   const heeftBeeld = Boolean(beeld?.bron.trim());
@@ -186,6 +194,25 @@ export default function Hero({
       ) : null}
     </>
   );
+
+  if (beeld && heeftBeeld && vullend && kopNiveau === 1) {
+    /*
+     * De landingshero: het beeld van rand tot rand, het eerste scherm hoog, de
+     * inhoud onderin op de containerbreedte van de rest van de pagina. Geen
+     * ruimte-token: een vlak dat het scherm vult heeft geen lucht eromheen
+     * nodig, en de sectie eronder schildert zijn eigen ruimte.
+     */
+    return (
+      <section
+        className={achtergrondKlasse[achtergrond]}
+        data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+      >
+        <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="vlak" vullend>
+          <div className={`w-full ${breedteKlasse[breedte]}`}>{inhoud}</div>
+        </Beeldvlak>
+      </section>
+    );
+  }
 
   if (beeld && heeftBeeld) {
     return (
