@@ -48,6 +48,17 @@ export interface BeeldvlakProps {
 /*
  * Foto met verplichte sluier. Tekst op beeld loopt altijd via dit component.
  *
+ * OP EEN FOTO BESTAAT GEEN GEDEMPTE TEKSTKLEUR. Het vlak zet daarom altijd een
+ * data-vlak, en die regel in tokens.css bindt --tekst-zacht en --tekst-stil aan
+ * de hoofdtekstkleur. De sluier garandeert één verhouding, en die geldt voor de
+ * kleur waar hij op doorgerekend is — niet voor een grijstint eronder.
+ *
+ * Gemeten op de vlakke sluier, op een foto die op die plek wit is: krijt haalt
+ * 5,04:1, cream 3,29:1 en krijt-stil 1,46:1. Een bovenkop in krijt-stil op een
+ * foto was dus al die tijd onleesbaar in het slechtste geval — het viel niet op
+ * omdat de meting de sluier als een dekkend vlak behandelde in plaats van als
+ * een laag over onbekend beeld.
+ *
  * De sluier is niet uit te zetten: er is geen prop die hem weglaat en geen tak
  * die hem overslaat. Eigen fotografie is warm en druk, en zonder behandeling
  * haalt witte tekst er nooit betrouwbaar AA op. Een foto is bovendien geen
@@ -122,7 +133,7 @@ export default function Beeldvlak({
     */
     <div
       data-thema={licht ? 'licht' : undefined}
-      data-vlak={licht ? 'cream' : undefined}
+      data-vlak={licht ? 'cream' : 'beeld'}
       className={`relative block overflow-hidden ${licht ? 'bg-cream' : 'bg-bruin'} ${zoom ? 'group' : ''}`}
     >
       <img

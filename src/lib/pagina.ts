@@ -84,6 +84,9 @@ export async function leesPagina(naam: PaginaNaam) {
           tekst: tekstUit(blok.value.tekst),
           knop: knopUit(blok.value.knop),
           tweedeKnop: knopUit(blok.value.tweedeKnop),
+          // Het vinkje staat vóór het beeld: uit betekent geen object om uit
+          // te lezen, niet een leeg object.
+          beeld: blok.value.beeld.discriminant ? beeldUit(blok.value.beeld.value) : undefined,
           schicht: blok.value.schicht,
           dubbellaags: blok.value.dubbellaags,
         };

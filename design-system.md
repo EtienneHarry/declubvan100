@@ -573,6 +573,46 @@ verschuift.
 beeld en niet erop, dus de sluier heeft er geen functie en zou de foto alleen
 verduisteren. Wat gedeeld wordt is de verhoudingstabel, niet het component.
 
+**Op een foto bestaat geen gedempte tekstkleur.** `Beeldvlak` zet daarom altijd
+`data-vlak`, en die regel in `tokens.css` bindt `--tekst-zacht` en `--tekst-stil`
+aan de hoofdtekstkleur. De sluier garandeert één verhouding, en die is
+doorgerekend op de kleur waar hij voor bedoeld is — niet op een grijstint
+eronder.
+
+Gemeten op de vlakke sluier, op een foto die op die plek wit is: `krijt` haalt
+5,04:1, `cream` 3,29:1 en `krijt-stil` **1,46:1**. Een bovenkop in `krijt-stil`
+op een foto was dus in het slechtste geval onleesbaar, en dat stond er al vóór de
+restyle. Het is niet eerder opgevallen omdat een meting die de sluier als een
+dekkend vlak behandelt een veel te gunstig getal geeft: een sluier is geen vlak
+maar een laag over onbekend beeld, en dan is het slechtste geval de enige die
+telt. De foto is geen token.
+
+**Afwijking — de hero gebruikt óók de vlakke sluier.** De beeldrichtlijn wijst
+`onder` toe aan "hero, tekst onderaan", en dat klopt zolang die tekst één regel
+is. De hero uit de mockup is dat niet: bovenkop, displaykop, een zin en twee
+knoppen beslaan samen meer dan de helft van het vlak. Gemeten op 1137×640 met
+het verloop:
+
+| Regel | Bovenkant, vanaf onder | Dekking daar | Wit op een witte foto |
+|---|---|---|---|
+| bovenkop | 54% | 0,53 | **3,75** |
+| displaykop | 49% | 0,59 | 4,54 |
+| lopende zin | 29% | 0,77 | 8,52 |
+| knoppen | 10% | 0,87 | 12,2 |
+
+De bovenkop zakt daar onder AA. Met de vlakke sluier is het overal 0,62 en haalt
+wit in datzelfde geval 5,04:1. Dat is dezelfde afweging die de splitscreen-deur
+al maakte, om precies dezelfde reden: zodra de tekst het vlak vult, staat de
+bovenste helft ervan op het doorzichtige deel van het verloop.
+
+**De sluier uit de mockup haalt het niet.** De hero op p1 zet witte tekst op de
+lichte sepia-laag. Doorgerekend: wit op `--sluier-licht` haalt tussen 1,35:1 en
+2,95:1, afhankelijk van wat er op de foto staat — nergens genoeg, ook niet voor
+groot. Er zijn twee uitwegen en allebei geven ze iets op: donkere tekst op die
+lichte sluier haalt 6,67 tot 14,55:1 maar verliest de dubbellaagse kop, want die
+vervalt op een licht thema; witte tekst op de donkere sluier haalt 5,04 tot
+19,3:1 en houdt de dubbellaagse kop. Dat tweede is het geworden.
+
 **Afwijking — splitscreen gebruikt de vlakke sluier.** De beeldtabel wijst
 splitscreen `--sluier-zij` toe, bedoeld voor tekst in de linkerhelft. Een deur
 is op mobiel ongeveer 335px breed; daar heeft tekst de volle breedte nodig en

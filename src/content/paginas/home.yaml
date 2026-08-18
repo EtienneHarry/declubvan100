@@ -23,7 +23,12 @@ secties:
       tweedeKnop:
         label: Inhuren
         href: /opdrachtgevers
-      schicht: true
+      beeld:
+        discriminant: true
+        value:
+          bron: /beeld/ploeg-drie.jpg
+          alt: Drie Clubleden in zwart shirt achter de tap, arm om elkaar heen
+      schicht: false
       dubbellaags: true
   - discriminant: splitscreen
     value:

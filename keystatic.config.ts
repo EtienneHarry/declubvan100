@@ -206,6 +206,36 @@ function beeldVeld() {
   );
 }
 
+/*
+ * Beeld dat écht overgeslagen mag worden.
+ *
+ * beeldVeld() heeft validatie op allebei zijn velden: een foto is verplicht en
+ * alt-tekst ook. Dat is met opzet — bij alt-tekst is validatie het verschil
+ * tussen een afspraak en een regel — maar het maakt het hele object verplicht
+ * zodra het in een blok staat. Op de openingssectie kan dat niet: vier van de
+ * vijf hero's op deze site hebben geen foto.
+ *
+ * Een vinkje ervoor lost dat op zonder de alt-regel op te geven. Staat hij uit,
+ * dan is er niets in te vullen en niets te valideren; staat hij aan, dan gelden
+ * dezelfde twee eisen als overal. Het alternatief — de validatie weghalen zodat
+ * het veld leeg mag blijven — zou precies de controle slopen die de
+ * toegankelijkheid bewaakt.
+ */
+function optioneelBeeldVeld() {
+  return fields.conditional(
+    fields.checkbox({
+      label: 'Foto op de achtergrond',
+      description:
+        'Met een foto komt de tekst op het beeld te staan, met een donkere laag ertussen. Zonder foto staat de sectie op een egaal vlak.',
+      defaultValue: false,
+    }),
+    {
+      false: fields.empty(),
+      true: beeldVeld(),
+    },
+  );
+}
+
 /* ---------------------------------------------------------------------------
    De secties
 
@@ -235,6 +265,7 @@ const sectieBlokken = fields.blocks(
             'Tweede knop — mag je overslaan',
             'Een tweede actie, minder opvallend dan de eerste.',
           ),
+          beeld: optioneelBeeldVeld(),
           schicht: fields.checkbox({
             label: 'Bliksemschicht op de achtergrond',
             description:

@@ -53,8 +53,20 @@ export interface HeroProps {
  * vallen zo samen: één hero per pagina en het klopt vanzelf.
  *
  * Met beeld loopt de kop door Beeldvlak, want dan staat tekst op de foto en is
- * de sluier verplicht. `onder` is daar de juiste: de beeldrichtlijn wijst die
- * toe aan "hero, tekst onderaan".
+ * de sluier verplicht.
+ *
+ * DE VLAKKE SLUIER EN NIET HET VERLOOP, EN DAT IS GEMETEN. De beeldrichtlijn
+ * wijst "onder" toe aan een hero met tekst onderaan, en dat klopt zolang die
+ * tekst één regel is. Deze hero is dat niet: bovenkop, displaykop, een zin en
+ * twee knoppen samen beslaan meer dan de helft van het vlak. Gemeten op 1137 bij
+ * 640: de bovenkop begint op 54% van onderaf, en daar is het verloop nog maar
+ * 0,53 dekkend — witte tekst haalt op een foto die daar wit is 3,75:1 en zakt
+ * dus onder AA. De vlakke sluier is overal 0,62 en haalt in datzelfde geval
+ * 5,04:1.
+ *
+ * Dat is dezelfde afweging die de splitscreen-deur al maakte, om precies
+ * dezelfde reden: zodra de tekst het vlak vult, staat de bovenste helft ervan op
+ * het doorzichtige deel van het verloop.
  *
  * De schicht en het beeld sluiten elkaar uit. De richtlijn kent de grote
  * schicht als uitgesneden vlak op een egale achtergrond; over een foto heen is
@@ -182,7 +194,7 @@ export default function Hero({
         data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
       >
         <div className={breedteKlasse[breedte]}>
-          <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="onder" verhouding="breed">
+          <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="vlak" verhouding="breed">
             {inhoud}
           </Beeldvlak>
         </div>
