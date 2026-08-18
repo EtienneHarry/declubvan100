@@ -233,10 +233,30 @@ De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
 React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
 `fill="currentColor"` en nemen geen props aan.
 
-**Elk bestand in `components/` wordt gebruikt.** `Scheiding` en `KaartenRij`
-stonden er ongebruikt bij en zijn weggehaald; staat hier weer iets dat nergens
-geïmporteerd wordt, dan is dat een fout en geen voorraad. De git-geschiedenis
-heeft ze nog als je ze terug wilt.
+**Elk bestand in `components/` wordt gebruikt — behalve de logoset.**
+`Scheiding` en `KaartenRij` stonden er ongebruikt bij en zijn weggehaald; staat
+er weer iets dat nergens geïmporteerd wordt, dan is dat een fout en geen
+voorraad. De git-geschiedenis heeft ze nog als je ze terug wilt.
+
+**`src/components/logo/` is de benoemde uitzondering**, en dat is niet
+hetzelfde als vergeten opruimen. Van de vier is alleen `LogoHorizontaal`
+geïmporteerd, door de layout. De andere drie staan er compleet omdat een logoset
+een set is: de bron levert vier merktekens met elk een eigen toepassing —
+`Bliksem` als social avatar en watermerk, `Woordmerk` voor waar de schicht al
+elders staat, `MerktekenVierkant` als favicon en app-icoon. Drie kwart van de
+merktekens van een klant weggooien omdat de site ze deze maand niet toont, is
+geen opruimen maar de set slopen; ze horen bij het merk en niet bij de pagina's.
+
+Wat níet onder deze uitzondering valt: het uitbreiden ervan. Komt er een vijfde
+bestand in die map dat niet uit de aangeleverde logoset komt, dan geldt de
+gewone regel weer.
+
+Eén ding om te weten en niet stilzwijgend te laten: `components/logo/Bliksem.astro`
+en `components/merk/Bliksem.tsx` tekenen dezelfde SVG. Ze zijn niet elkaars
+dubbele — de eerste is het merkteken uit de set, de tweede is het vormelement
+met de drie rollen die de richtlijn eraan hangt, en alleen die tweede wordt
+gebruikt. Ze delen `src/assets/logo/bliksem.svg`, dus er is één bron; wie ze ooit
+samenvoegt, moet de rollen meenemen en niet andersom.
 
 ### Er gaat wél JavaScript naar de browser
 
