@@ -108,6 +108,12 @@ dat mist verschijnt een melding, en die is Engels. `must not be empty` betekent
 dat het veld leeg is, `is required` dat er nog niets gekozen is. Een sterretje
 achter het label betekent dat je het veld niet kunt overslaan.
 
+**Een vraag toevoegen aan de vragenlijst.** Op Voor ondernemers en Voor wie is
+de club? staat een sectie "Vragen en antwoorden". Klik erop, klik op Add onder
+Vragen, en typ de vraag en het antwoord. Ze staan op de pagina in de volgorde
+waarin ze hier staan, dus zet de vraag die het vaakst gesteld wordt bovenaan.
+Elk antwoord klapt open als de bezoeker op de vraag klikt.
+
 **De foto's van de twee deuren op de home liggen vast.** Die staan niet in het
 CMS. De tekst eromheen kun je wel wijzigen.
 

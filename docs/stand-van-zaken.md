@@ -5,7 +5,7 @@
 > en dat is voor de redacteur. Voeg die twee niet samen: ze zijn voor andere
 > mensen en veranderen op andere momenten.
 
-Bijgewerkt na B8, sessie 1. Wat er af is, wat er open ligt, en waar je verder
+Bijgewerkt na B8, sessie 2. Wat er af is, wat er open ligt, en waar je verder
 gaat.
 
 De git-geschiedenis vertelt wat er gebeurd is; dit document vertelt wat er nog
@@ -20,43 +20,41 @@ moet. Werk het bij aan het eind van elke sessie.
 | B4 | Keystatic, zes pagina's uit het CMS, navigatie, privacyverklaring |
 | B7 | Beweging: scrollonthulling op alle acht sectietypes, masker op koppen, zoom op klikbaar beeld, de naad tussen twee secties |
 | B8-1 | Restyle, deel 1: kleurtokens (bruin, cream, vuur, twee sluiers), typografie (Montserrat, Special Elite, Caveat), de ovaal, het onderstreepje en de dubbellaagse hero-kop |
+| B8-2 | Restyle, deel 2: de haal als markering in de kop, de teksten uit de mockup, de hero met foto, het accordeon als negende sectietype en de twaalf vragen |
 
 De site is compleet en `npm run check` is groen. Wat hieronder staat is wat er
 tussen nu en livegang moet gebeuren.
 
-## Eerstvolgende stap: B8 sessie 2 — content en FAQ
+## Eerstvolgende stap: het aanmeldformulier
 
-De restyle is in twee sessies geknipt. Sessie 1 heeft het systeem omgezet:
-tokens, typografie en de twee nieuwe motieven. **De teksten zijn met opzet niet
-aangeraakt.** Wat er nog moet:
+De restyle is af. Wat hieronder staat is wat er tussen nu en livegang moet
+gebeuren, en het formulier is het enige dat de site nog mist.
 
-- **De nieuwe koppen uit de mockup**, per pagina. `bron/restyle-brief-v2.md`
-  hoofdstuk 4 heeft ze op een rij. Let op de typefout "EEEN UITZENBUREAU" in de
-  mockup: die nemen we niet over.
-- **Het accordeon-sectietype voor de FAQ.** Twaalf vragen in twee groepen, klaar
-  in hoofdstuk 5 van de brief. Dat is een negende sectietype en landt dus op de
-  vijf plekken uit *Een nieuwe sectie toevoegen* in `CLAUDE.md`, plus in
-  `draagtPaginakop()` en in de koppenbewaking.
-- **Het telefoonnummer.** `+31 6 19004878` vervangt `06 25 33 15 97` overal:
-  `bron/contactgegevens.md`, de site-instellingen in het CMS, en de
-  privacyverklaring als die het nummer noemt.
+### Wat de restyle heeft opgeleverd, en wat er van openbleef
 
-**En één ding dat sessie 1 niet kon beslissen: hoe een redacteur een ovaal of
-een streep zet.** `Ovaal` en `Streep` bestaan en werken, maar ze zijn nu alleen
-vanuit code te plaatsen — op `/secties` staan ze in markup. Een sectiekop is in
-het CMS één tekstveld, en er is geen manier om daarin te zeggen "deze drie
-woorden krijgen een ovaal".
+Drie vragen die sessie 1 openliet zijn beantwoord:
 
-Dat is een schemabeslissing en geen bouwklus. Twee routes, allebei met een
-prijs: een afspraak ín de tekst (bijvoorbeeld `Geen nummertjes, maar {1 van de
-100}`) leest slecht in het CMS en lekt in de yaml als iemand het vergeet; een
-apart veld ("welk deel van de kop krijgt de ovaal") is expliciet maar moet dan
-per sectietype terugkomen en werkt alleen als die woordgroep letterlijk in de
-kop voorkomt. Kies dit met de nieuwe koppen in de hand — dan weet je hoe vaak
-het echt nodig is.
+- **Hoe een redacteur een ovaal zet.** Met haakjes in de koptekst: `[…]` voor de
+  ovaal, `{…}` voor de streep. De regels staan in `overdracht.md` en in
+  `Koptekst.tsx`.
+- **Welke knop welke kleur krijgt.** In de hero staan de twee deuren van de site
+  naast elkaar — inkt voor aanmelden, vuur voor inhuren — en dat is een code en
+  geen rangorde. Overal anders blijft het één gevulde knop per blikveld.
+- **Enthousiast, Ervaren en Trots.** Die drie stonden er zonder zin erbij. Het
+  drieluik uit de mockup vervangt ze, met drie hele zinnen.
 
-**Ook open uit sessie 1:**
+Wat nog openstaat:
 
+- **De halve zin op Voor wie is de club?** De kop begint met een beletselteken:
+  "…maar niet willen dat hun hele agenda wordt bepaald door hun bijbaan". De
+  brief levert alleen die staart, de eerste helft staat niet in `bron/`, en er is
+  niets bijverzonnen. Vraag de klant om de hele zin.
+- **De navigatie noemt de pagina's nog anders dan de pagina's zelf.** Het menu
+  zegt "Opdrachtgevers" en "De 100"; de koppen zeggen "Voor ondernemers" en
+  "Voor wie is de club?". De brief vraagt de koppen en zegt niets over het menu,
+  en korte menulabels zijn verdedigbaar — maar het is een keuze die iemand moet
+  maken en niet iets wat vanzelf klopt. De URL's blijven hoe dan ook
+  `/opdrachtgevers` en `/de-100`.
 - **`roet` is afgeleid en niet gemeten.** De mockup toont geen verhoogd vlak.
   `#2c1f1a` is 94% bruin met 6% cream, gekozen zodat de stap omhoog dezelfde is
   als die `roet` op `inkt` had en `krijt-stil` er nog 4,60:1 haalt. Levert de
@@ -64,18 +62,12 @@ het echt nodig is.
 - **De typemachine en het handschrift zijn een gok.** De brief zet de zekerheid
   op matig en laag. Heeft de maker van de mockup de echte namen, dan is omzetten
   één regel in `global.css` en één token in `tokens.css`.
-- **Welke knop `vuur` krijgt en welke `inkt`.** `Hero` en `Oproep` zetten hun
-  primaire actie nu op `vuur` en hun tweede op `lijn`, want één gevulde knop per
-  blikveld. De mockup zet er twee gevulde naast elkaar — AANMELDEN zwart,
-  INHUREN rood — en of dat een tweede primaire actie is of een kleurcode per
-  publiek, hangt aan de nieuwe koppen.
-- **De hero uit de mockup zet witte tekst op de lichte sepia-sluier, en dat
-  haalt 1,53:1.** Die combinatie kan niet zo gebouwd worden, ook niet met de
-  dubbellaagse kop eronder — een offset telt in WCAG niet mee. Bij het plaatsen
-  van de nieuwe hero is dit de eerste keuze die op tafel ligt: donkere tekst op
-  de lichte sluier, of witte tekst op de donkere.
+- **365Werk verwerkt persoonsgegevens van Clubleden.** Dat staat nu als antwoord
+  op de site. De privacyverklaring dekt de website en dat blijft kloppen zolang
+  de site zelf niets naar 365Werk stuurt — maar bij het formulier is dit de
+  eerste vraag die op tafel ligt.
 
-## Daarna: het aanmeldformulier
+### Het formulier zelf
 
 Eigen sessie. Het raakt drie dingen die nergens anders in dit project zitten.
 
