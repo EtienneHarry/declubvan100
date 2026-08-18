@@ -55,11 +55,62 @@ lezen of dat een kleinere puntgrootte is of het verschil in x-hoogte tussen de
 twee families. Bij ons erft het de maat van de kop; zie de meting in
 `design-system.md`.
 
+### Bewuste afwijking: het typemachinedeel is korter dan in de mockup
+
+**Wat de mockup toont.** De wissel valt op de komma: alles ná "Voor mensen die
+graag werken," staat in de typemachine, dus "maar niet willen dat hun hele
+agenda wordt bepaald door hun bijbaan." — 68 tekens hoofdletters.
+
+**Wat er op de site staat.** De wissel valt later. Alleen de slotwoorden staan in
+de typemachine: "hele agenda wordt bepaald door hun bijbaan." — 43 tekens. De
+rest van de zin, inclusief "maar niet willen dat hun", blijft in de dragende
+letter. De ovaal om "hele agenda" blijft waar hij was, binnen het
+typemachinedeel.
+
+**Waarom.** De typografieregel in `design-system.md` zegt over deze familie:
+nooit voor lopende tekst langer dan twee regels. Special Elite is monospaced en
+licht versleten; op regellengte leest hij traag, en in hoofdletters met 0,14em
+spatiëring wordt elke regel bovendien breed.
+
+De mockup is daar niet mee in tegenspraak — hij laat de zin gewoon niet op alle
+breedtes zien. **In de mockup staat deze kop alleen op desktopbreedte, en daar
+is het typemachinedeel vier regels.** Dat is al boven de twee, maar het valt niet
+op omdat de regels lang zijn en de kop de breedte heeft.
+
+Nagemeten in de gebouwde site, met de wissel zoals de mockup hem zet:
+
+| Breedte | Regels typemachine | Kophoogte |
+|---|---|---|
+| 1440 | 5 | 516px, 57% van het venster |
+| 375 | 8 | 428px, 53% van het venster |
+
+Acht regels hoofdletters in monospace op een telefoon is geen kop meer maar een
+alinea. Daarom wint de regel hier van de mockup: het merk heeft meer aan een
+typografieregel die overal geldt dan aan één kop die op één breedte klopt.
+
+Met de kortere wissel:
+
+| Breedte | Regels typemachine | Kophoogte |
+|---|---|---|
+| 1440 | 3 | 416px, 46% van het venster |
+| 375 | 5 | 410px, 50% van het venster |
+
+**Het staat daarmee nog steeds boven de twee regels.** Drie op desktop, vijf op
+een telefoon. Niet geschaald en niet verder ingekort — dat zou de zin veranderen
+of een maat verzinnen die de mockup niet geeft. Wie dit helemaal binnen de regel
+wil brengen, heeft twee wegen: het typemachinedeel een puntgrootte kleiner (en
+dan is de vraag welke, en die staat nergens), of de zin korter (en dan is het een
+tekstwijziging en dus een vraag aan de klant).
+
 ## Nog te vragen
 
-- **De eerste helft van deze kop is nu overgenomen zoals de klant hem in de
-  mockup zette.** Klopt de interpunctie — een komma en dan verder — of hoort er
-  een punt en een nieuwe zin?
+- **Het typemachinedeel staat op drie regels op desktop en vijf op een
+  telefoon**, terwijl de regel er twee toestaat. Wil de klant een kleinere maat
+  voor de typemachine binnen een kop, of een kortere zin? Zie de afwijking
+  hierboven.
+- **De eerste helft van deze kop is overgenomen zoals de klant hem in de mockup
+  zette.** Klopt de interpunctie — een komma en dan verder — of hoort er een punt
+  en een nieuwe zin?
 - **De echte namen van de typemachine en het handschrift.** De brief zet de
   zekerheid op matig en laag; wij bouwen op Special Elite en Caveat. Heeft de
   maker van de mockup de bestanden, dan winnen die.

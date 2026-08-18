@@ -238,6 +238,13 @@ lopende tekst wordt:
   monospaced en licht versleten; op regellengte leest hij traag en op een
   telefoon breekt hij lelijk.
 
+  *Eén plek haalt deze regel niet.* De kop op Voor wie is de club? heeft een
+  typemachinedeel dat op 1440 drie regels telt en op 375 vijf. Dat is al de
+  ingekorte versie — de mockup zet de wissel op de komma en dan wordt het vijf en
+  acht. Verder inkorten verandert de zin en schalen vraagt een maat die nergens
+  gemeten is, dus het staat er zo, met de meting erbij in
+  `bron/mockup-notities.md`.
+
 In de praktijk raakt dat vandaag twee componenten — `Bovenkop` en `Knop` — plus
 het nummer op een `Kaart`. De uitgelichte regel bestaat nog niet als component;
 komt hij er, dan is `font-machine tracking-machine uppercase` de hele vorm.

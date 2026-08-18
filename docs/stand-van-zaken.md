@@ -45,10 +45,13 @@ Drie vragen die sessie 1 openliet zijn beantwoord:
 
 Wat nog openstaat:
 
-- **De halve zin op Voor wie is de club?** De kop begint met een beletselteken:
-  "…maar niet willen dat hun hele agenda wordt bepaald door hun bijbaan". De
-  brief levert alleen die staart, de eerste helft staat niet in `bron/`, en er is
-  niets bijverzonnen. Vraag de klant om de hele zin.
+- **De typemachine in de kop op Voor wie is de club? telt te veel regels.** De
+  zin is compleet — de eerste helft kwam alsnog uit de mockup — maar het deel in
+  de typemachine staat op drie regels op 1440 en vijf op 375, terwijl de regel er
+  twee toestaat. Het is al ingekort ten opzichte van de mockup, die de wissel op
+  de komma zet; verder inkorten verandert de zin en schalen vraagt een maat die
+  nergens gemeten is. De meting en de twee uitwegen staan in
+  `bron/mockup-notities.md`.
 - **`roet` is afgeleid en niet gemeten.** De mockup toont geen verhoogd vlak.
   `#2c1f1a` is 94% bruin met 6% cream, gekozen zodat de stap omhoog dezelfde is
   als die `roet` op `inkt` had en `krijt-stil` er nog 4,60:1 haalt. Levert de
