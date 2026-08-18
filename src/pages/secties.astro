@@ -804,10 +804,13 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
      * De blokken bovenaan deze pagina zetten Ovaal en Streep rechtstreeks neer;
      * dit geval test de vertaling ervoor.
      *
-     * Zeven koppen, en vijf ervan horen er geen haal aan over te houden. Wat
-     * niet omgezet wordt, blijft staan zoals het getypt is — haakjes en al. Dat
-     * is met opzet zichtbaar: een tweede ovaal die stil verdwijnt, laat de
-     * redacteur denken dat het gelukt is.
+     * Tien koppen. Wat niet omgezet wordt, blijft staan zoals het getypt is —
+     * haakjes en al. Dat is met opzet zichtbaar: een tweede ovaal die stil
+     * verdwijnt, laat de redacteur denken dat het gelukt is.
+     *
+     * De drie met een sterretje erin gaan over de typemachine in de kop: de
+     * vorm uit de mockup, de vorm die andersom genest is en dus niet werkt, en
+     * een tweede stuk dat blijft staan zoals het getypt is.
      */
     naam: 'haal · de markering in de kop',
     secties: [
@@ -867,6 +870,36 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         breedte: 'basis',
         bovenkop: 'Twee keer dezelfde soort',
         kop: 'Eerst [een ovaal] en dan [nog een] erbij',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Twee letterrollen, zoals de mockup',
+        kop: 'Voor mensen die graag werken, *maar niet willen dat hun [hele agenda] wordt bepaald door hun bijbaan.*',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Andersom kan niet: een sterretje binnen een ovaal blijft een
+        // sterretje. De mockup kent die vorm niet.
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Andersom genest',
+        kop: 'Een [ovaal met *sterretjes* erin] blijft gewone tekst binnenin',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Twee typemachinestukken: alleen het eerste telt.
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Twee keer typemachine',
+        kop: 'Eerst *dit stuk* en dan *nog een stuk* erbij',
         tekst: LOPENDE_TEKST,
       },
       {

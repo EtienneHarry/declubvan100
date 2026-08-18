@@ -40,9 +40,12 @@ secties:
         ruimte: sectie-m
         breedte: basis
       bovenkop: ""
-      # De brief levert alleen de staart van deze zin, met het beletselteken
-      # erbij. De eerste helft staat niet in bron/ en is dus niet ingevuld.
-      kop: …maar niet willen dat hun [hele agenda] wordt bepaald door hun bijbaan
+      # Twee letterrollen in één kop: de eerste helft in de dragende letter, de
+      # tweede in de typemachine. Zo staat hij in de mockup; zie
+      # bron/mockup-notities.md.
+      kop: >-
+        Voor mensen die graag werken, *maar niet willen dat hun [hele agenda]
+        wordt bepaald door hun bijbaan.*
       tekst: ""
   - discriminant: kop-tekst
     value:

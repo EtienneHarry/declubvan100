@@ -15,30 +15,40 @@ export interface KoptekstProps {
 }
 
 /*
- * De kop van een sectie, met de haal erin.
+ * De kop van een sectie, met de haal en de typemachine erin.
  *
- * DE CONVENTIE. De redacteur zet haakjes om de woordgroep die een haal krijgt:
+ * DE CONVENTIE. De redacteur zet haakjes om het stuk dat anders moet:
  *
  *   [1 van de 100]   →  de ovaal eromheen
  *   {beter is.}      →  het onderstreepje eronder
+ *   *maar niet …*    →  dat stuk in de typemachine
  *
- * Dit is de uitkomst van de vraag die B8 sessie 1 open liet: `Ovaal` en `Streep`
- * bestonden wel, maar er was geen manier om ze vanuit het CMS te plaatsen. Een
- * sectiekop is daar één tekstveld, en een tweede veld ernaast ("welk deel van de
- * kop krijgt de ovaal") zou per sectietype terug moeten komen en alleen werken
- * zolang die woordgroep letterlijk in de kop staat. Een markering ín de tekst
- * blijft kloppen als de kop verandert, want ze verhuist mee.
+ * De eerste twee zijn de uitkomst van de vraag die B8 sessie 1 openliet:
+ * `Ovaal` en `Streep` bestonden wel, maar er was geen manier om ze vanuit het
+ * CMS te plaatsen. Een sectiekop is daar één tekstveld, en een tweede veld
+ * ernaast ("welk deel van de kop krijgt de ovaal") zou per sectietype terug
+ * moeten komen en alleen werken zolang die woordgroep letterlijk in de kop
+ * staat. Een markering ín de tekst blijft kloppen als de kop verandert, want
+ * ze verhuist mee.
  *
- * VIER REGELS, EN ZE KOMEN ALLE VIER OP HETZELFDE NEER: WAT NIET OMGEZET WORDT,
+ * De derde kwam er later bij, toen bleek dat de mockup twee letterrollen in
+ * één kop zet: de eerste helft in de dragende letter, de tweede in de
+ * typemachine. Zie `bron/mockup-notities.md`.
+ *
+ * VIJF REGELS, EN ZE KOMEN ALLEMAAL OP HETZELFDE NEER: WAT NIET OMGEZET WORDT,
  * BLIJFT STAAN ZOALS JE HET TYPTE.
  *
- * 1. Een haakje zonder sluiting is gewone tekst. `Kosten [vanaf 2026` levert
+ * 1. Een teken zonder sluiting is gewone tekst. `Kosten [vanaf 2026` levert
  *    precies die letters op, haakje incluis.
  * 2. Een leeg paar is gewone tekst. `[]` is geen ovaal om niets.
  * 3. Een tweede paar van dezelfde soort is gewone tekst. Het design system
- *    staat één ovaal en één streep per sectie toe, en een sectie heeft één kop.
- * 4. Wat er wél omheen mag, mag er allebei omheen: één ovaal én één streep in
- *    dezelfde kop is toegestaan.
+ *    staat één ovaal en één streep per sectie toe, en een sectie heeft één kop;
+ *    voor de typemachine is het "maximaal één uitgelichte regel per sectie".
+ * 4. Wat er wél in mag, mag er allemaal in: één ovaal, één streep én één
+ *    typemachinestuk in dezelfde kop is toegestaan.
+ * 5. Een ovaal of een streep mag bínnen het typemachinestuk staan. Andersom
+ *    niet: een typemachinestuk binnen een ovaal is geen vorm die de mockup
+ *    kent, en een sterretje daarbinnen blijft dus een sterretje.
  *
  * Die derde regel is met opzet zichtbaar en niet stil. Een tweede ovaal die
  * gewoon verdwijnt, laat de redacteur denken dat het gelukt is; een tweede
@@ -53,42 +63,54 @@ export interface KoptekstProps {
  * blikveld kunnen staan. De regel "maximaal één per sectie" volgt zo uit waar
  * dit component staat, en hoeft nergens geteld te worden.
  *
- * DE TELLER LOOPT ALLEEN OVER GEWONE TEKST. Een getal binnen een haal telt niet
- * mee — die woordgroep is aangewezen, niet opgeteld, en twee effecten op
- * dezelfde vier tekens vechten om de aandacht. In de praktijk is dat geen
- * beperking: de tellende kop is "De Club van 100" en die heeft geen haal.
+ * DE TELLER LOOPT ALLEEN OVER GEWONE TEKST OP HET BOVENSTE NIVEAU. Een getal
+ * binnen een haal of binnen de typemachine telt niet mee — die woordgroep is
+ * aangewezen, niet opgeteld, en twee effecten op dezelfde vier tekens vechten
+ * om de aandacht. In de praktijk is dat geen beperking: de tellende kop is "De
+ * Club van 100" en die heeft geen markering.
  */
 
-type Vorm = 'ovaal' | 'streep';
+type Vorm = 'ovaal' | 'streep' | 'machine';
 
 /**
- * Het tekenpaar per motief. Vierkante haken zijn de ovaal — ze staan óm iets
- * heen, net als de ovaal zelf. Accolades zijn de streep.
+ * Het teken per rol.
  *
- * Beide paren komen in gewone Nederlandse koppen zo goed als nooit voor, en dat
- * is de reden dat het deze twee zijn en niet bijvoorbeeld ronde haakjes.
+ * Vierkante haken zijn de ovaal — ze staan óm iets heen, net als de ovaal zelf.
+ * Accolades zijn de streep. Sterretjes zijn de typemachine, want dat is het
+ * teken dat overal nadruk betekent en de typemachine ís de nadruk in een kop.
+ *
+ * Alle drie komen ze in gewone Nederlandse koppen zo goed als nooit voor, en
+ * dat is de reden dat het deze zijn en niet bijvoorbeeld ronde haakjes.
+ *
+ * Let op bij het handmatig bewerken van yaml: een waarde die met `*` begint is
+ * daar een alias-verwijzing en moet dus tussen aanhalingstekens. Keystatic zet
+ * die er zelf om; wie het bestand met de hand openmaakt, moet eraan denken.
  */
 const TEKENPAREN: Record<string, { sluit: string; vorm: Vorm }> = {
   '[': { sluit: ']', vorm: 'ovaal' },
   '{': { sluit: '}', vorm: 'streep' },
+  '*': { sluit: '*', vorm: 'machine' },
 };
 
-interface Deel {
-  vorm: Vorm | 'tekst';
-  tekst: string;
-}
+type Deel =
+  | { vorm: 'tekst'; tekst: string }
+  | { vorm: 'ovaal' | 'streep'; tekst: string }
+  | { vorm: 'machine'; delen: Deel[] };
 
 /**
  * Knipt de kop in stukken. Losse functie zodat de regels hierboven op één plek
  * staan en niet verspreid over de JSX.
  *
  * Loopt één keer van links naar rechts. Bij een openingsteken wordt gekeken of
- * er verderop een sluitteken staat; zo niet, of is die soort al gebruikt, dan
- * is het teken gewoon een teken en gaat de lus verder.
+ * er verderop een sluitteken staat; zo niet, of is die rol al gebruikt, dan is
+ * het teken gewoon een teken en gaat de lus verder.
+ *
+ * `gebruikt` gaat mee naar binnen bij een typemachinestuk. Zo geldt "één van
+ * elk" over de hele kop en niet per niveau: een ovaal buiten het sterretje en
+ * nog een erbinnen zijn er samen twee.
  */
-export function knipKop(tekst: string): Deel[] {
+export function knipKop(tekst: string, gebruikt = new Set<Vorm>()): Deel[] {
   const delen: Deel[] = [];
-  const gebruikt = new Set<Vorm>();
   let buffer = '';
   let i = 0;
 
@@ -107,8 +129,17 @@ export function knipKop(tekst: string): Deel[] {
 
       if (eind !== -1 && inhoud.trim()) {
         legBufferWeg();
-        delen.push({ vorm: paar.vorm, tekst: inhoud });
         gebruikt.add(paar.vorm);
+
+        if (paar.vorm === 'machine') {
+          // Het typemachinestuk is het enige dat iets in zich kan hebben. De
+          // ovaal en de streep zijn eindpunten: daar staat tekst in en verder
+          // niets.
+          delen.push({ vorm: 'machine', delen: knipKop(inhoud, gebruikt) });
+        } else {
+          delen.push({ vorm: paar.vorm, tekst: inhoud });
+        }
+
         i = eind + 1;
         continue;
       }
@@ -123,32 +154,53 @@ export function knipKop(tekst: string): Deel[] {
   return delen;
 }
 
+/**
+ * Zet de stukken om in elementen.
+ *
+ * De teller hangt aan een doorgeefdoosje en niet aan een teller in deze
+ * functie: hij mag maar één keer vallen, en de functie roept zichzelf aan voor
+ * wat er in een typemachinestuk staat.
+ */
+function toon(delen: Deel[], teller: { aan: boolean; gezet: boolean }): ReactNode {
+  return delen.map((deel, index): ReactNode => {
+    const sleutel = `${deel.vorm}-${index}`;
+
+    if (deel.vorm === 'ovaal') return <Ovaal key={sleutel}>{deel.tekst}</Ovaal>;
+    if (deel.vorm === 'streep') return <Streep key={sleutel}>{deel.tekst}</Streep>;
+
+    if (deel.vorm === 'machine') {
+      /*
+       * Hoofdletters via `uppercase` en niet via de tekst zelf. Dat is
+       * text-transform, dus de letters in de HTML blijven staan zoals de
+       * redacteur ze typte: een schermlezer leest een gewone zin voor, de
+       * ovaal binnenin meet zijn eigen regelbreedte over de echte tekst, en
+       * wie de kop later wil aanpassen ziet geen blokletters in het CMS.
+       */
+      return (
+        <span key={sleutel} className="font-machine tracking-machine uppercase">
+          {toon(deel.delen, teller)}
+        </span>
+      );
+    }
+
+    if (teller.aan && !teller.gezet && /\d/.test(deel.tekst)) {
+      teller.gezet = true;
+      return <Teller key={sleutel} tekst={deel.tekst} />;
+    }
+
+    return <Fragment key={sleutel}>{deel.tekst}</Fragment>;
+  });
+}
+
 export default function Koptekst({ tekst, teller = false }: KoptekstProps) {
   const delen = knipKop(tekst);
-  let tellerGezet = false;
 
   /*
-   * Geen enkele haal en geen teller: dan is dit letterlijk de string die
+   * Geen enkele markering en geen teller: dan is dit letterlijk de string die
    * binnenkwam. Geen extra element, geen fragment per deel — een kop zonder
    * markering hoort in de HTML niet te zien te zijn aan de uitvoer.
    */
   if (!teller && delen.length === 1 && delen[0]?.vorm === 'tekst') return <>{tekst}</>;
 
-  return (
-    <>
-      {delen.map((deel, index): ReactNode => {
-        const sleutel = `${deel.vorm}-${index}`;
-
-        if (deel.vorm === 'ovaal') return <Ovaal key={sleutel}>{deel.tekst}</Ovaal>;
-        if (deel.vorm === 'streep') return <Streep key={sleutel}>{deel.tekst}</Streep>;
-
-        if (teller && !tellerGezet && /\d/.test(deel.tekst)) {
-          tellerGezet = true;
-          return <Teller key={sleutel} tekst={deel.tekst} />;
-        }
-
-        return <Fragment key={sleutel}>{deel.tekst}</Fragment>;
-      })}
-    </>
-  );
+  return <>{toon(delen, { aan: teller, gezet: false })}</>;
 }

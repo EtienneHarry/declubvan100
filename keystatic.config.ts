@@ -138,7 +138,8 @@ const weergave = fields.object(
  */
 const HAAL_UITLEG =
   ' Wil je een ovaal om een paar woorden, zet er dan [vierkante haken] omheen;' +
-  ' voor een streep eronder {accolades}. Eén van elk per kop.';
+  ' voor een streep eronder {accolades}, en voor een stuk in de typemachine' +
+  ' *sterretjes*. Eén van elk per kop.';
 
 function bovenkopVeld() {
   return fields.text({
