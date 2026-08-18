@@ -516,6 +516,69 @@ const sectieBlokken = fields.blocks(
         { label: 'Lopende tekst' },
       ),
     },
+
+    accordeon: {
+      label: 'Vragen en antwoorden',
+      itemLabel: (props) =>
+        `Vragen — ${props.fields.items.elements.length} stuks`,
+      schema: fields.object(
+        {
+          weergave,
+          bovenkop: bovenkopVeld(),
+          kop: fields.text({
+            label: 'Kop — mag je overslaan',
+            description: 'De kop boven de vragen.' + HAAL_UITLEG,
+          }),
+          items: fields.array(
+            fields.object({
+              vraag: fields.text({
+                label: 'De vraag',
+                description:
+                  'Schrijf hem zoals iemand hem zelf zou stellen, dus "Wat kost het?" en niet "Tarieven".',
+                validation: { length: { min: 1 } },
+              }),
+              /*
+               * Dezelfde kale set als de lopende tekst, en met opzet dezelfde:
+               * een antwoord is lopende tekst die toevallig ingeklapt staat.
+               * Koppen staan hier wél aan omdat een lang antwoord ze kan
+               * gebruiken; ze zakken onder de vraag mee.
+               */
+              antwoord: fields.markdoc.inline({
+                label: 'Het antwoord',
+                description:
+                  'Koppen, vet, cursief, links en lijsten. Houd het bij wat de vraag echt beantwoordt.',
+                options: {
+                  heading: [2, 3],
+                  bold: true,
+                  italic: true,
+                  link: true,
+                  orderedList: true,
+                  unorderedList: true,
+                  strikethrough: false,
+                  code: false,
+                  codeBlock: false,
+                  blockquote: false,
+                  table: false,
+                  image: false,
+                  divider: false,
+                },
+              }),
+            }),
+            {
+              label: 'Vragen',
+              description:
+                'Ze staan op de pagina in deze volgorde. Zet de vraag die het vaakst gesteld wordt bovenaan.',
+              itemLabel: (props) => props.fields.vraag.value || 'Vraag zonder tekst',
+            },
+          ),
+        },
+        {
+          label: 'Vragen en antwoorden',
+          description:
+            'Elk antwoord klapt open als de bezoeker op de vraag klikt. Zonder JavaScript staan ze gewoon allemaal open.',
+        },
+      ),
+    },
   },
   {
     label: 'Secties',

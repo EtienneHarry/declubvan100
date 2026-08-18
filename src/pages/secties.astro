@@ -711,6 +711,94 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   },
   {
     /*
+     * Het accordeon, in de vier omstandigheden waar een sjabloon op stukloopt.
+     * Dezelfde vier als bij de andere acht types: een te lange kop, een lege
+     * tekst, weinig items en veel items.
+     *
+     * Waar je op let, en dat is niet te zien op een screenshot:
+     *
+     *   - zonder JavaScript staat alles open. Zet scripts uit en herlaad: de
+     *     sectie hoort een gewone lijst met vragen en antwoorden te zijn, niet
+     *     twaalf vragen die niet opengaan.
+     *   - bij het laden klapt hij dicht zonder dat je het ziet bewegen. De
+     *     transitie staat uit tot het eerste beeldje voorbij is.
+     *   - tab loopt van vraag naar vraag, in leesvolgorde, en slaat de
+     *     antwoorden over die dicht staan. Dat laatste is inert; zonder dat
+     *     tabt de bezoeker door tekst die hij niet ziet.
+     *   - de vraag is een kop. Onder een sectiekop is hij h3, zonder sectiekop
+     *     h2 — check-koppen rekent erop.
+     *   - met "beweging beperken" aan klapt hij zonder tussenstap open.
+     */
+    naam: 'accordeon · vier omstandigheden',
+    secties: [
+      {
+        type: 'accordeon',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Te lange kop',
+        kop: LANGE_KOP,
+        items: [
+          {
+            vraag: LANGE_KOP,
+            antwoord: Markdoc.parse(LANGE_TEKST),
+          },
+          {
+            vraag: 'En een korte vraag ernaast?',
+            antwoord: Markdoc.parse(LOPENDE_TEKST),
+          },
+        ],
+      },
+      {
+        // Lege antwoorden. Er hoort een vraag te staan die opengaat naar niets,
+        // en geen kapotte rij.
+        type: 'accordeon',
+        achtergrond: 'roet',
+        ruimte: 'sectie-s',
+        breedte: 'basis',
+        bovenkop: 'Lege antwoorden',
+        kop: '',
+        items: [
+          { vraag: 'Een vraag zonder antwoord', antwoord: Markdoc.parse('') },
+          { vraag: 'En nog een', antwoord: Markdoc.parse('') },
+        ],
+      },
+      {
+        // Eén vraag, zonder sectiekop: de vraag is dan zelf het bovenste niveau
+        // van deze sectie en hoort h2 te zijn.
+        type: 'accordeon',
+        achtergrond: 'papier',
+        ruimte: 'sectie-l',
+        breedte: 'smal',
+        items: [
+          {
+            vraag: 'Eén vraag, zonder kop erboven',
+            antwoord: Markdoc.parse(
+              `${LOPENDE_TEKST}\n\n- Eerste punt\n- Tweede punt\n\n**Vet**, *cursief* en een [link naar contact](/contact).`,
+            ),
+          },
+        ],
+      },
+      {
+        // Twaalf vragen, zoals de echte FAQ. Vanaf de negende deelt de ploeg de
+        // laatste stap; daaronder hoort er niets meer op te lopen.
+        type: 'accordeon',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Veel vragen',
+        kop: 'Twaalf stuks, zoals de echte lijst',
+        items: Array.from({ length: 12 }, (_, index) => ({
+          vraag: `Vraag ${index + 1} van de twaalf?`,
+          antwoord: Markdoc.parse(
+            index % 3 === 0 ? `${LOPENDE_TEKST}\n\n${LOPENDE_TEKST}` : LOPENDE_TEKST,
+          ),
+        })),
+      },
+    ],
+  },
+  {
+    /*
      * De markering in de kop, langs de weg die ook echt gebruikt wordt: de
      * redacteur typt haakjes in een tekstveld en de sectie zet er een haal van.
      * De blokken bovenaan deze pagina zetten Ovaal en Streep rechtstreeks neer;

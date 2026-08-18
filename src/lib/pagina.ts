@@ -172,6 +172,18 @@ export async function leesPagina(naam: PaginaNaam) {
           schichtLijst: blok.value.schichtLijst,
         };
 
+      case 'accordeon':
+        return {
+          type: 'accordeon',
+          ...basis,
+          bovenkop: tekstUit(blok.value.bovenkop),
+          kop: tekstUit(blok.value.kop),
+          items: blok.value.items.map((item) => ({
+            vraag: item.vraag,
+            antwoord: item.antwoord.node,
+          })),
+        };
+
       default: {
         // Compileerfout zodra het schema een blok kent dat hier geen tak heeft.
         const uitputtend: never = blok;

@@ -223,8 +223,11 @@ React, want `SectionRenderer.tsx` en de secties zijn dat ook.
 | `Naad` | `components/basis/` | De haarlijn tussen twee secties |
 | `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
 | `Bliksem` | `components/merk/` | De schicht, in drie rollen |
+| `Koptekst` | `components/basis/` | Vertaalt `[...]` en `{...}` in een sectiekop naar een haal |
+| `RijkeInhoud` | `components/basis/` | De kale markdoc-set, gedeeld door rijke tekst en accordeon |
 | `Ovaal` | `components/merk/` | De haal om een woordgroep. Max 1 per sectie |
 | `Streep` | `components/merk/` | De haal onder een kop. Ook max 1 per sectie |
+| `Handschrift` | `components/merk/` | De decoratieve regel. Altijd `aria-hidden`, max 1 per pagina |
 
 De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
 React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
@@ -237,7 +240,7 @@ heeft ze nog als je ze terug wilt.
 
 ### Er gaat wél JavaScript naar de browser
 
-Vier bestanden, samen ongeveer 4 kB, alle vier uit een Astro-component:
+Vijf bestanden, samen ongeveer 5 kB, alle vijf uit een Astro-component:
 
 | Bestand | Waarvoor |
 |---|---|
@@ -245,6 +248,7 @@ Vier bestanden, samen ongeveer 4 kB, alle vier uit een Astro-component:
 | `components/basis/TellerScript.astro` | De teller in de openingskop |
 | `components/beweging/OnthulScript.astro` | De scrollonthulling |
 | `components/merk/HaalScript.astro` | Past de haal op één regel? |
+| `components/sections/AccordeonScript.astro` | Klapt de antwoorden dicht en weer open |
 
 **Een `<script>` hoort in een `.astro`-bestand, nooit in een `.tsx`.** Astro
 bundelt een script uit een Astro-component tot een gewoon bestand; een `<script>`
@@ -264,7 +268,7 @@ contrast niet meer.
 
 ## Sectietypes
 
-Acht, allemaal in `src/components/sections/` en gekoppeld in
+Negen, allemaal in `src/components/sections/` en gekoppeld in
 `SectionRenderer.tsx`:
 
 | Type | Component | Waarvoor |
@@ -277,6 +281,7 @@ Acht, allemaal in `src/components/sections/` en gekoppeld in
 | `citaten` | `Citaten` | Klantquotes |
 | `oproep` | `Oproep` | Afsluitend blok met een actie |
 | `rijke-tekst` | `RijkeTekst` | Lopende tekst met koppen en lijsten |
+| `accordeon` | `Accordeon` | Vragen met een antwoord dat openklapt |
 
 Met beeld loopt de kop door `Beeldvlak` en vervalt de schicht. De grote schicht
 is een uitgesneden vlak op een egale achtergrond — over een foto is dat geen
@@ -302,8 +307,8 @@ rijke tekst landt een `##` op het niveau eronder.
 
 `draagtPaginakop()` bepaalt wie in aanmerking komt. `splitscreen` en `citaten`
 slaan hun beurt over — twee koppen naast elkaar is geen paginakop en citaten
-hebben er geen. `drie-kolommen` en `rijke-tekst` doen alleen mee als ze een
-sectiekop hebben.
+hebben er geen. `drie-kolommen`, `rijke-tekst` en `accordeon` doen alleen mee
+als ze een sectiekop hebben.
 
 Daarmee gelden deze drie vanzelf, en `check-koppen` houdt ze vast:
 
@@ -315,6 +320,32 @@ Daarmee gelden deze drie vanzelf, en `check-koppen` houdt ze vast:
 Staat er geen enkele sectie die een kop kan dragen, dan heeft de pagina geen
 `<h1>`. Dat wordt niet stilletjes gerepareerd — er valt niets te kiezen — maar
 `check-koppen` laat de build erop vallen.
+
+### Het accordeon
+
+Staat er sinds B8 en is het negende type. Vier dingen die je niet moet weghalen:
+
+- **Open is de begintoestand.** In de HTML staat elk antwoord uitgeklapt, met
+  `aria-expanded="true"`; `AccordeonScript` klapt ze bij het laden dicht. Zonder
+  JavaScript is de sectie dus een gewone lijst met vragen en antwoorden. Draai
+  je het om, dan levert een uitgevallen script twaalf vragen op die niet
+  opengaan — dezelfde fout die de scrollonthulling met zijn vlagje vermijdt.
+  Nagemeten in de gebouwde HTML: nul keer `data-accordeon-dicht`.
+- **`inert` op een dichtgeklapt paneel.** Het paneel staat op
+  `grid-template-rows: 0fr` met `overflow: hidden`, en dat haalt de links erin
+  niet uit de tab-volgorde. Zonder `inert` tabt de bezoeker door antwoorden die
+  hij niet ziet.
+- **Het paneel animeert op `grid-template-rows`, van `0fr` naar `1fr`.** Dat is
+  de enige manier om naar de eigen hoogte van de inhoud te lopen zonder die
+  hoogte te kennen — en kennen kan niet, want een hoogte in een
+  `style`-attribuut wordt door de CSP geblokkeerd.
+- **Het vlagje `data-accordeon-stil` op `<html>`.** Zonder dat klapt elk
+  antwoord bij het laden zichtbaar omhoog, want het dichtzetten gebeurt op een
+  element dat een transitie heeft. Het script haalt het vlagje weg na twee
+  beeldjes.
+
+Geen `aria-controls` en geen pijltoetsen, allebei met opzet: zie het
+componentenhoofdstuk van `design-system.md`.
 
 ### Een nieuwe sectie toevoegen
 

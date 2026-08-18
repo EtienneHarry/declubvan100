@@ -312,6 +312,24 @@ haalt 1,53:1 — die combinatie kan niet zo gebouwd worden, ook niet met een laa
 eronder. Waar onze hero wit zet (op `bruin`, of op de donkere sluier) klopt het
 contrast wel, en daar doet de laag wat hij hoort te doen: gewicht geven.
 
+**`Accordeon` is het negende sectietype.** Het volgt de disclosure-richtlijn en
+niet die van een tablijst, en dat verklaart de twee dingen die eraan ontbreken:
+
+- **Geen pijltoetsen.** Elke vraag is een losse knop en die bereik je met tab, in
+  leesvolgorde. Een accordeon die de pijltoetsen kaapt, breekt het scrollen
+  ermee — en de richtlijn vraagt ze alleen voor een tablijst, waar de pijlen de
+  enige manier zijn om bij het volgende tabblad te komen.
+- **Geen `aria-controls`.** De richtlijn kent hem, maar hij vraagt een id dat
+  over de hele pagina uniek is, en dat is uit de inhoud niet te maken: twee
+  accordeons op één pagina kunnen dezelfde vraag op dezelfde plek hebben. Voor
+  een disclosure is `aria-expanded` op de knop het dragende deel, en het paneel
+  staat er direct achter in de DOM. De ondersteuning van `aria-controls` in
+  schermlezers is bovendien wisselend.
+
+De vraag is een kop met de knop erín, en niet andersom: een kop binnen een knop
+maakt van die kop een stuk knoptekst. Het niveau zakt onder de sectiekop mee,
+net als een kaartkop, zodat `check-koppen` erover kan oordelen.
+
 **Welke knop welke kleur krijgt, is nog niet uitgevochten.** `Hero` en `Oproep`
 zetten hun primaire actie nu op `vuur` en hun tweede op `lijn`. De mockup zet er
 twee gevulde naast elkaar — AANMELDEN zwart, INHUREN rood — maar welke van de
