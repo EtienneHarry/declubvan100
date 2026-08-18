@@ -20,6 +20,7 @@ import LogoHorizontaal from '../components/logo/LogoHorizontaal.astro';
 import Navigatie from '../components/navigatie/Navigatie.astro';
 import TellerScript from '../components/basis/TellerScript.astro';
 import OnthulScript from '../components/beweging/OnthulScript.astro';
+import HaalScript from '../components/merk/HaalScript.astro';
 
 // De merkkleur hoort niet als losse hex in dit bestand, dus lezen we hem bij
 // het bouwen uit de tokenlaag. Sinds de restyle is dat --bruin en niet --inkt:
@@ -248,5 +249,6 @@ const jaar = new Date().getFullYear();
 
     <TellerScript />
     <OnthulScript />
+    <HaalScript />
   </body>
 </html>

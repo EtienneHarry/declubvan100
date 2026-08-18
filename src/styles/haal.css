@@ -1,0 +1,103 @@
+/*
+ * De haal — de ovaal en het onderstreepje.
+ *
+ * Twee met de hand getekende vormen uit de mockup. Ze horen bij dezelfde
+ * familie als de bliksemschicht: één beweging, geen constructie. Wat ze delen
+ * staat hier; wat ze onderscheidt is hun pad en hun duur, en dat staat in het
+ * component zelf.
+ *
+ * Een haal bestaat uit drie dingen die los van elkaar kunnen falen:
+ *
+ *   1. de pasvorm    — hij verschijnt alleen als de tekst op één regel past
+ *   2. de lijn       — kleur en dikte, uit de tokenlaag
+ *   3. het tekenen   — stroke-dashoffset van 100 naar 0
+ *
+ * Alleen het derde is beweging. Eén en twee staan daarom buiten het
+ * no-preference-blok: wie gereduceerde beweging vraagt, krijgt de ovaal wél —
+ * volledig getekend en meteen.
+ *
+ * WAAROM DE LIJN VERBORGEN BEGINT. Een ovaal om een woordgroep die over twee
+ * regels breekt, wordt een uitgerekte ellips over twee regels heen. Dat is niet
+ * uit te rekenen tijdens het bouwen: het hangt aan de vensterbreedte, aan het
+ * lettertype dat al dan niet geladen is, en aan de lengte van de tekst die de
+ * redacteur invult. HaalScript.astro meet het en zet data-haal-staat="past".
+ *
+ * De prijs is dat er zonder JavaScript geen ovaal staat. Dat is de goede kant
+ * om op te falen: de haal is decoratief en staat op aria-hidden, dus er gaat
+ * geen betekenis verloren — en een ontbrekende versiering is beter dan een
+ * kapotte. Bij gereduceerde beweging draait het script gewoon; dat meet alleen,
+ * het beweegt niets.
+ */
+
+[data-haal] [data-haal-lijn] {
+  /*
+   * Op --tekst en niet op currentColor. De haal is een merkteken en geen tekst:
+   * in een gedempte alinea zou currentColor hem mee laten verbleken, en dan
+   * staat er een grijze krabbel in plaats van een streep van de hand.
+   */
+  stroke: var(--tekst);
+  stroke-width: var(--haal-dikte);
+  visibility: hidden;
+}
+
+[data-haal][data-haal-staat='past'] [data-haal-lijn] {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /*
+   * Het tekenen. Zelfde mechaniek als de scrollonthulling — gepauzeerd
+   * beginnen, de waarnemer zet hem op running — maar met een eigen curve en
+   * een eigen wachttijd.
+   *
+   * De vertraging is de plek van het element in de ploeg plus --haal-wacht.
+   * Die eerste helft komt via --stap-vertraging binnen: beweging.css zet die
+   * variabele op elk element met een stap, en een custom property erft, dus de
+   * haal binnen een kop op stap 2 leest vanzelf 2 × --ploeg. Zonder die
+   * doorgifte zou elke haal een eigen stap-prop nodig hebben door alle acht
+   * sectietypes heen.
+   */
+  [data-beweging='aan'] [data-onthul='haal'] [data-haal-lijn] {
+    animation-name: haal-trekken;
+    animation-timing-function: var(--haal);
+    animation-fill-mode: backwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--stap-vertraging, 0ms) + var(--haal-wacht));
+  }
+
+  [data-beweging='aan'] [data-haal='ovaal'] [data-haal-lijn] {
+    animation-duration: var(--duur-haal-ovaal);
+  }
+
+  [data-beweging='aan'] [data-haal='streep'] [data-haal-lijn] {
+    animation-duration: var(--duur-haal-streep);
+  }
+
+  /* In beeld gekomen: de waarnemer laat hem los. */
+  [data-beweging='aan'] [data-onthul='haal'][data-onthul-staat='loopt'] [data-haal-lijn] {
+    animation-play-state: running;
+  }
+
+  /*
+   * Stond al in beeld bij het laden. Geen animatie, geen pauze: de haal staat
+   * er dan gewoon, net als de kop waar hij omheen zit.
+   */
+  [data-beweging='aan'] [data-onthul='haal'][data-onthul-staat='klaar'] [data-haal-lijn] {
+    animation: none;
+  }
+}
+
+/*
+ * Het pad is genormaliseerd op pathLength="100", dus dit beeldje geldt voor
+ * elke vorm — de ovaal en de streep hebben een heel andere echte lengte maar
+ * lopen allebei van 100 naar 0.
+ *
+ * Alleen een `from`. Het eindbeeldje is de eigen stijl van de lijn, en die is
+ * stroke-dashoffset 0: volledig getekend. Zo hoeft dit beeldje niets te weten
+ * van de vorm waar het op landt, en valt de lijn na afloop op zichzelf terug.
+ */
+@keyframes haal-trekken {
+  from {
+    stroke-dashoffset: 100;
+  }
+}

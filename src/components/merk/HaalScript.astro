@@ -1,0 +1,82 @@
+---
+/**
+ * De pasvorm van de haal: past de tekst op één regel?
+ *
+ * Apart Astro-bestand, net als TellerScript en OnthulScript: een <script> in een
+ * React-component belandt inline in de HTML en loopt op `script-src 'self'`
+ * stuk. Hier maakt Astro er een gewoon bestand van.
+ *
+ * DIT SCRIPT MEET ALLEEN. Het zet geen animatie aan en het kijkt niet naar
+ * gereduceerde beweging: een ovaal om een woordgroep die over twee regels
+ * breekt, is net zo verkeerd voor wie geen beweging wil als voor wie er wel om
+ * vraagt. Het tekenen zit in OnthulScript en src/styles/haal.css.
+ *
+ * Het staat in de layout en dus op elke pagina. Zonder [data-haal] doet het
+ * niets.
+ */
+---
+
+<script>
+  const halen = Array.from(document.querySelectorAll<HTMLElement>('[data-haal]'));
+
+  if (halen.length > 0) {
+    /**
+     * Een inline element dat over twee regels loopt, levert twee rechthoeken op.
+     * Dat is de enige betrouwbare manier om het te vragen: de hoogte vergelijken
+     * met de regelhoogte gaat mis zodra er een superscript of een emoji in staat,
+     * en de breedte vergelijken met de ouder mist het geval waarin de tekst
+     * precies past maar de ouder een marge heeft.
+     *
+     * Geen rechthoeken betekent dat het element niets rendert — display:none,
+     * of leeg. Dan is er ook niets om omheen te tekenen.
+     */
+    function pastOpEenRegel(haal: HTMLElement) {
+      const tekst = haal.querySelector<HTMLElement>('[data-haal-tekst]');
+      if (!tekst) return false;
+
+      return tekst.getClientRects().length === 1;
+    }
+
+    /*
+     * Eerst alles meten, dan pas alles zetten. Andersom wisselt elke meting af
+     * met een stijlwijziging en rekent de browser de pagina per haal opnieuw
+     * door. Dezelfde volgorde als in OnthulScript, om dezelfde reden.
+     */
+    function meet() {
+      const uitkomsten = halen.map(pastOpEenRegel);
+
+      halen.forEach((haal, index) => {
+        haal.dataset.haalStaat = uitkomsten[index] ? 'past' : 'breekt';
+      });
+    }
+
+    meet();
+
+    /*
+     * Nog een keer zodra het lettertype binnen is. Montserrat is breder dan de
+     * systeemletter waarmee de pagina begint, dus een woordgroep die tijdens de
+     * eerste meting nog net paste, kan er daarna alsnog uit lopen.
+     */
+    if (document.fonts?.status !== 'loaded') {
+      document.fonts?.ready.then(meet);
+    }
+
+    /*
+     * En bij elke verandering van de vensterbreedte. Dit is het enige geval
+     * waarin een haal van gedachten verandert zonder dat de bezoeker iets doet:
+     * hij draait zijn telefoon en de kop breekt anders.
+     *
+     * Op een frame gepland en niet meteen: een sleep aan de vensterrand levert
+     * anders tientallen metingen per seconde op.
+     */
+    let gepland = 0;
+
+    window.addEventListener('resize', () => {
+      if (gepland) return;
+      gepland = window.requestAnimationFrame(() => {
+        gepland = 0;
+        meet();
+      });
+    });
+  }
+</script>

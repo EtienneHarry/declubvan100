@@ -4,6 +4,7 @@ import { SectieLijst, type Sectie } from '../lib/SectionRenderer';
 import Knop, { type KnopVariant } from '../components/basis/Knop';
 import Beeldvlak from '../components/beeld/Beeldvlak';
 import Bovenkop from '../components/basis/Bovenkop';
+import Ovaal from '../components/merk/Ovaal';
 import Markdoc from '@markdoc/markdoc';
 
 import foto from '../assets/photo/proost-tap.jpg';
@@ -853,6 +854,43 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         <p class="mt-3 text-kop-m">Cream op 72%, donkere tekst</p>
       </Beeldvlak>
     </div>
+  </div>
+
+  {/*
+    De ovaal. Geen sectietype zet hem nog — de koppen waar hij omheen hoort
+    komen in sessie 2 — dus hij staat hier in markup die een sectie nabootst:
+    een kop met data-onthul en een stap, zodat de hele keten meedoet.
+
+    Waar je op let, en dat is niet te zien op een screenshot:
+
+      - de kop komt eerst binnen in het gewone ritme. Pas als die stilstaat,
+        200ms later, begint de ovaal zich te trekken. Ze horen niet tegelijk te
+        gebeuren.
+      - hij begint linksboven en gaat met de klok mee, in één haal, en houdt pas
+        op als hij over zijn eigen begin heen is. Dat overschot is het verschil
+        tussen een gebaar en een vorm.
+      - de lijn is overal even dik, ook waar de ovaal breed uitgerekt is. Zonder
+        vector-effect worden de zijkanten dik en de boven- en onderkant dun.
+      - de tweede kop is expres te lang voor één regel. Daar hoort géén ovaal te
+        staan: alleen de tekst. Maak het venster smal en kijk of de eerste ook
+        zijn ovaal verliest zodra hij breekt.
+  */}
+  <div class="mx-auto max-w-breed px-marge pt-sectie-m">
+    <p class="font-machine text-bovenkop text-tekst-stil uppercase">ovaal · tekent zichzelf</p>
+    <p
+      data-onthul="kop"
+      data-onthul-stap="1"
+      class="mt-6 text-display-l text-balance break-words"
+    >
+      Geen nummertjes, maar <Ovaal>1 van de 100</Ovaal>
+    </p>
+    <p
+      data-onthul="kop"
+      data-onthul-stap="2"
+      class="mt-12 text-kop-l text-balance break-words"
+    >
+      En hier staat <Ovaal>{REGRESSIE_KOP}</Ovaal>
+    </p>
   </div>
 
   {

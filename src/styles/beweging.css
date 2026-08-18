@@ -78,37 +78,50 @@
    * De ploeg. Acht stappen is de bovengrens; daarboven zou een kaart onderaan
    * een raster van tien meer dan een halve seconde stilstaan nadat hij in beeld
    * is gekomen. src/lib/beweging.ts klemt op hetzelfde getal.
+   *
+   * Elke stap zet zijn vertraging ook als --stap-vertraging neer en leest die
+   * daarna zelf. Dat is geen omweg: een custom property erft, dus een haal
+   * binnen een kop op stap 2 kan er zijn eigen wachttijd bij optellen zonder
+   * dat iemand die stap nog een keer doorgeeft. Zie src/styles/haal.css.
    */
   [data-beweging='aan'] [data-onthul-stap='1'] {
-    animation-delay: calc(1 * var(--ploeg));
+    --stap-vertraging: calc(1 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='2'] {
-    animation-delay: calc(2 * var(--ploeg));
+    --stap-vertraging: calc(2 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='3'] {
-    animation-delay: calc(3 * var(--ploeg));
+    --stap-vertraging: calc(3 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='4'] {
-    animation-delay: calc(4 * var(--ploeg));
+    --stap-vertraging: calc(4 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='5'] {
-    animation-delay: calc(5 * var(--ploeg));
+    --stap-vertraging: calc(5 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='6'] {
-    animation-delay: calc(6 * var(--ploeg));
+    --stap-vertraging: calc(6 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='7'] {
-    animation-delay: calc(7 * var(--ploeg));
+    --stap-vertraging: calc(7 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 
   [data-beweging='aan'] [data-onthul-stap='8'] {
-    animation-delay: calc(8 * var(--ploeg));
+    --stap-vertraging: calc(8 * var(--ploeg));
+    animation-delay: var(--stap-vertraging);
   }
 }
 

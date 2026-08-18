@@ -13,3 +13,6 @@
 /* De scrollonthulling. Staat los van de tokenlaag: hier staat het mechanisme,
    daar de waardes. Zie src/styles/beweging.css. */
 @import './beweging.css';
+/* De haal: de ovaal en het onderstreepje. Apart van beweging.css omdat maar
+   één van de drie dingen die hij doet beweging is. Zie src/styles/haal.css. */
+@import './haal.css';

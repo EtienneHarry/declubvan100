@@ -150,6 +150,33 @@
   --inslag-masker: 112%;
   --zoom-beeld: 1.05; /* hover op een beeld dat ergens heen gaat */
   --duur-zoom: 700ms; /* diezelfde zoom, trager dan de binnenkomst */
+
+  /*
+   * De haal: de ovaal om een woordgroep en het onderstreepje onder een kop.
+   *
+   * Dit is de enige beweging op de site die niet op --inslag loopt, en dat is
+   * met opzet. De inslag is een klap die scherp afremt en stilvalt; een haal is
+   * een hand die doorstreept. --haal loopt daarom aan het eind nog: het tweede
+   * stuurpunt ligt op 0.75, 0.6, dus de helling waarmee de curve bij 1 aankomt
+   * is 1,6 — de lijn is nog in beweging op het moment dat hij ophoudt. Precies
+   * het tegenovergestelde van --inslag, dat op 0.1, 1 uitdempt.
+   *
+   * De pauze is er omdat de twee dingen niet tegelijk mogen gebeuren. Het
+   * element komt eerst binnen in het gewone ritme; pas als het stilstaat, wordt
+   * de haal eromheen gezet. --haal-wacht is die binnenkomst plus de pauze, en
+   * telt op bij de plek van het element in de ploeg.
+   *
+   * Deze zes horen bij elkaar en bij src/styles/haal.css.
+   */
+  --haal: cubic-bezier(0.35, 0.08, 0.75, 0.6);
+  --haal-pauze: 200ms; /* stilte tussen binnenkomst en haal */
+  --haal-wacht: calc(var(--duur-inslag-hef) + var(--haal-pauze));
+  --duur-haal-ovaal: 450ms; /* de hele ronde, in één doorlopende haal */
+  --duur-haal-streep: 350ms; /* korter, want de streep is korter */
+  /* Lijndikte, in em zodat hij meeschaalt met de tekst waar hij omheen staat:
+     op een displaykop hoort een dikke haal en in lopende tekst een dunne. De
+     ondergrens houdt hem zichtbaar in de kleinste maten. */
+  --haal-dikte: max(1.5px, 0.06em);
 }
 
 /* ---------------------------------------------------------------------------
@@ -461,6 +488,13 @@
     --ploeg: 0ms;
     --inslag-hef: 0px;
     --zoom-beeld: 1;
+
+    /* De haal net zo. haal.css staat binnen dezelfde no-preference, dus de
+       ovaal staat er bij gereduceerde beweging meteen en volledig — hij tekent
+       zich niet sneller, hij tekent zich niet. */
+    --haal-pauze: 0ms;
+    --duur-haal-ovaal: 1ms;
+    --duur-haal-streep: 1ms;
   }
 
   *,

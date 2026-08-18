@@ -397,6 +397,83 @@ nulde tel zonder dat iemand hem hoeft in te delen. Dat is ook de reden dat hij
 bij herhaling blijft werken: hij is geen gebeurtenis náást de sectie maar de
 eerste beweging ván de sectie. Er staan er zestien op de site.
 
+### De haal — de ovaal en het onderstreepje
+
+De mockup introduceert twee met de hand getekende vormen naast de
+bliksemschicht: een ellips om een woordgroep ("1 van de 100", "hele agenda") en
+een losse, licht scheve streep onder een kop ("NODIG HEBT.", "BETER IS."). Ze
+horen bij dezelfde familie als de schicht — één beweging, geen constructie — en
+zijn dus een verwantschap en geen stijlbreuk. De rollen van de schicht blijven
+zoals ze waren.
+
+**Dit is de enige beweging op de site die niet op `--inslag` loopt.** De inslag
+is een klap die scherp afremt en stilvalt; een haal is een hand die doorstreept.
+`--haal` is daarom precies andersom gebouwd:
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `--haal` | `cubic-bezier(0.35, 0.08, 0.75, 0.6)` | de curve van een pennenstreek |
+| `--haal-pauze` | 200ms | stilte tussen binnenkomst en haal |
+| `--haal-wacht` | `--duur-inslag-hef` + `--haal-pauze` | 620ms, bovenop de plek in de ploeg |
+| `--duur-haal-ovaal` | 450ms | de hele ronde, in één doorlopende haal |
+| `--duur-haal-streep` | 350ms | korter, want de streep is korter |
+| `--haal-dikte` | `max(1.5px, 0.06em)` | dikte, schaalt mee met de tekst |
+
+Het tweede stuurpunt van `--haal` ligt op `0.75, 0.6`, dus de helling waarmee de
+curve bij 1 aankomt is 1,6: **de lijn is nog in beweging op het moment dat hij
+ophoudt.** `--inslag` doet het omgekeerde en dempt uit op `0.1, 1`.
+
+**Eerst het element, dan de haal.** Het element komt binnen in het gewone ritme
+van de ploeg; pas als het stilstaat, 200ms later, wordt de haal eromheen gezet.
+Ze horen niet tegelijk te gebeuren — dan is het één effect in plaats van een
+aanwijzing achteraf. De vertraging is dus de stap van het element plus
+`--haal-wacht`, en die eerste helft komt via `--stap-vertraging` binnen: elke
+stapregel in `beweging.css` zet die variabele, en een custom property erft. Een
+haal binnen een kop op stap 2 leest daardoor vanzelf 2 × `--ploeg`, zonder dat
+iemand die stap nog een keer doorgeeft.
+
+**De ovaal begint linksboven, gaat met de klok mee en schiet over zijn eigen
+begin heen.** Dat overschot is het verschil tussen een gebaar en een vorm: een
+ellips die netjes aansluit is een figuur, een lijn die er voorbij loopt is een
+hand geweest. Het pad kruist zijn eigen eerste segment; sluit je het netjes, dan
+is het effect weg.
+
+Drie dingen aan de uitwerking die gemeten zijn en niet bedacht:
+
+- **`vector-effect="non-scaling-stroke"`.** De ovaal spant zich om een
+  woordgroep van elke lengte, dus hij rekt in de breedte mee
+  (`preserveAspectRatio="none"`). Zonder dit attribuut rekt de lijn mee: dikke
+  zijkanten, dunne boven- en onderkant.
+- **Breedte én hoogte staan uitgeschreven.** Een svg is een vervangen element
+  met een eigen verhouding, en die verhouding wint van een insetpaar zodra de
+  andere maat op `auto` staat. Met alleen insets werd het vlak om een kop van
+  467×73 pixels 531×319 — de hoogte kwam uit het viewBox. Met alleen een hoogte
+  erbij werd het 173×104: toen kwam de bréédte eruit.
+- **`pathLength="100"`.** Het pad is genormaliseerd, dus de animatie loopt van
+  100 naar 0 zonder de echte lengte te kennen — en ovaal en streep delen
+  daardoor één keyframe terwijl hun paden niets met elkaar te maken hebben.
+
+**Bij een woordgroep die over twee regels breekt komt er geen ovaal.** Een
+uitgerekte ellips over twee regels heen is geen aanwijzing meer. Dat is niet uit
+te rekenen tijdens het bouwen — het hangt aan de vensterbreedte, aan het
+lettertype dat al dan niet geladen is en aan wat de redacteur invult — dus
+`HaalScript.astro` meet het: een inline element dat over twee regels loopt,
+levert twee rechthoeken op. Het meet opnieuw zodra het lettertype binnen is en
+bij elke verandering van de vensterbreedte.
+
+*Afwijking:* de lijn begint daardoor verborgen en wordt zichtbaar gemaakt, en
+**zonder JavaScript staat er dus geen ovaal.** Dat is de andere kant op dan de
+scrollonthulling, waar het uitgangspunt juist is dat er zonder script niets
+verborgen blijft. De reden voor het verschil is dat de haal decoratief is en op
+`aria-hidden` staat: er gaat geen betekenis verloren, en een ontbrekende
+versiering is beter dan een uitgerekte. Bij gereduceerde beweging draait het
+script gewoon — het meet alleen, het beweegt niets — dus daar staat de haal er
+wél, volledig getekend en meteen.
+
+**Maximaal één ovaal per sectie.** Dezelfde soort regel als bij de schicht en
+net zomin af te dwingen in code: twee ovalen in één blikveld maken er een
+stijlmiddel van in plaats van een aanwijzing.
+
 **Op beeld dat ergens heen gaat staat een lichte zoom.** 1.05 in 700ms, en dus
 ruim trager dan een binnenkomst — die is over voor de zoom halverwege is. Alleen
 waar het beeld klikbaar is of naar iets verwijst; een foto die nergens heen
