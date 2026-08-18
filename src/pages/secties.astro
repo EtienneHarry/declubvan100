@@ -5,6 +5,7 @@ import Knop, { type KnopVariant } from '../components/basis/Knop';
 import Beeldvlak from '../components/beeld/Beeldvlak';
 import Bovenkop from '../components/basis/Bovenkop';
 import Ovaal from '../components/merk/Ovaal';
+import Streep from '../components/merk/Streep';
 import Markdoc from '@markdoc/markdoc';
 
 import foto from '../assets/photo/proost-tap.jpg';
@@ -890,6 +891,36 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       class="mt-12 text-kop-l text-balance break-words"
     >
       En hier staat <Ovaal>{REGRESSIE_KOP}</Ovaal>
+    </p>
+  </div>
+
+  {/*
+    Het onderstreepje. Zelfde mechaniek als de ovaal, dus wat hier bij komt is
+    alleen wat er anders is:
+
+      - hij is korter (350ms tegen 450) en loopt van links naar rechts.
+      - hij loopt merkbaar scheef omhoog. Waterpas zou hij als een rand lezen
+        of als de onderstreping van een browser.
+      - hij hangt ónder het regelvak, niet erin. De tweede kop hieronder heeft
+        staarten — een p, een g en een j — en die horen heel te blijven.
+      - hij mag vaker voorkomen dan de ovaal, maar nog steeds maximaal één per
+        sectie.
+  */}
+  <div class="mx-auto max-w-breed px-marge pt-sectie-m">
+    <p class="font-machine text-bovenkop text-tekst-stil uppercase">onderstreepje · korter</p>
+    <p
+      data-onthul="kop"
+      data-onthul-stap="1"
+      class="mt-6 text-display-l text-balance break-words"
+    >
+      Goede mensen op het moment dat je ze <Streep>nodig hebt.</Streep>
+    </p>
+    <p
+      data-onthul="kop"
+      data-onthul-stap="2"
+      class="mt-12 text-kop-l text-balance break-words"
+    >
+      Met staarten eronder: <Streep>opdrachtgevers, jongens en groepen</Streep>
     </p>
   </div>
 

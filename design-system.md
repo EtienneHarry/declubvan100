@@ -470,9 +470,28 @@ versiering is beter dan een uitgerekte. Bij gereduceerde beweging draait het
 script gewoon — het meet alleen, het beweegt niets — dus daar staat de haal er
 wél, volledig getekend en meteen.
 
-**Maximaal één ovaal per sectie.** Dezelfde soort regel als bij de schicht en
-net zomin af te dwingen in code: twee ovalen in één blikveld maken er een
-stijlmiddel van in plaats van een aanwijzing.
+**Het onderstreepje is de kleine broer.** Zelfde curve, zelfde pasvorm, zelfde
+keyframe, alleen korter: 350ms tegen 450. Twee dingen zijn anders:
+
+- **Hij loopt merkbaar scheef omhoog.** Waterpas zou hij lezen als een rand of
+  als de onderstreping van de browser, en dan is het geen haal meer.
+- **Hij hangt ónder de staarten en niet erdoor.** Die inset is gemeten: het
+  regelvak van een displaykop staat op een regelhoogte onder 1, dus de letters
+  steken er onderuit. Op 0,22em begon de lijn 13,9px bóven de onderkant van de
+  letters op een kop van 76,8px en liep hij dwars door de staart van een p en
+  een g; op 0,42em begint hij er 4,5px onder, en op een kop van 41px 5,2px.
+
+**Maximaal één ovaal en één streep per sectie.** Dezelfde soort regel als bij de
+schicht en net zomin af te dwingen in code: twee ovalen in één blikveld maken er
+een stijlmiddel van in plaats van een aanwijzing. Het verschil tussen de twee zit
+in de pagina: een ovaal wijst iets aan en verdient schaarste over de hele
+pagina, een streep bevestigt een slotzin en mag dus in meer secties staan.
+
+**Ze verschuiven niets.** Allebei staan ze absoluut gepositioneerd buiten de
+stroom. Nagemeten op `/secties` met vier halen: de paginahoogte is 35646px in
+alle drie de toestanden — vóór de meting, met alles verborgen en met alles
+zichtbaar — en `offsetTop`, `offsetLeft`, `offsetWidth` en `offsetHeight` van
+elke alinea en elke kop zijn in die drie toestanden identiek.
 
 **Op beeld dat ergens heen gaat staat een lichte zoom.** 1.05 in 700ms, en dus
 ruim trager dan een binnenkomst — die is over voor de zoom halverwege is. Alleen
