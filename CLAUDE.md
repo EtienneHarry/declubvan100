@@ -178,7 +178,7 @@ staan, want daar worden de tokens gedefinieerd.
 1. **Primitieven** — de rauwe waardes, één keer, in `:root`.
 2. **Semantische laag** — aliassen die onder `[data-thema="licht"]` kantelen.
 3. **`@theme inline`** — wat Tailwind tot utilities maakt.
-4. **Basis** — reset, links, focus, de breedte-as, gereduceerde beweging.
+4. **Basis** — reset, links, focus, gereduceerde beweging.
 
 Laag 2 en 4 staan bewust buiten `@theme`: een alias die per thema iets anders
 betekent en een CSS-reset zijn geen themetokens. Let op dat `@theme inline` de

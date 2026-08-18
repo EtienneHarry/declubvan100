@@ -135,16 +135,35 @@ plek die volledig zwart is, want de foto zelf is geen token:
 
 ## Typografie
 
-**Archivo Variable**, één familie, twee assen: gewicht 100–900, breedte 62–125.
-Zelf gehost via `@fontsource-variable/archivo/wdth.css` — bewust die import en
-niet de standaard, want die laat de breedte-as weg.
+Drie families sinds de restyle, alle drie zelf gehost via `@fontsource` en alle
+drie via een token. `scripts/check-tokens.mjs` leest de tokennamen uit
+`tokens.css` en laat de build vallen op elke letterlijke familienaam daarbuiten,
+dus deze drie zijn ook de enige drie die er kunnen zijn.
 
-Displaykoppen op `wdth 118` (`display-xl`) en `112` (`display-l`), lopende tekst
-op `100`. Dat is het grafische verschil dat de site draagt en het kost nul extra
-bytes. Gemeten: dezelfde tekst is op 118 ruim 19% breder dan op 100.
+| Token | Familie | Rol |
+|---|---|---|
+| `--font-sans` | Montserrat Variable | dragend: koppen én lopende tekst |
+| `--font-machine` | Special Elite | labels, knoppen, één uitgelichte regel |
+| `--font-hand` | Caveat | één decoratieve regel per pagina |
 
-Tailwind kent geen namespace voor `font-variation-settings`, dus de breedte-as
-staat als twee losse regels in laag 4 van `tokens.css`.
+**De dragende letter is Montserrat, Route A uit de brief.** Woordmerk en site
+vallen daarmee samen: Montserrat was al bevestigd als woordmerkletter, en de
+sans in de mockup zit er dicht op. Route B — Archivo laten staan — zou het
+systeem niet hoeven omzetten, maar de site hoekiger laten ogen dan wat de klant
+heeft goedgekeurd.
+
+**De prijs van die keuze is de breedte-as.** Archivo had er twee (gewicht
+100–900, breedte 62–125) en de displayniveaus stonden op `wdth 118` en `112`;
+dat was het grafische verschil dat de site droeg. Montserrat heeft alleen een
+gewichtsas. De twee `font-variation-settings`-regels in laag 4 van `tokens.css`
+zijn daarom weg, en de displayniveaus dragen het verschil nu op gewicht (800) en
+grootte — `display-xl` loopt tot 8rem, `display-l` tot 5rem.
+
+De brief noemt de dragende letter `--font-basis`. Hier heet hij `--font-sans`,
+en dat is geen slordigheid: Tailwind hangt aan die naam zowel de
+`font-sans`-utility als de standaardfamilie van de `body`. Onder een andere naam
+zou `font-sans` stilletjes Tailwinds eigen stack blijven — precies de val die
+`check-tokens` moet vangen.
 
 Leesbreedte is 66ch op licht en 60ch op donker; `maatRegelKlasse` in `tokens.ts`
 kiest de juiste per achtergrond.
@@ -153,6 +172,51 @@ kiest de juiste per achtergrond.
 een eigen lettergrootte (`.9375rem` en `1.125rem`). Daar bestaat geen token
 voor, dus alle drie de maten staan op `--text-knop` en verschillen alleen in
 hoogte en padding.
+
+### De typemachine
+
+Special Elite: een gestempelde slab met de onregelmatigheid van een echte
+typemachine. Vier regels, en ze zijn er alle vier om te voorkomen dat hij
+lopende tekst wordt:
+
+- **Altijd hoofdletters.**
+- **Altijd op `--machine-tracking` (0,14em).** Die spatiëring hoort bij de
+  familie en niet bij één maat, dus hij staat als primitief in laag 1 en wordt
+  door `--text-bovenkop`, `--text-knop` en de utility `tracking-machine`
+  gelezen. In `@theme inline` kon hij niet staan: dat blok bakt zijn waardes in
+  de utility en stuurt ze niet als variabele uit, dus een token dat door andere
+  tokens gelezen wordt moet een primitief zijn.
+- **Alleen labels, knoppen en maximaal één uitgelichte regel per sectie.**
+- **Nooit voor lopende tekst langer dan twee regels.** Special Elite is
+  monospaced en licht versleten; op regellengte leest hij traag en op een
+  telefoon breekt hij lelijk.
+
+In de praktijk raakt dat vandaag twee componenten — `Bovenkop` en `Knop` — plus
+het nummer op een `Kaart`. De uitgelichte regel bestaat nog niet als component;
+komt hij er, dan is `font-machine tracking-machine uppercase` de hele vorm.
+
+### Het handschrift
+
+Caveat, en het is het enige element op deze site dat puur decoratief is. Twee
+regels:
+
+- **Maximaal één regel per pagina.** Niet per sectie — per pagina. Twee
+  handgeschreven regels op één pagina maken er een sfeerbeeld van in plaats van
+  een accent.
+- **`aria-hidden` zodra dezelfde boodschap al in gewone tekst op de pagina
+  staat.** De mockup doet precies dat: drie bijschriften onder een drieluik, en
+  eronder dezelfde tekst nog eens in handschrift. Dat tweede exemplaar is een
+  plaatje van een zin, geen zin — een schermlezer hoort hem niet te herhalen.
+  Staat de boodschap er níet al, dan is hij wél betekenisdragend, en dan hoort
+  hij niet in het handschrift maar in de dragende letter.
+
+Caveat is een gok. De brief zet de zekerheid van deze familie op laag en van
+Special Elite op matig; heeft de maker van de mockup de echte namen, dan winnen
+die. Omzetten is één regel in `global.css` en één token in `tokens.css`.
+
+**Het dubbellaagse hero-effect** — de witte kop met de donkere offsetlaag
+eronder — hoort ook bij dit hoofdstuk maar staat bij `Hero` onder *Componenten*,
+want het is een variant van dat sectietype en nergens anders toepasbaar.
 
 ## Ruimte
 

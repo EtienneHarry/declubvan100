@@ -12,7 +12,7 @@
  *   1. Primitieven      — de rauwe waardes, één keer, in :root
  *   2. Semantische laag — aliassen die per thema herbonden worden
  *   3. @theme inline    — wat Tailwind tot utilities maakt
- *   4. Basis            — reset, links, focus, breedte-as, beweging
+ *   4. Basis            — reset, links, focus, beweging
  *
  * Laag 2 en 4 kunnen geen @theme-tokens zijn: een alias die onder
  * [data-thema="licht"] iets anders betekent, en een CSS-reset, passen niet in
@@ -99,6 +99,13 @@
   --letop-donker: #8a6412;
   --goed: #7fb08a;
   --goed-donker: #2f6b41;
+
+  /* De spatiëring van de typemachine. Hoort bij de familie en niet bij één
+     maat: een label, een knop en een uitgelichte regel staan er alle drie op.
+     Staat hier en niet in @theme, want @theme inline bakt zijn waardes in de
+     utility en stuurt ze niet als variabele uit — en deze wordt door drie
+     andere tokens gelezen. */
+  --machine-tracking: 0.14em;
 
   /* Lijndikte en leesbreedte */
   --lijn-dikte: 1px;
@@ -192,8 +199,21 @@
    --------------------------------------------------------------------------- */
 
 @theme inline {
-  /* Lettertype. Archivo Variable wordt zelf gehost via @fontsource-variable. */
-  --font-sans: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Lettertype. Drie families, alle drie zelf gehost via @fontsource.
+
+     De brief noemt de dragende letter --font-basis. Hier heet hij --font-sans,
+     want Tailwind hangt daar zowel de font-sans-utility als de standaardfamilie
+     van de body aan; onder een andere naam zou font-sans stilletjes Tailwinds
+     eigen stack blijven en dat is precies de val die check-tokens moet vangen.
+
+     Machine en hand hebben géén standaardplek. Ze worden per element gezet en
+     de regels waar dat mag staan in design-system.md. */
+  --font-sans: 'Montserrat Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-machine: 'Special Elite', ui-monospace, 'Courier New', monospace;
+  --font-hand: 'Caveat', ui-rounded, cursive;
+
+  /* De spatiëring van de typemachine, als utility: tracking-machine. */
+  --tracking-machine: var(--machine-tracking);
 
   /* Kleur: de achtergronden */
   --color-bruin: var(--bruin);
@@ -234,8 +254,10 @@
   /* Blur, alleen voor de sticky navigatie */
   --blur-nav: 14px;
 
-  /* Typografische schaal. De wdth-as staat in laag 4: Tailwind kent geen
-     namespace voor font-variation-settings. */
+  /* Typografische schaal. Montserrat heeft alleen een gewichtsas, dus de twee
+     displayniveaus dragen het verschil op gewicht en grootte — de breedte-as
+     van Archivo (wdth 118 en 112) bestaat hier niet meer en de twee regels die
+     hem zetten zijn uit laag 4 verdwenen. */
   --text-display-xl: clamp(3.5rem, 9vw, 8rem);
   --text-display-xl--line-height: 0.92;
   --text-display-xl--letter-spacing: -0.03em;
@@ -256,7 +278,7 @@
   --text-kop-s--font-weight: 600;
   --text-bovenkop: 0.875rem;
   --text-bovenkop--line-height: 1.2;
-  --text-bovenkop--letter-spacing: 0.14em;
+  --text-bovenkop--letter-spacing: var(--machine-tracking);
   --text-bovenkop--font-weight: 600;
   --text-lopend-l: clamp(1.0625rem, 1.4vw, 1.1875rem);
   --text-lopend-l--line-height: 1.6;
@@ -269,7 +291,9 @@
   --text-lopend-s--font-weight: 400;
   --text-knop: 1.0625rem;
   --text-knop--line-height: 1;
-  --text-knop--letter-spacing: 0.02em;
+  /* De knop staat sinds de restyle in de typemachine, dus op haar spatiëring
+     en niet meer op de 0,02em van de dragende letter. */
+  --text-knop--letter-spacing: var(--machine-tracking);
   --text-knop--font-weight: 700;
 
   /* Ruimte. Basiseenheid 4px, dus p-6 is 24px. */
@@ -318,16 +342,6 @@
 /* ---------------------------------------------------------------------------
    4. Basis
    --------------------------------------------------------------------------- */
-
-/* De breedte-as, alleen op displayniveaus. Zodra wdth in lopende tekst
-   verschijnt, verliest de pagina zijn ritme. */
-.text-display-xl {
-  font-variation-settings: 'wdth' 118;
-}
-
-.text-display-l {
-  font-variation-settings: 'wdth' 112;
-}
 
 /* In @layer base, niet ongelaagd. Ongelaagde CSS wint van Tailwinds
    @layer utilities, en dan kan een utility als no-underline de linkstijl

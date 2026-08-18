@@ -1,6 +1,13 @@
-/* Archivo Variable, zelf gehost. Bewust wdth.css en niet de standaardimport:
-   die laat de breedte-as weg en dan vallen de displayniveaus terug op 100. */
-@import '@fontsource-variable/archivo/wdth.css';
+/* Drie families, alle drie zelf gehost. Zie het typografiehoofdstuk van
+   design-system.md voor wat elk van de drie mag dragen.
+
+   Montserrat bewust via wght.css: dat is de rechte weightas zonder de
+   cursieve tegenhanger, en die gebruikt deze site nergens. Special Elite en
+   Caveat op 400 — allebei hebben ze maar één gewicht nodig, want ze staan
+   nooit in lopende tekst. */
+@import '@fontsource-variable/montserrat/wght.css';
+@import '@fontsource/special-elite/400.css';
+@import '@fontsource/caveat/400.css';
 @import 'tailwindcss';
 @import './tokens.css';
 /* De scrollonthulling. Staat los van de tokenlaag: hier staat het mechanisme,

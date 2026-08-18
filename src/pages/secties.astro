@@ -721,6 +721,33 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   noindex en telt niet mee in check-koppen.
 */}
 <Basis titel="Sectieoverzicht — De Club van 100" noindex>
+  {/*
+    De drie families naast elkaar. Staat hier omdat dit de enige pagina is waar
+    je ze in één blikveld hebt: op een echte pagina komt de typemachine alleen
+    in labels en knoppen langs en het handschrift hoogstens één keer.
+
+    De handregel is er ook als geval: dezelfde zin staat er in gewone tekst
+    boven, dus het handschrift is een herhaling en staat op aria-hidden. Zo
+    hoort die regel eruit te zien; zonder de gewone tekst erboven zou hij
+    betekenisdragend zijn en helemaal niet in dit lettertype mogen staan.
+  */}
+  <div class="mx-auto max-w-breed px-marge pt-sectie-s">
+    <p class="font-machine text-bovenkop text-tekst-stil uppercase">typografie · drie families</p>
+    <p class="mt-6 text-display-l text-balance">Montserrat draagt de kop</p>
+    <p class="mt-4 text-lopend-l text-tekst-zacht">
+      En de lopende tekst. Eén familie voor allebei, alleen een ander gewicht en
+      een andere grootte — de breedte-as van Archivo bestaat hier niet meer.
+    </p>
+    <p class="mt-8 font-machine text-bovenkop text-cream uppercase">
+      Special Elite — labels, knoppen, één uitgelichte regel
+    </p>
+    <p class="mt-8 text-lopend-m text-tekst-zacht">
+      Work when you want. Where you want. With people you like.
+    </p>
+    <p aria-hidden="true" class="mt-2 font-hand text-kop-l text-cream">
+      Work when you want. Where you want. With people you like.
+    </p>
+  </div>
   {
     gevallen.map((geval) => (
       <>
