@@ -111,6 +111,53 @@ verhoogd vlak niet verandert. `krijt-stil` houdt er 4,60:1 en dat is precies de
 ondergrens waarop deze waarde is uitgekozen. Levert de klant alsnog een gemeten
 verhoogd vlak, dan wint dat.
 
+### Contrast op een sluier meet je op het slechtste geval
+
+**Een sluier is geen vlak. Het is een laag over onbekend beeld.** Dat klinkt als
+een woordspel en het is het verschil tussen een meting die klopt en een die
+vleit.
+
+Een vlak heeft één kleur, dus daar is één verhouding uit te rekenen. Een sluier
+heeft een dekking, en wat eronder ligt is een foto — en een foto is geen token.
+Hij wordt vervangen zodra de redacteur er een andere kiest, en zelfs binnen één
+foto verschilt elke plek van de plek ernaast. Er ís dus geen gemiddelde
+achtergrond om tegen af te rekenen.
+
+**De regel: reken elke tekst op een sluier af op het slechtst denkbare beeld.**
+Voor lichte tekst is dat een foto die op die plek volledig wit is; voor donkere
+tekst een die er volledig zwart is. Haalt de tekst het daar, dan haalt hij het
+overal. Haalt hij het daar niet, dan is hij op sommige foto's onleesbaar en op
+andere niet — en dat is geen ontwerp maar een gok die van de fotokeuze afhangt.
+
+**Wat er misgaat als je het niet zo doet.** Een meting die `rgba(32 20 16 / .62)`
+als achtergrondkleur invult, behandelt de sluier alsof hij dekkend is en levert
+een veel te gunstig getal op. Dat is precies wat er in B8 gebeurde, en het hield
+een fout verborgen die er al vóór de restyle stond: **de vier bovenkoppen in de
+splitscreen-deuren stonden in `krijt-stil` op 1,46:1.** Op de dekkende meting
+leek dat ruim in orde. Dezelfde plek, dezelfde CSS, twee metingen, en alleen de
+strenge liet zien dat een grijze label op een foto in het slechtste geval
+onleesbaar is.
+
+De rest van die meting, op `--sluier-donker` vlak over een witte foto:
+
+| Tekstkleur | Slechtste geval | Mag het? |
+|---|---|---|
+| `krijt` | 5,04 | ja |
+| `cream` | 3,29 | alleen groot |
+| `krijt-stil` | **1,46** | nee |
+
+Daaruit volgt de regel die `Beeldvlak` nu afdwingt: **op een foto bestaat geen
+gedempte tekstkleur.** Het vlak zet altijd een `data-vlak`, en die regel in
+`tokens.css` bindt `--tekst-zacht` en `--tekst-stil` aan de hoofdtekstkleur. De
+sluier is doorgerekend op één kleur, en dat is de enige die hij draagt; de
+hiërarchie komt daar uit maat en gewicht.
+
+**En dus ook: verhoog de dekking niet om een kleur te redden.** Wie `krijt-stil`
+leesbaar wil maken op de vlakke sluier, komt uit op een dekking waarop de foto
+niet meer te zien is — en dan is de foto een achtergrondkleur geworden met een
+plaatje eronder dat niemand nodig had. De goede uitweg is de tekstkleur, niet de
+laag.
+
 ### Sluiers
 
 Twee tonen, allebei verplicht onder tekst op foto en allebei niet uit te zetten:
@@ -593,17 +640,9 @@ verduisteren. Wat gedeeld wordt is de verhoudingstabel, niet het component.
 
 **Op een foto bestaat geen gedempte tekstkleur.** `Beeldvlak` zet daarom altijd
 `data-vlak`, en die regel in `tokens.css` bindt `--tekst-zacht` en `--tekst-stil`
-aan de hoofdtekstkleur. De sluier garandeert één verhouding, en die is
-doorgerekend op de kleur waar hij voor bedoeld is — niet op een grijstint
-eronder.
-
-Gemeten op de vlakke sluier, op een foto die op die plek wit is: `krijt` haalt
-5,04:1, `cream` 3,29:1 en `krijt-stil` **1,46:1**. Een bovenkop in `krijt-stil`
-op een foto was dus in het slechtste geval onleesbaar, en dat stond er al vóór de
-restyle. Het is niet eerder opgevallen omdat een meting die de sluier als een
-dekkend vlak behandelt een veel te gunstig getal geeft: een sluier is geen vlak
-maar een laag over onbekend beeld, en dan is het slechtste geval de enige die
-telt. De foto is geen token.
+aan de hoofdtekstkleur. Waarom dat moet en met welke cijfers staat bij *Contrast
+op een sluier meet je op het slechtste geval*, in het kleurhoofdstuk — daar
+staat ook de fout die dit blootlegde: vier bovenkoppen op 1,46:1.
 
 **Afwijking — de hero gebruikt óók de vlakke sluier.** De beeldrichtlijn wijst
 `onder` toe aan "hero, tekst onderaan", en dat klopt zolang die tekst één regel
