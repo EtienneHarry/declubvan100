@@ -6,7 +6,7 @@ secties:
   - discriminant: hero
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: Contact
@@ -22,7 +22,7 @@ secties:
   - discriminant: drie-kolommen
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: ""
@@ -39,7 +39,7 @@ secties:
   - discriminant: oproep
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: Aanmelden

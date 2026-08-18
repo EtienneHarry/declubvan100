@@ -18,9 +18,9 @@
  * [data-thema="licht"] iets anders betekent, en een CSS-reset, passen niet in
  * een themablok. Ze staan daarom bewust buiten @theme, in ditzelfde bestand.
  *
- * Monochroom, geen accentkleur. Vier achtergronden en niet meer. De
- * contrastverhoudingen achter deze waardes staan in het contrasthoofdstuk van
- * design-system.md; wijk er niet van af zonder daar na te rekenen.
+ * Warm bruin dominant, met vuur als enige accent. De contrastverhoudingen
+ * achter deze waardes staan in het contrasthoofdstuk van design-system.md;
+ * wijk er niet van af zonder daar na te rekenen.
  */
 
 /* ---------------------------------------------------------------------------
@@ -28,12 +28,31 @@
    --------------------------------------------------------------------------- */
 
 :root {
-  /* De vier achtergronden. Meer dan één lichte en één donkere per pagina is
-     een fout. */
-  --inkt: #0b0b0b; /* dominant, standaard achtergrond van het merk */
-  --roet: #191919; /* verhoogd vlak op inkt: kaart, invoerveld, sticky balk */
+  /* De achtergronden. Meer dan één lichte en één donkere per pagina blijft een
+     fout: de donkere familie telt er drie, maar een pagina kiest er één.
+
+     Gemeten uit de mockup van augustus 2026. bruin heeft inkt vervangen als
+     dominant vlak; inkt is daarmee niet weg maar teruggezet op wat de mockup
+     ermee doet — zwarte knoppen en zwarte vlakken óp het bruin. */
+  --bruin: #201410; /* dominant, het vlak waar de site op staat */
+  --inkt: #0b0b0b; /* het zwarte vlak op bruin, en de zwarte knop */
+  /* Verhoogd vlak op bruin: kaart, invoerveld, sticky balk.
+
+     Was #191919, een koud grijs dat naast bruin uit de toon valt. Dit is 94%
+     bruin met 6% cream — dezelfde stap omhoog die roet op inkt had (1,13 tegen
+     1,12), en krijt-stil houdt er nog 4,60:1. De mockup meet geen verhoogd
+     vlak; zie de aantekening in design-system.md. */
+  --roet: #2c1f1a;
   --papier: #fafaf8; /* lichte pagina: voorwaarden, formulieren, print */
   --mist: #e4e4e1; /* rustig vlak op papier: kaart, tabelrij, uitgeschakeld veld */
+
+  /* Cream en vuur, allebei gemeten uit de mockup.
+
+     cream is tekstaccent op donker en de knoptekst op de zwarte knop. vuur is
+     de enige accentkleur van het merk en is géén tekstkleur: 3,18:1 op bruin.
+     Alleen als vlak, en de tekst daarop is wit — 5,65:1. */
+  --cream: #e4cdb4;
+  --vuur: #c13111;
 
   /* Tekst. krijt-stil mag nooit op papier of mist — dat haalt 2,9:1. */
   --krijt: #ffffff;
@@ -47,19 +66,29 @@
   --lijn-licht: rgb(11 11 11 / 0.16);
   --lijn-licht-sterk: rgb(11 11 11 / 0.38);
 
-  /* Sluiers. Verplicht onder elke tekst op foto. */
-  --sluier: rgb(11 11 11 / 0.62);
+  /* Sluiers. Verplicht onder elke tekst op foto.
+
+     Twee tonen. De donkere is bruin in plaats van inkt: dezelfde dekking, maar
+     op de nieuwe achtergrond — anders ligt er een koude vlek op een warm vlak.
+     Wit haalt er in het slechtste geval, een foto die op die plek wit is,
+     5,05:1. Cream haalt daar 3,29:1 en is dus geen tekstkleur op beeld.
+
+     De lichte is de bijna-sepia laag uit de hero van de mockup, voor donkere
+     tekst op een foto: cream op 72%. Inkt haalt daar in het slechtste geval
+     6,69:1 en in het beste 14,57:1. */
+  --sluier-donker: rgb(32 20 16 / 0.62);
+  --sluier-licht: rgb(228 205 180 / 0.72);
   --sluier-onder: linear-gradient(
     to top,
-    rgb(11 11 11 / 0.92) 0%,
-    rgb(11 11 11 / 0.72) 38%,
-    rgb(11 11 11 / 0) 100%
+    rgb(32 20 16 / 0.92) 0%,
+    rgb(32 20 16 / 0.72) 38%,
+    rgb(32 20 16 / 0) 100%
   );
   --sluier-zij: linear-gradient(
     to right,
-    rgb(11 11 11 / 0.94) 0%,
-    rgb(11 11 11 / 0.7) 46%,
-    rgb(11 11 11 / 0) 100%
+    rgb(32 20 16 / 0.94) 0%,
+    rgb(32 20 16 / 0.7) 46%,
+    rgb(32 20 16 / 0) 100%
   );
 
   /* Functioneel, gedempt. Bestaat altijd in een paar: licht voor donkere
@@ -121,7 +150,7 @@
    --------------------------------------------------------------------------- */
 
 :root {
-  --vlak: var(--inkt);
+  --vlak: var(--bruin);
   --vlak-verhoogd: var(--roet);
   --tekst: var(--krijt);
   --tekst-zacht: var(--krijt-zacht);
@@ -166,11 +195,17 @@
   /* Lettertype. Archivo Variable wordt zelf gehost via @fontsource-variable. */
   --font-sans: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Kleur: de vier achtergronden */
+  /* Kleur: de achtergronden */
+  --color-bruin: var(--bruin);
   --color-inkt: var(--inkt);
   --color-roet: var(--roet);
   --color-papier: var(--papier);
   --color-mist: var(--mist);
+
+  /* Kleur: accent. cream mag tekst zijn, vuur nooit — zie het
+     contrasthoofdstuk van design-system.md. */
+  --color-cream: var(--cream);
+  --color-vuur: var(--vuur);
 
   /* Kleur: tekst */
   --color-krijt: var(--krijt);

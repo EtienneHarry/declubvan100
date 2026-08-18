@@ -54,8 +54,9 @@ const opslag =
    --------------------------------------------------------------------------- */
 
 const ACHTERGROND_UITLEG: Partial<Record<AchtergrondToken, string>> = {
-  inkt: 'Inkt — zwart, de standaard',
-  roet: 'Roet — iets lichter zwart',
+  bruin: 'Bruin — warm donker, de standaard',
+  inkt: 'Inkt — zwart vlak op het bruin',
+  roet: 'Roet — iets lichter bruin',
   papier: 'Papier — licht, voor een leespagina',
   mist: 'Mist — rustig grijs op papier',
 };
@@ -100,7 +101,7 @@ const weergave = fields.object(
       description:
         'De kleur van het vlak waarop deze sectie staat. Houd één donkere en één lichte kleur per pagina aan.',
       options: keuzeUit(ACHTERGROND_TOKENS, ACHTERGROND_UITLEG),
-      defaultValue: 'inkt' satisfies AchtergrondToken,
+      defaultValue: 'bruin' satisfies AchtergrondToken,
     }),
     ruimte: fields.select({
       label: 'Ruimte boven en onder',

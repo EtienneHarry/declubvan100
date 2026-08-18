@@ -15,24 +15,123 @@ staat er hier een afwijking genoteerd, dan is die bewust.
 
 ## Kleur
 
-Monochroom, zwart dominant. **Geen accentkleur** — dat is een merkregel, geen
-smaak: alle logo's zijn monochroom op `currentColor`.
+Warm bruin dominant, met vuur als enige accent. Gemeten uit de mockup die de
+klant in augustus 2026 aanleverde; `bron/restyle-brief-v2.md` legt de meting
+vast, dit hoofdstuk de uitwerking.
 
-Vier achtergronden en niet meer, uitspreekbaar zodat ze in een CMS-keuzelijst
-passen: `inkt` (dominant), `roet` (verhoogd vlak op inkt), `papier` (lichte
-pagina), `mist` (rustig vlak op papier). Meer dan één lichte en één donkere
-achtergrond per pagina is een fout.
+**De regel "geen accentkleur" is vervallen.** Ze stond hier tot de restyle, en
+haar onderbouwing was dat alle logo's monochroom op `currentColor` staan. Dat
+klopt nog steeds — de logo's zijn niet veranderd — maar het was een gevolgtrekking
+uit het logo en geen uitspraak over de site. De mockup zet er een rode
+INHUREN-knop in, en daarmee is de vraag beantwoord door degene die hem stelde.
+Wat blijft staan is de reden achter de oude regel: één accent, en het draagt
+nooit tekst. Zie `vuur` hieronder.
+
+Vijf achtergronden, uitspreekbaar zodat ze in een CMS-keuzelijst passen. Drie
+donker en twee licht:
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `bruin` | `#201410` | dominant; het vlak waar de site op staat |
+| `inkt` | `#0b0b0b` | het zwarte vlak óp bruin, en de zwarte knop |
+| `roet` | `#2c1f1a` | verhoogd vlak op bruin: kaart, invoerveld, sticky balk |
+| `papier` | `#fafaf8` | lichte pagina: voorwaarden, privacy, print |
+| `mist` | `#e4e4e1` | rustig vlak op papier |
+
+**Meer dan één lichte en één donkere achtergrond per pagina blijft een fout.**
+De donkere familie telt er drie, maar een pagina kiest er één. `roet` is dan het
+verhoogde vlak binnen die pagina en geen tweede sectieachtergrond.
 
 Tekst: `krijt` / `krijt-zacht` / `krijt-stil` op donker, `inkt` / `grafiet` op
-licht. Functionele kleur bestaat alleen in paren (`fout` + `fout-donker`) en is
-gedempt.
+licht, met `cream` als accent op donker. Functionele kleur bestaat alleen in
+paren (`fout` + `fout-donker`) en is gedempt.
 
 De semantische aliassen — `--vlak`, `--tekst`, `--lijn`, `--focus-ring` —
 kantelen onder `[data-thema="licht"]`. Een sectie op `papier` of `mist` zet dat
 attribuut zelf, zodat alles erbinnen meekantelt.
 
-**`krijt-stil` mag nooit op `papier` of `mist`**: dat haalt 2,9:1. Gebruik daar
-`grafiet`.
+### Contrast, herrekend op de definitieve waardes
+
+Alle verhoudingen hieronder zijn WCAG 2.1, berekend op de waardes zoals ze nu in
+`tokens.css` staan — niet op de afgeronde meting uit de brief. AA vraagt 4,5:1
+voor gewone tekst en 3:1 voor groot (24px, of 19px vet) en voor UI-randen.
+
+Op de drie donkere vlakken:
+
+| Tekst | op `bruin` | op `inkt` | op `roet` |
+|---|---|---|---|
+| `krijt` | 17,96 | 19,68 | 15,93 |
+| `papier` | 17,19 | 18,83 | 15,25 |
+| `mist` | 14,10 | 15,45 | 12,51 |
+| `cream` | 11,71 | 12,83 | 10,39 |
+| `krijt-zacht` | 10,82 | 11,86 | 9,60 |
+| `krijt-stil` | 5,19 | 5,69 | 4,60 |
+| `vuur` | **3,18** | **3,48** | **2,82** |
+| `grafiet` | **2,68** | **2,93** | **2,37** |
+
+Op de twee lichte vlakken, en op `cream` als vlak:
+
+| Tekst | op `papier` | op `mist` | op `cream` |
+|---|---|---|---|
+| `inkt` | 18,83 | 15,45 | 12,83 |
+| `bruin` | 17,19 | 14,10 | 11,71 |
+| `grafiet` | 6,42 | 5,27 | **4,37** |
+| `vuur` | 5,41 | **4,44** | **3,69** |
+| `krijt-stil` | **3,31** | **2,72** | **2,26** |
+
+Tekst óp `vuur`: `krijt` 5,65 · `papier` 5,41 · `cream` 3,69 · `inkt` 3,48 ·
+`bruin` 3,18.
+
+Daaruit volgen zes regels, en die zijn niet onderhandelbaar:
+
+- **`vuur` is nooit tekstkleur op `bruin`.** 3,18:1 haalt AA niet, ook niet voor
+  groot. Het is een vlak: een knop, een klein blok. Nooit een woord.
+- **Knoptekst op `vuur` is wit.** 5,65:1, en dat geldt voor elke maat. De mockup
+  zet er cream-typemachinetekst op; die haalt 3,69:1 en dus alleen de
+  groot-tekstdrempel, en alleen zolang die knop groot en gespatieerd blijft.
+  Dat is een voorwaarde die een redacteur kan breken zonder het te zien, dus de
+  `vuur`-knop staat op wit.
+- **`grafiet` mag niet op `cream`** (4,37:1) en `vuur` ook niet (3,69:1). Op een
+  creamvlak schrijf je met `inkt` of `bruin`.
+- **`krijt-stil` mag nooit op `papier`, `mist` of `cream`.** Gebruik daar
+  `grafiet`. Op de drie donkere vlakken mag hij wel, tot en met `roet` (4,60:1).
+- **`vuur` op `mist`** haalt 4,44:1 en is dus geen gewone tekst; op `papier`
+  haalt het 5,41:1 en mag het wel. Praktisch: houd `vuur` ook op licht een vlak.
+- **De randen doen het werk tussen twee donkere vlakken.** `inkt` op `bruin` is
+  1,10:1 en `roet` op `bruin` 1,13:1. Dat is met opzet zo klein — het design
+  system zegt dat diepte op donker een verhoogd vlak plus een lijn is, en die
+  lijn (`--lijn`, 0,16 wit) is hier het enige dat de rand echt zichtbaar maakt.
+  Haal je hem weg, dan verdwijnt de kaart in de sectie.
+
+**Afwijking — `roet` is afgeleid en niet gemeten.** De mockup toont geen
+verhoogd vlak, en het oude `roet` (`#191919`) is een koud grijs dat naast bruin
+uit de toon valt. `#2c1f1a` is 94% `bruin` met 6% `cream`: dezelfde stap omhoog
+die `roet` op `inkt` had (1,13 tegen 1,12), zodat de verhouding tussen vlak en
+verhoogd vlak niet verandert. `krijt-stil` houdt er 4,60:1 en dat is precies de
+ondergrens waarop deze waarde is uitgekozen. Levert de klant alsnog een gemeten
+verhoogd vlak, dan wint dat.
+
+### Sluiers
+
+Twee tonen, allebei verplicht onder tekst op foto en allebei niet uit te zetten:
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `--sluier-donker` | `bruin` op 62% | witte tekst op beeld |
+| `--sluier-licht` | `cream` op 72% | donkere tekst op beeld, de hero van de mockup |
+
+De donkere is bruin geworden en niet meer inkt: dezelfde dekking, maar op de
+nieuwe achtergrond, anders ligt er een koude vlek op een warm vlak. De
+verloopvarianten `--sluier-onder` en `--sluier-zij` zijn mee overgezet.
+
+Doorgerekend op de uitersten van een foto — een plek die volledig wit is en een
+plek die volledig zwart is, want de foto zelf is geen token:
+
+- **`--sluier-donker`**: wit haalt in het slechtste geval 5,05:1 en in het beste
+  19,32:1. Cream haalt in het slechtste geval 3,29:1 en is dus **geen tekstkleur
+  op beeld**.
+- **`--sluier-licht`**: `inkt` haalt in het slechtste geval 6,69:1 en in het
+  beste 14,57:1; `bruin` 6,11:1 en 13,30:1. Allebei ruim boven AA.
 
 ## Typografie
 
@@ -249,9 +348,10 @@ verduisteren. Wat gedeeld wordt is de verhoudingstabel, niet het component.
 splitscreen `--sluier-zij` toe, bedoeld voor tekst in de linkerhelft. Een deur
 is op mobiel ongeveer 335px breed; daar heeft tekst de volle breedte nodig en
 staat de rechterhelft op het doorzichtige deel van dat verloop. Gemeten op
-375px besloeg de tekst 88% van het vlak. Daarom `--sluier` (62% over alles), de
-regel die de bron aan "kaart met tekst over beeld" hangt — en een splitscreen-
-deur ís dat functioneel. Wit haalt daar 5,4:1.
+375px besloeg de tekst 88% van het vlak. Daarom `--sluier-donker` (62% over
+alles), de regel die de bron aan "kaart met tekst over beeld" hangt — en een
+splitscreen-deur ís dat functioneel. Wit haalt daar in het slechtste geval
+5,05:1; die 5,4 uit B2 was op de oude sluier, die op inkt stond.
 
 In de repo staat één foto, `src/assets/photo/proost-tap.png`, gebruikt als
 og:image en in het sectieoverzicht. De overige zeven zitten in de bron. Let op:

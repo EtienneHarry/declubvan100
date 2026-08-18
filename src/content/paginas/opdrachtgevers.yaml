@@ -6,7 +6,7 @@ secties:
   - discriminant: hero
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: Opdrachtgevers
@@ -22,7 +22,7 @@ secties:
   - discriminant: drie-kolommen
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: ""
@@ -45,7 +45,7 @@ secties:
   - discriminant: beeld-tekst
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Waarom geen uitzendbureau
@@ -62,7 +62,7 @@ secties:
   - discriminant: citaten
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Wat opdrachtgevers zeggen
@@ -78,7 +78,7 @@ secties:
   - discriminant: oproep
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: Aan de slag

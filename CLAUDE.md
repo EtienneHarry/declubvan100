@@ -479,10 +479,12 @@ De voorwaardentekst staat er sinds `bron/voorwaarden.md` binnenkwam, letterlijk
 overgenomen. Punt 6 linkt naar `/privacy`; die pagina staat er sinds
 `bron/privacyverklaring.md` binnenkwam en is daarmee geen blokkade meer.
 
-Achtergronden per pagina: de vier donkere pagina's staan overal op `inkt`,
-voorwaarden overal op `papier`. Meer dan één lichte en één donkere achtergrond
-per pagina is volgens het design system een fout; `roet` en `mist` zijn
-verhoogde vlakken bínnen een sectie (`Kaart`), geen tweede sectieachtergrond.
+Achtergronden per pagina: de vier donkere pagina's staan sinds B8 overal op
+`bruin`, voorwaarden en privacy overal op `papier`. Meer dan één lichte en één
+donkere achtergrond per pagina is volgens het design system een fout; `roet` en
+`mist` zijn verhoogde vlakken bínnen een sectie (`Kaart`), geen tweede
+sectieachtergrond, en `inkt` is sinds B8 het zwarte vlak óp bruin — een knop of
+een blok, geen paginakleur.
 
 ## Wat er nog niet staat
 

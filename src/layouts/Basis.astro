@@ -22,13 +22,15 @@ import TellerScript from '../components/basis/TellerScript.astro';
 import OnthulScript from '../components/beweging/OnthulScript.astro';
 
 // De merkkleur hoort niet als losse hex in dit bestand, dus lezen we hem bij
-// het bouwen uit de tokenlaag. Verdwijnt of hernoemt --inkt, dan breekt de
-// build hier hard af in plaats van stilletjes een lege theme-color te zetten.
-const merkkleurTreffer = tokensCss.match(/--inkt: *(#[0-9a-fA-F]+) *;/);
+// het bouwen uit de tokenlaag. Sinds de restyle is dat --bruin en niet --inkt:
+// theme-color kleurt de browserbalk mee met het vlak waar de site op staat.
+// Verdwijnt of hernoemt --bruin, dan breekt de build hier hard af in plaats van
+// stilletjes een lege theme-color te zetten.
+const merkkleurTreffer = tokensCss.match(/--bruin: *(#[0-9a-fA-F]+) *;/);
 
 if (!merkkleurTreffer) {
   throw new Error(
-    'Token --inkt niet gevonden in src/styles/tokens.css; theme-color kan niet worden afgeleid.',
+    'Token --bruin niet gevonden in src/styles/tokens.css; theme-color kan niet worden afgeleid.',
   );
 }
 
@@ -135,7 +137,7 @@ const jaar = new Date().getFullYear();
 
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body class="bg-inkt text-krijt">
+  <body class="bg-bruin text-krijt">
     <a
       href="#inhoud"
       class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-krijt focus:px-4 focus:py-3 focus:text-inkt"

@@ -44,7 +44,7 @@ export interface BeeldvlakProps {
 const sluierKlasse: Record<Sluier, string> = {
   onder: 'bg-[image:var(--sluier-onder)]',
   zij: 'bg-[image:var(--sluier-zij)]',
-  vlak: 'bg-[color:var(--sluier)]',
+  vlak: 'bg-[color:var(--sluier-donker)]',
 };
 
 export default function Beeldvlak({

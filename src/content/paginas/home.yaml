@@ -9,7 +9,7 @@ secties:
   - discriminant: hero
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: In en rond Groningen
@@ -27,7 +27,7 @@ secties:
   - discriminant: splitscreen
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       deuren:
@@ -48,7 +48,7 @@ secties:
   - discriminant: beeld-tekst
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Waarom we bestaan
@@ -65,7 +65,7 @@ secties:
   - discriminant: citaten
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Wat opdrachtgevers zeggen
@@ -78,7 +78,7 @@ secties:
   - discriminant: oproep
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: ""

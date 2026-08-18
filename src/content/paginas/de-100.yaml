@@ -6,7 +6,7 @@ secties:
   - discriminant: hero
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: De 100
@@ -22,7 +22,7 @@ secties:
   - discriminant: beeld-tekst
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Wie erin zitten
@@ -36,7 +36,7 @@ secties:
   - discriminant: kop-tekst
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Waarom honderd
@@ -47,7 +47,7 @@ secties:
   - discriminant: drie-kolommen
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: ""
@@ -68,7 +68,7 @@ secties:
   - discriminant: oproep
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: Meld je
