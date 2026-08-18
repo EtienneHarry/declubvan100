@@ -49,12 +49,6 @@ Wat nog openstaat:
   "…maar niet willen dat hun hele agenda wordt bepaald door hun bijbaan". De
   brief levert alleen die staart, de eerste helft staat niet in `bron/`, en er is
   niets bijverzonnen. Vraag de klant om de hele zin.
-- **De navigatie noemt de pagina's nog anders dan de pagina's zelf.** Het menu
-  zegt "Opdrachtgevers" en "De 100"; de koppen zeggen "Voor ondernemers" en
-  "Voor wie is de club?". De brief vraagt de koppen en zegt niets over het menu,
-  en korte menulabels zijn verdedigbaar — maar het is een keuze die iemand moet
-  maken en niet iets wat vanzelf klopt. De URL's blijven hoe dan ook
-  `/opdrachtgevers` en `/de-100`.
 - **`roet` is afgeleid en niet gemeten.** De mockup toont geen verhoogd vlak.
   `#2c1f1a` is 94% bruin met 6% cream, gekozen zodat de stap omhoog dezelfde is
   als die `roet` op `inkt` had en `krijt-stil` er nog 4,60:1 haalt. Levert de

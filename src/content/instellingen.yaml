@@ -12,9 +12,9 @@ contact:
 navigatie:
   - label: Home
     href: /
-  - label: Opdrachtgevers
+  - label: Voor ondernemers
     href: /opdrachtgevers
-  - label: De 100
+  - label: Voor wie is de club?
     href: /de-100
   - label: Contact
     href: /contact
@@ -23,9 +23,9 @@ voettekst:
     items:
       - label: Home
         href: /
-      - label: Opdrachtgevers
+      - label: Voor ondernemers
         href: /opdrachtgevers
-      - label: De 100
+      - label: Voor wie is de club?
         href: /de-100
   - kop: Zakelijk
     items:
