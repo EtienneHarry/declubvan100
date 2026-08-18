@@ -223,6 +223,8 @@ React, want `SectionRenderer.tsx` en de secties zijn dat ook.
 | `Naad` | `components/basis/` | De haarlijn tussen twee secties |
 | `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
 | `Bliksem` | `components/merk/` | De schicht, in drie rollen |
+| `Ovaal` | `components/merk/` | De haal om een woordgroep. Max 1 per sectie |
+| `Streep` | `components/merk/` | De haal onder een kop. Ook max 1 per sectie |
 
 De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
 React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
@@ -235,13 +237,14 @@ heeft ze nog als je ze terug wilt.
 
 ### Er gaat wél JavaScript naar de browser
 
-Drie bestanden, samen ongeveer 3 kB, alle drie uit een Astro-component:
+Vier bestanden, samen ongeveer 4 kB, alle vier uit een Astro-component:
 
 | Bestand | Waarvoor |
 |---|---|
 | `components/navigatie/Navigatie.astro` | De menuknop onder 900px, met focusval |
 | `components/basis/TellerScript.astro` | De teller in de openingskop |
 | `components/beweging/OnthulScript.astro` | De scrollonthulling |
+| `components/merk/HaalScript.astro` | Past de haal op één regel? |
 
 **Een `<script>` hoort in een `.astro`-bestand, nooit in een `.tsx`.** Astro
 bundelt een script uit een Astro-component tot een gewoon bestand; een `<script>`
@@ -278,6 +281,13 @@ Acht, allemaal in `src/components/sections/` en gekoppeld in
 Met beeld loopt de kop door `Beeldvlak` en vervalt de schicht. De grote schicht
 is een uitgesneden vlak op een egale achtergrond — over een foto is dat geen
 van de drie toegestane rollen, en de sluier zou hem toch opeten.
+
+`hero` heeft sinds B8 één variant erbij: `dubbellaags`, de witte kop met de
+harde donkere laag eronder uit de mockup. Die hangt aan `kopNiveau === 1` en
+niet aan de prop alleen, dus een tweede hero op dezelfde pagina zakt naar
+`display-l` en raakt hem ook kwijt. Op een lichte sectie vervalt hij helemaal.
+Zie het componentenhoofdstuk van `design-system.md` voor waarom hij geen
+contrastmiddel is.
 
 ### Het kopniveau komt uit de lijst, niet uit de sectie
 
@@ -366,6 +376,9 @@ Drie bestanden, en dat zijn ze alle drie:
 | `src/styles/beweging.css` | het mechanisme: de animaties en de vertraging per stap |
 | `src/components/beweging/OnthulScript.astro` | de waarnemer die zegt wanneer |
 
+De haal — de ovaal en het onderstreepje uit B8 — hangt eraan maar staat er
+naast; zie *De haal* hieronder.
+
 Een sectie doet mee door twee attributen op een element te zetten:
 `data-onthul="blok"`, `="kop"` of `="naad"`, en `data-onthul-stap="0"` tot en met `8`. Het
 nummer komt uit `ploeg()` in `src/lib/beweging.ts`, een teller per sectie: elk
@@ -423,6 +436,48 @@ Vier dingen die je niet moet weghalen:
   losse streep. Gemeten op `/secties`: precies één geval, en die is nu verborgen.
   Het alternatief was `SectieLijst` laten uitrekenen wat `RijkeTekst` gaat
   renderen — dezelfde voorwaarde op twee plekken.
+
+### De haal — de ovaal en het onderstreepje
+
+Staat er sinds B8, en het is de enige beweging op de site die **niet** op
+`--inslag` loopt. De inslag is een klap die scherp afremt en stilvalt; een haal
+is een hand die doorstreept, dus `--haal` is nog in beweging op het moment dat
+hij ophoudt. Het motion-hoofdstuk van `design-system.md` legt de waardes uit.
+
+Drie bestanden en twee componenten:
+
+| Bestand | Wat erin staat |
+|---|---|
+| `src/styles/tokens.css` | de waardes: de curve, de pauze, twee duren, de dikte |
+| `src/styles/haal.css` | het mechanisme: de pasvorm, de kleur, het tekenen |
+| `src/components/merk/HaalScript.astro` | de meting: past de tekst op één regel? |
+| `src/components/merk/Ovaal.tsx` | het pad van de ellips |
+| `src/components/merk/Streep.tsx` | het pad van de streep |
+
+Vijf dingen die je niet moet weghalen:
+
+- **`haal.css` staat apart van `beweging.css`** omdat maar één van de drie
+  dingen die hij doet beweging is. De pasvorm en de kleur staan buiten het
+  `no-preference`-blok, want een ovaal om een woordgroep die over twee regels
+  breekt is voor iedereen verkeerd.
+- **De vertraging komt via `--stap-vertraging`.** Elke stapregel in
+  `beweging.css` zet die variabele en leest hem daarna zelf; een custom property
+  erft, dus een haal binnen een kop op stap 2 telt er vanzelf zijn eigen
+  wachttijd bij op. Haal die variabele weg en elke haal heeft een eigen
+  stap-prop nodig door alle acht sectietypes heen.
+- **De lijn begint verborgen en wordt zichtbaar gemaakt.** Dat is de andere kant
+  op dan de scrollonthulling, en het is bewust: de haal is decoratief en staat
+  op `aria-hidden`, dus zonder JavaScript is een ontbrekende versiering beter
+  dan een uitgerekte. Bij gereduceerde beweging draait `HaalScript` gewoon — dat
+  meet alleen — dus daar staat de haal er wél, volledig getekend en meteen.
+- **`pathLength="100"` en `vector-effect="non-scaling-stroke"` zijn geen
+  sierattributen.** De eerste normaliseert het pad zodat ovaal en streep één
+  keyframe kunnen delen; de tweede houdt de lijn overal even dik terwijl het
+  vlak in de breedte uitrekt.
+- **Breedte én hoogte staan uitgeschreven op de svg.** Een svg is een vervangen
+  element met een eigen verhouding, en die wint van een insetpaar zodra de
+  andere maat op `auto` staat. Gemeten om een kop van 467×73: met alleen insets
+  werd het vlak 531×319, met alleen een hoogte erbij 173×104.
 
 De zoom bij hover zit in `Beeldvlak` achter `zoom`, en staat alleen aan waar het
 beeld ergens heen gaat: in de praktijk een splitscreen-deur mét knop. Let op dat

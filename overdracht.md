@@ -10,7 +10,7 @@ te leggen.
 
 > **Dit document is een aanzet.** Het staat er sinds B4 en bevat alleen wat op
 > dat moment vaststond. Vul het aan zodra er meer bij komt — het formulier, de
-> GitHub-modus van het CMS.
+> GitHub-modus van het CMS, en de vragenlijst die met de nieuwe teksten meekomt.
 
 ## Lees dit eerst: zie je "Unsaved" of een lege lijst?
 
@@ -76,10 +76,19 @@ achter het label betekent dat je het veld niet kunt overslaan.
 **De foto's van de twee deuren op de home liggen vast.** Die staan niet in het
 CMS. De tekst eromheen kun je wel wijzigen.
 
+**"Kop met een donkere laag eronder" werkt maar op één plek.** Dat vinkje staat
+bij elke openingssectie, maar je ziet het alleen op de openingssectie die
+bovenaan de pagina staat, en alleen op een donkere achtergrond. Zet je het aan
+op een openingssectie halverwege de pagina of op een lichte pagina, dan gebeurt
+er niets. Dat is geen storing: die kop is dan kleiner en de laag hoort daar niet
+bij.
+
 ## Wat je niet zelf kunt
 
 - Een zesde pagina aanmaken. De pagina's liggen vast; een nieuwe erbij is werk
   voor de bouwer.
-- Kleuren kiezen. Achtergronden zijn een keuzelijst met vier namen, en die zijn
-  doorgerekend op leesbaarheid.
+- Kleuren kiezen. Achtergronden zijn een keuzelijst met vijf namen, en die zijn
+  doorgerekend op leesbaarheid. "Bruin" is de gewone; "Inkt" is het zwarte vlak
+  daarop en "Roet" het iets lichtere bruin. Houd één donkere en één lichte kleur
+  per pagina aan.
 - De koppen groter of kleiner maken. Dat volgt de plek van de sectie.

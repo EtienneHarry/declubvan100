@@ -846,6 +846,32 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
 */}
 <Basis titel="Sectieoverzicht — De Club van 100" noindex>
   {/*
+    De haal in de toestand "meteen volledig". Deze staat expres bovenaan, want
+    wat bij het laden al in beeld staat krijgt van OnthulScript de staat "klaar"
+    en dus geen animatie en geen wachttijd.
+
+    Dat is precies hetzelfde beeld als wat een bezoeker met gereduceerde
+    beweging overal op de site krijgt: haal.css staat helemaal binnen
+    (prefers-reduced-motion: no-preference) en het script zet zijn vlagje dan
+    niet, dus er valt niets te tekenen en staat de lijn er gewoon. HaalScript
+    draait wél — dat meet alleen of de tekst op één regel past, en die vraag is
+    voor deze bezoeker net zo goed van toepassing.
+
+    Zo controleer je het echt: zet "beweging beperken" aan in het systeem en
+    herlaad. Alles hieronder op deze pagina hoort er dan uit te zien als dit
+    blok — volledig getekend, zonder dat er iets is gebeurd.
+  */}
+  <div class="mx-auto max-w-breed px-marge pt-sectie-s">
+    <p class="font-machine text-bovenkop text-tekst-stil uppercase">
+      haal · meteen volledig, zoals bij gereduceerde beweging
+    </p>
+    <p class="mt-6 text-kop-l text-balance break-words">
+      Geen nummertjes, maar <Ovaal>1 van de 100</Ovaal>, en daarom is groter niet
+      altijd <Streep>beter.</Streep>
+    </p>
+  </div>
+
+  {/*
     De drie families naast elkaar. Staat hier omdat dit de enige pagina is waar
     je ze in één blikveld hebt: op een echte pagina komt de typemachine alleen
     in labels en knoppen langs en het handschrift hoogstens één keer.
