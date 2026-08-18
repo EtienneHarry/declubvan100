@@ -11,6 +11,7 @@ import {
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
+import Koptekst from '../basis/Koptekst';
 import Knop from '../basis/Knop';
 
 export interface OproepProps {
@@ -60,7 +61,7 @@ export default function Oproep({
           data-onthul-stap={volgende()}
           className="mt-4 text-display-l text-balance break-words first:mt-0"
         >
-          {kop}
+          <Koptekst tekst={kop} />
         </Kop>
         {tekst?.trim() ? (
           <p

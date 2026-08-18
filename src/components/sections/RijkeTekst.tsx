@@ -14,6 +14,7 @@ import {
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bliksem from '../merk/Bliksem';
+import Koptekst from '../basis/Koptekst';
 
 export interface RijkeTekstProps {
   achtergrond: AchtergrondToken;
@@ -229,7 +230,7 @@ export default function RijkeTekst({
             data-onthul-stap={volgende()}
             className="text-kop-l text-balance break-words"
           >
-            {kop}
+            <Koptekst tekst={kop ?? ""} />
           </SectieKop>
         ) : null}
         {render(boom, 'r')}

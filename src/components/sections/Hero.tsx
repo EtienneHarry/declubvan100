@@ -11,7 +11,7 @@ import {
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
-import Teller from '../basis/Teller';
+import Koptekst from '../basis/Koptekst';
 import Knop from '../basis/Knop';
 import Beeldvlak from '../beeld/Beeldvlak';
 import Bliksem from '../merk/Bliksem';
@@ -118,9 +118,11 @@ export default function Hero({
         niet past.
       */}
       {/*
-        De kop loopt door Teller. Zit er een getal in, dan telt dat bij het in
-        beeld komen naar boven; zit er geen getal in, dan verandert er niets aan
-        de uitvoer. Hero weet daar verder niets van.
+        De kop loopt door Koptekst. Die doet twee dingen die Hero niet hoeft te
+        weten: hij zet de haal neer waar de redacteur haakjes heeft getypt, en
+        hij geeft het eerste getal aan Teller door zodat het bij het in beeld
+        komen naar boven telt. Staat er geen haakje en geen getal in, dan
+        verandert er niets aan de uitvoer.
       */}
       {/* De kop komt uit een masker omhoog en fadet dus niet in. */}
       <Kop
@@ -128,7 +130,7 @@ export default function Hero({
         data-onthul-stap={volgende()}
         className={`mt-4 ${kopKlasse}${laagKlasse} text-balance hyphens-auto break-words first:mt-0`}
       >
-        <Teller tekst={kop} />
+        <Koptekst tekst={kop} teller />
       </Kop>
       {tekst?.trim() ? (
         <p

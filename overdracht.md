@@ -49,6 +49,41 @@ computer kunt inloggen, staat klaar maar is nog niet aangezet.
 | Kolommen onderaan | Hele site → Site-instellingen → Kolommen onderaan |
 | Adres, KvK, telefoon | Hele site → Site-instellingen → Contactgegevens |
 
+## Een ovaal of een streep in een kop
+
+In het ontwerp staat om sommige woorden een met de hand getrokken ovaal, en
+onder sommige koppen een schuine streep. Die zet je zelf, in de tekst van de
+kop, met haakjes eromheen. Er is geen knopje voor.
+
+**Een ovaal: vierkante haken.**
+
+    Geen nummertjes, maar [1 van de 100]
+
+Op de pagina staat er dan "Geen nummertjes, maar 1 van de 100", met een ovaal om
+die laatste vier woorden. De haken zelf zie je niet.
+
+**Een streep: accolades.**
+
+    Omdat groter niet altijd {beter is.}
+
+Op de pagina staat er "Omdat groter niet altijd beter is.", met een streep onder
+de laatste twee woorden.
+
+Vier dingen om te weten:
+
+- **Eén ovaal en één streep per kop.** Meer is volgens het ontwerp te veel. Zet
+  je er een tweede in, dan blijft die staan zoals je hem typte — mét haakjes en
+  al. Zie je op de pagina ergens `[woorden]` staan, dan is dat het.
+- **Vergeet je het sluitteken, dan gebeurt hetzelfde.** `Kosten [vanaf 2026`
+  levert precies die letters op. Er gaat niets stuk en er verdwijnt niets; het
+  is alleen zichtbaar niet gelukt.
+- **Kort houden.** Een ovaal om een halve zin wordt een ovaal over twee regels,
+  en dan verdwijnt hij vanzelf — dat is met opzet zo gebouwd, want uitgerekt
+  over twee regels wijst hij nergens meer naar. Twee tot vier woorden werkt.
+- **Alleen in de kop van een sectie.** Niet in de bovenkop, niet in de lopende
+  tekst, en niet in de koppen van de twee deuren op de home. Daar blijven de
+  haakjes gewoon staan.
+
 ## Handelingen om op te letten
 
 **Het mailadres wijzigen staat op twee plekken.** Het adres staat in

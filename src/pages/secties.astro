@@ -707,6 +707,90 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   },
   {
     /*
+     * De markering in de kop, langs de weg die ook echt gebruikt wordt: de
+     * redacteur typt haakjes in een tekstveld en de sectie zet er een haal van.
+     * De blokken bovenaan deze pagina zetten Ovaal en Streep rechtstreeks neer;
+     * dit geval test de vertaling ervoor.
+     *
+     * Zeven koppen, en vijf ervan horen er geen haal aan over te houden. Wat
+     * niet omgezet wordt, blijft staan zoals het getypt is — haakjes en al. Dat
+     * is met opzet zichtbaar: een tweede ovaal die stil verdwijnt, laat de
+     * redacteur denken dat het gelukt is.
+     */
+    naam: 'haal · de markering in de kop',
+    secties: [
+      {
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Zo hoort het',
+        kop: 'Geen nummertjes, maar [1 van de 100]',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'En de streep',
+        kop: 'Omdat groter niet altijd {beter is.}',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Allebei in één kop mag',
+        kop: 'Een [ovaal] en een {streep} naast elkaar',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Te lang voor één regel: HaalScript meet het en de ovaal blijft weg.
+        // De tekst zelf hoort er gewoon te staan, zonder haakjes.
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Te lang voor een ovaal',
+        kop: `Hier staat [${REGRESSIE_KOP}]`,
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Vergeten sluiting: het haakje is een haakje en verder niets.
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Sluiting vergeten',
+        kop: 'Kosten [vanaf 2026 en een accolade {die ook niet sluit',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Tweede paar van dezelfde soort: alleen de eerste wordt een haal.
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Twee keer dezelfde soort',
+        kop: 'Eerst [een ovaal] en dan [nog een] erbij',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        // Leeg paar: geen ovaal om niets.
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Leeg paar',
+        kop: 'Een leeg [] paar en een lege {} accolade',
+        tekst: LOPENDE_TEKST,
+      },
+    ],
+  },
+  {
+    /*
      * Het dubbellaagse hero-effect. Drie heroes met alle drie het vinkje aan;
      * er hoort er maar één te zijn waar je het aan ziet.
      *

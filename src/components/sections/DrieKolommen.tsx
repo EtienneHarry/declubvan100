@@ -10,6 +10,7 @@ import {
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
+import Koptekst from '../basis/Koptekst';
 import Kaart from '../basis/Kaart';
 
 export interface Kolom {
@@ -76,7 +77,7 @@ export default function DrieKolommen({
             data-onthul-stap={volgende()}
             className="mt-4 text-kop-l text-balance break-words first:mt-0"
           >
-            {kop}
+            <Koptekst tekst={kop ?? ""} />
           </Kop>
         ) : null}
         {items.length > 0 ? (

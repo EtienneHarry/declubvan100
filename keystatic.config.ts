@@ -127,6 +127,19 @@ const weergave = fields.object(
    Kleine bouwstenen
    --------------------------------------------------------------------------- */
 
+/*
+ * De haal in een kop. Staat achter elke sectiekop in het paneel, want de
+ * redacteur ziet hem niet aan het veld zelf: het is één regel tekst en er is
+ * geen knopje voor.
+ *
+ * Bewust kort en met een voorbeeld erin. De volledige uitleg — wat er gebeurt
+ * bij een vergeten sluiting, en waarom er maar één van elk mag — staat in
+ * overdracht.md, en dat is het document dat naast het scherm ligt.
+ */
+const HAAL_UITLEG =
+  ' Wil je een ovaal om een paar woorden, zet er dan [vierkante haken] omheen;' +
+  ' voor een streep eronder {accolades}. Eén van elk per kop.';
+
 function bovenkopVeld() {
   return fields.text({
     label: 'Bovenkop — mag je overslaan',
@@ -213,7 +226,7 @@ const sectieBlokken = fields.blocks(
           kop: fields.text({
             label: 'Kop',
             description:
-              'De grootste kop van de pagina. Er hoort er één per pagina te zijn, dus gebruik deze sectie ook één keer.',
+              'De grootste kop van de pagina. Er hoort er één per pagina te zijn, dus gebruik deze sectie ook één keer.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('Een korte zin onder de kop. Zeg het in de helft van de woorden.'),
@@ -277,7 +290,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
-            description: 'De kop van deze sectie. Hij staat groot op de pagina.',
+            description: 'De kop van deze sectie. Hij staat groot op de pagina.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('De lopende tekst onder de kop.'),
@@ -295,7 +308,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
-            description: 'De kop die naast het beeld komt te staan.',
+            description: 'De kop die naast het beeld komt te staan.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('De tekst die naast het beeld komt te staan.'),
@@ -330,7 +343,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop — mag je overslaan',
-            description: 'De kop boven de kaarten.',
+            description: 'De kop boven de kaarten.' + HAAL_UITLEG,
           }),
           items: fields.array(
             fields.object({
@@ -403,7 +416,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
-            description: 'De kop van het afsluitende blok. Hij staat groot op de pagina.',
+            description: 'De kop van het afsluitende blok. Hij staat groot op de pagina.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('Eén zin die zegt wat je van de bezoeker wilt.'),
@@ -426,7 +439,7 @@ const sectieBlokken = fields.blocks(
           kop: fields.text({
             label: 'Kop — mag je overslaan',
             description:
-              'Laat je dit leeg, dan worden de koppen in de tekst zelf het bovenste niveau.',
+              'Laat je dit leeg, dan worden de koppen in de tekst zelf het bovenste niveau.' + HAAL_UITLEG,
           }),
           /*
            * Alles staat hier expliciet, ook wat uit staat. Keystatic vult
