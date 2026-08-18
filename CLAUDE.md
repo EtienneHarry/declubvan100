@@ -505,9 +505,14 @@ Vijf dingen die je niet moet weghalen:
   op `aria-hidden`, dus zonder JavaScript is een ontbrekende versiering beter
   dan een uitgerekte. Bij gereduceerde beweging draait `HaalScript` gewoon — dat
   meet alleen — dus daar staat de haal er wél, volledig getekend en meteen.
-- **`pathLength="100"` en `vector-effect="non-scaling-stroke"` zijn geen
-  sierattributen.** De eerste normaliseert het pad zodat ovaal en streep één
-  keyframe kunnen delen; de tweede houdt de lijn overal even dik terwijl het
+- **De dash komt uit een gemeten attribuut, niet uit `pathLength`.** Dat stond
+  er wel en het was fout: Chrome negeert `pathLength` zodra
+  `vector-effect="non-scaling-stroke"` op het pad staat en rekent de dash in
+  schérmruimte — gemeten met `isPointInStroke` gaf dat een gat van 45 tot 80% in
+  de lijn, en een tekening die onzichtbaar bleef. `HaalScript` meet daarom de
+  schermlengte en zet die als presentatie-attribuut (geen `style`, dus geen
+  CSP-conflict); het tekenen is een transitie naar de 0 die `haal.css` zet.
+  Non-scaling-stroke zelf blijft: die houdt de lijn overal even dik terwijl het
   vlak in de breedte uitrekt.
 - **Breedte én hoogte staan uitgeschreven op de svg.** Een svg is een vervangen
   element met een eigen verhouding, en die wint van een insetpaar zodra de

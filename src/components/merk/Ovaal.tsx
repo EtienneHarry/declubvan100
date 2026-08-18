@@ -27,10 +27,11 @@ export interface OvaalProps {
  *    blijft de dikte overal gelijk en is alleen de vórm uitgerekt — precies wat
  *    een hand doet die een lang woord omcirkelt.
  *
- * 2. `pathLength="100"`. Daarmee is de lengte van het pad genormaliseerd en kan
- *    de animatie in src/styles/haal.css van 100 naar 0 lopen zonder de echte
- *    lengte te kennen. Dat is ook de reden dat de streep dezelfde keyframe kan
- *    delen terwijl haar pad heel anders is.
+ * 2. GEEN `pathLength` en geen vaste `stroke-dasharray`. Die stonden er en ze
+ *    waren fout: Chrome negeert pathLength zodra non-scaling-stroke op het pad
+ *    staat en rekent de dash in schérmruimte — gemeten gaf dat een gat van 45
+ *    tot 80% in de lijn. HaalScript meet daarom de echte schermlengte en zet
+ *    die als presentatie-attribuut; zie src/styles/haal.css.
  *
  * 3. `max-w-none` en een uitgerekende hoogte. De reset in tokens.css zet
  *    `max-width: 100%` op elke svg, en deze svg is met opzet breder dan zijn
@@ -89,8 +90,6 @@ export default function Ovaal({ children }: OvaalProps) {
           fill="none"
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
-          pathLength="100"
-          strokeDasharray="100"
         />
       </svg>
     </span>

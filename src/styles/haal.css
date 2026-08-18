@@ -10,11 +10,31 @@
  *
  *   1. de pasvorm    — hij verschijnt alleen als de tekst op één regel past
  *   2. de lijn       — kleur en dikte, uit de tokenlaag
- *   3. het tekenen   — stroke-dashoffset van 100 naar 0
+ *   3. het tekenen   — stroke-dashoffset van de schermlengte naar 0
  *
  * Alleen het derde is beweging. Eén en twee staan daarom buiten het
  * no-preference-blok: wie gereduceerde beweging vraagt, krijgt de ovaal wél —
  * volledig getekend en meteen.
+ *
+ * HET TEKENEN IS EEN TRANSITIE EN GEEN KEYFRAME, EN DE DASH KOMT UIT EEN
+ * ATTRIBUUT. Dat was eerst anders: een gedeelde keyframe van 100 naar 0 op een
+ * pad dat met pathLength="100" genormaliseerd was. Chrome bleek pathLength te
+ * negeren zodra vector-effect="non-scaling-stroke" op het pad staat — de dash
+ * wordt dan in schérmruimte gerekend, dus "100" was geen heel pad maar 100
+ * schermpixels. Gemeten met isPointInStroke: gaten in de lijn op 45 tot 80% van
+ * het pad, en een tekenanimatie die het patroon maar 100px verschoof en dus
+ * onzichtbaar was.
+ *
+ * Daarom meet HaalScript nu de echte schermlengte en zet die als
+ * stroke-dasharray en stroke-dashoffset op het pad. Dat zijn
+ * presentatie-attributen en geen style-attribuut, dus de CSP heeft er niets
+ * over te zeggen. De regel hieronder zet de offset op 0 zodra de waarnemer het
+ * element loslaat, en de transitie tekent de lijn — de wachttijd en de duur
+ * komen uit de tokens, precies als eerst.
+ *
+ * Zonder script staan er geen dash-attributen en is de lijn dus dicht; met
+ * gereduceerde beweging zet het script ze evenmin, want dan staat het vlagje
+ * data-beweging er niet. In beide gevallen: volledig getekend, meteen.
  *
  * WAAROM DE LIJN VERBORGEN BEGINT. Een ovaal om een woordgroep die over twee
  * regels breekt, wordt een uitgerekte ellips over twee regels heen. Dat is niet
@@ -46,58 +66,40 @@
 
 @media (prefers-reduced-motion: no-preference) {
   /*
-   * Het tekenen. Zelfde mechaniek als de scrollonthulling — gepauzeerd
-   * beginnen, de waarnemer zet hem op running — maar met een eigen curve en
-   * een eigen wachttijd.
-   *
    * De vertraging is de plek van het element in de ploeg plus --haal-wacht.
    * Die eerste helft komt via --stap-vertraging binnen: beweging.css zet die
    * variabele op elk element met een stap, en een custom property erft, dus de
    * haal binnen een kop op stap 2 leest vanzelf 2 × --ploeg. Zonder die
-   * doorgifte zou elke haal een eigen stap-prop nodig hebben door alle acht
+   * doorgifte zou elke haal een eigen stap-prop nodig hebben door alle
    * sectietypes heen.
    */
   [data-beweging='aan'] [data-onthul='haal'] [data-haal-lijn] {
-    animation-name: haal-trekken;
-    animation-timing-function: var(--haal);
-    animation-fill-mode: backwards;
-    animation-play-state: paused;
-    animation-delay: calc(var(--stap-vertraging, 0ms) + var(--haal-wacht));
+    transition: stroke-dashoffset var(--duur-haal-streep) var(--haal)
+      calc(var(--stap-vertraging, 0ms) + var(--haal-wacht));
   }
 
   [data-beweging='aan'] [data-haal='ovaal'] [data-haal-lijn] {
-    animation-duration: var(--duur-haal-ovaal);
-  }
-
-  [data-beweging='aan'] [data-haal='streep'] [data-haal-lijn] {
-    animation-duration: var(--duur-haal-streep);
-  }
-
-  /* In beeld gekomen: de waarnemer laat hem los. */
-  [data-beweging='aan'] [data-onthul='haal'][data-onthul-staat='loopt'] [data-haal-lijn] {
-    animation-play-state: running;
+    transition-duration: var(--duur-haal-ovaal);
   }
 
   /*
-   * Stond al in beeld bij het laden. Geen animatie, geen pauze: de haal staat
-   * er dan gewoon, net als de kop waar hij omheen zit.
+   * In beeld gekomen: de waarnemer laat hem los en de offset gaat naar 0. Een
+   * CSS-declaratie wint van een presentatie-attribuut, dus deze 0 verslaat de
+   * beginwaarde die het script op het pad zette — en de transitie hierboven is
+   * de weg ertussen.
+   */
+  [data-beweging='aan'] [data-onthul='haal'][data-onthul-staat='loopt'] [data-haal-lijn] {
+    stroke-dashoffset: 0;
+  }
+
+  /*
+   * Stond al in beeld bij het laden. Geen tekening en geen wachttijd: de haal
+   * staat er dan gewoon, net als de kop waar hij omheen zit. Het script slaat
+   * deze elementen ook bij het meten over, dus hun dash-attributen zijn nooit
+   * gezet; deze regel is de tweede lijn voor wie de volgorde ooit omdraait.
    */
   [data-beweging='aan'] [data-onthul='haal'][data-onthul-staat='klaar'] [data-haal-lijn] {
-    animation: none;
-  }
-}
-
-/*
- * Het pad is genormaliseerd op pathLength="100", dus dit beeldje geldt voor
- * elke vorm — de ovaal en de streep hebben een heel andere echte lengte maar
- * lopen allebei van 100 naar 0.
- *
- * Alleen een `from`. Het eindbeeldje is de eigen stijl van de lijn, en die is
- * stroke-dashoffset 0: volledig getekend. Zo hoeft dit beeldje niets te weten
- * van de vorm waar het op landt, en valt de lijn na afloop op zichzelf terug.
- */
-@keyframes haal-trekken {
-  from {
-    stroke-dashoffset: 100;
+    stroke-dashoffset: 0;
+    transition: none;
   }
 }

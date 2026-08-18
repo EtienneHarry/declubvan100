@@ -523,9 +523,15 @@ Drie dingen aan de uitwerking die gemeten zijn en niet bedacht:
   andere maat op `auto` staat. Met alleen insets werd het vlak om een kop van
   467×73 pixels 531×319 — de hoogte kwam uit het viewBox. Met alleen een hoogte
   erbij werd het 173×104: toen kwam de bréédte eruit.
-- **`pathLength="100"`.** Het pad is genormaliseerd, dus de animatie loopt van
-  100 naar 0 zonder de echte lengte te kennen — en ovaal en streep delen
-  daardoor één keyframe terwijl hun paden niets met elkaar te maken hebben.
+- **De dash is een gemeten schermlengte, geen genormaliseerd pad.** De eerste
+  uitwerking zette `pathLength="100"` zodat ovaal en streep één keyframe konden
+  delen. Chrome bleek pathLength te negeren zodra non-scaling-stroke op het pad
+  staat: de dash wordt in schérmruimte gerekend, dus "100" was 100 schermpixels
+  — een lijn met een gat van 45 tot 80% en een tekening die het patroon maar
+  100px verschoof. Nu meet `HaalScript` de schermlengte van elk pad en zet die
+  als `stroke-dasharray` en beginnende `stroke-dashoffset` op het pad zelf;
+  `haal.css` zet de offset op 0 zodra de waarnemer het element loslaat en de
+  transitie — zelfde curve, zelfde duren, zelfde wachttijd — is het tekenen.
 
 **Bij een woordgroep die over twee regels breekt komt er geen ovaal.** Een
 uitgerekte ellips over twee regels heen is geen aanwijzing meer. Dat is niet uit

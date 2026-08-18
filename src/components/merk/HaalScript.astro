@@ -1,15 +1,16 @@
 ---
 /**
- * De pasvorm van de haal: past de tekst op één regel?
+ * De meetkant van de haal: past de tekst op één regel, en hoe lang is de lijn
+ * op het scherm?
  *
  * Apart Astro-bestand, net als TellerScript en OnthulScript: een <script> in een
  * React-component belandt inline in de HTML en loopt op `script-src 'self'`
  * stuk. Hier maakt Astro er een gewoon bestand van.
  *
  * DIT SCRIPT MEET ALLEEN. Het zet geen animatie aan en het kijkt niet naar
- * gereduceerde beweging: een ovaal om een woordgroep die over twee regels
- * breekt, is net zo verkeerd voor wie geen beweging wil als voor wie er wel om
- * vraagt. Het tekenen zit in OnthulScript en src/styles/haal.css.
+ * gereduceerde beweging voor de pasvorm: een ovaal om een woordgroep die over
+ * twee regels breekt, is net zo verkeerd voor wie geen beweging wil als voor
+ * wie er wel om vraagt. Het tekenen zelf zit in src/styles/haal.css.
  *
  * Het staat in de layout en dus op elke pagina. Zonder [data-haal] doet het
  * niets.
@@ -37,16 +38,90 @@
       return tekst.getClientRects().length === 1;
     }
 
+    /**
+     * De lengte van het pad zoals het op het scherm staat, niet zoals het in
+     * het viewBox staat.
+     *
+     * Die twee verschillen omdat de svg met preserveAspectRatio="none" wordt
+     * uitgerekt, en ze moeten hier allebei genoemd worden omdat Chrome
+     * pathLength negeert zodra vector-effect="non-scaling-stroke" op het pad
+     * staat: de dash wordt dan in schérmruimte gerekend. Gemeten met
+     * isPointInStroke — dasharray 100 op een pad van 250 schermpixels gaf een
+     * gat van 45 tot 80% — dus de enige maat die klopt, is de gemeten
+     * schermlengte zelf.
+     *
+     * Het pad wordt in stukjes door de screen-matrix gehaald en opgeteld. Zestig
+     * stukjes is ruim voor vormen met deze kromming; de uitkomst wordt naar
+     * boven afgerond, want een dash die een fractie te lang is blijft een
+     * dichte lijn en een fractie te kort laat een spleet achter.
+     */
+    function schermLengte(lijn: SVGGeometryElement) {
+      const matrix = lijn.getScreenCTM();
+      if (!matrix) return 0;
+
+      const totaal = lijn.getTotalLength();
+      const stappen = 60;
+      let lengte = 0;
+      let vorig: DOMPoint | undefined;
+
+      for (let i = 0; i <= stappen; i++) {
+        const punt = lijn.getPointAtLength((totaal * i) / stappen).matrixTransform(matrix);
+        if (vorig) lengte += Math.hypot(punt.x - vorig.x, punt.y - vorig.y);
+        vorig = punt;
+      }
+
+      return Math.ceil(lengte);
+    }
+
     /*
      * Eerst alles meten, dan pas alles zetten. Andersom wisselt elke meting af
      * met een stijlwijziging en rekent de browser de pagina per haal opnieuw
      * door. Dezelfde volgorde als in OnthulScript, om dezelfde reden.
      */
     function meet() {
-      const uitkomsten = halen.map(pastOpEenRegel);
+      /*
+       * De dash-attributen alleen als de onthulling echt draait. Zonder het
+       * vlagje — geen script gehad, of gereduceerde beweging — blijven ze weg
+       * en is de lijn dicht: precies de toestand "volledig getekend, meteen".
+       *
+       * OnthulScript staat vóór dit script in de layout, dus het vlagje en de
+       * klaar-toestanden zijn er al als dit loopt.
+       */
+      const beweegt = document.documentElement.dataset.beweging === 'aan';
+
+      const uitkomsten = halen.map((haal) => {
+        const lijn = haal.querySelector<SVGGeometryElement & SVGPathElement>('[data-haal-lijn]');
+
+        return {
+          past: pastOpEenRegel(haal),
+          lijn,
+          lengte: beweegt && lijn ? schermLengte(lijn) : 0,
+        };
+      });
 
       halen.forEach((haal, index) => {
-        haal.dataset.haalStaat = uitkomsten[index] ? 'past' : 'breekt';
+        const uitkomst = uitkomsten[index];
+        if (!uitkomst) return;
+
+        haal.dataset.haalStaat = uitkomst.past ? 'past' : 'breekt';
+
+        if (!beweegt || !uitkomst.lijn || uitkomst.lengte === 0) return;
+
+        /*
+         * Presentatie-attributen, geen style-attribuut: de CSP blokkeert
+         * inline stijl, maar dit is markup en daar zegt style-src niets over.
+         *
+         * De dasharray gaat op élke meting mee — na een draai van de telefoon
+         * hoort de dash bij de nieuwe lengte, ook op een lijn die al getekend
+         * is (de offset staat daar op 0 via de CSS, dus hij blijft dicht). De
+         * beginoffset alleen zolang de waarnemer het element nog niet heeft
+         * losgelaten: wie hem daarna nog zet, trekt een getekende lijn weer
+         * leeg.
+         */
+        uitkomst.lijn.setAttribute('stroke-dasharray', String(uitkomst.lengte));
+        if (haal.dataset.onthulStaat === undefined) {
+          uitkomst.lijn.setAttribute('stroke-dashoffset', String(uitkomst.lengte));
+        }
       });
     }
 
@@ -55,7 +130,8 @@
     /*
      * Nog een keer zodra het lettertype binnen is. Montserrat is breder dan de
      * systeemletter waarmee de pagina begint, dus een woordgroep die tijdens de
-     * eerste meting nog net paste, kan er daarna alsnog uit lopen.
+     * eerste meting nog net paste, kan er daarna alsnog uit lopen — en de
+     * schermlengte van de lijn verandert mee.
      */
     if (document.fonts?.status !== 'loaded') {
       document.fonts?.ready.then(meet);

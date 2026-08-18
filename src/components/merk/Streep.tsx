@@ -19,10 +19,10 @@ export interface StreepProps {
  *
  * Alles wat hij met de ovaal deelt — de pasvorm, de kleur, de dikte, het
  * tekenen — staat in src/styles/haal.css. Wat hier staat is het pad en waar
- * het hangt. Zie Ovaal.tsx voor waarom er drie attributen op de svg staan die
- * eruitzien alsof ze weg kunnen: `preserveAspectRatio="none"`,
- * `vector-effect="non-scaling-stroke"` en `pathLength="100"`, plus een breedte
- * én een hoogte die allebei uitgeschreven staan.
+ * het hangt. Zie Ovaal.tsx voor waarom `preserveAspectRatio="none"` en
+ * `vector-effect="non-scaling-stroke"` er staan, waarom er juist géén
+ * `pathLength` meer staat, en waarom breedte én hoogte allebei uitgeschreven
+ * zijn.
  *
  * DE STREEP HANGT ONDER DE STAARTEN EN NIET ERDOOR. De inset van 0,42em is
  * gemeten en niet gekozen: het regelvak van een displaykop staat op een
@@ -69,8 +69,6 @@ export default function Streep({ children }: StreepProps) {
           fill="none"
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
-          pathLength="100"
-          strokeDasharray="100"
         />
       </svg>
     </span>
