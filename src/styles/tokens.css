@@ -185,6 +185,25 @@
   --focus-ring: var(--inkt);
 }
 
+/*
+ * Cream is licht, maar niet licht genoeg voor gedempte tekst: grafiet haalt er
+ * 4,37:1 en zakt daarmee onder AA. Op een creamvlak bestaat alleen de
+ * hoofdtekstkleur — inkt haalt 12,83:1 — en komt de hiërarchie uit maat en
+ * gewicht in plaats van uit kleur.
+ *
+ * Staat naast [data-thema="licht"] en niet in de plaats ervan: het thema is
+ * licht, de beperking is van het vlak. Zo blijven de selectors die op
+ * data-thema staan — de schaduw op een klikbare kaart, bijvoorbeeld — gewoon
+ * werken.
+ *
+ * Gemeten op /secties: dit was de enige tekst op de hele pagina die onder de
+ * drempel viel, en hij viel er pas in nadat de lichte sluier erbij kwam.
+ */
+[data-vlak='cream'] {
+  --tekst-zacht: var(--tekst);
+  --tekst-stil: var(--tekst);
+}
+
 /* Diepte. Op zwart bestaat schaduw niet: diepte is een verhoogd vlak plus een
    lijn. Op papier en mist mag wél een korte, lichte schaduw. */
 :root {

@@ -75,7 +75,9 @@ export default function Kaart({
   ) : (
     <>
       {nummer ? (
-        <span className="mb-4 text-bovenkop text-tekst-stil tabular-nums uppercase">{nummer}</span>
+        <span className="mb-4 font-machine text-bovenkop text-tekst-stil tabular-nums uppercase">
+          {nummer}
+        </span>
       ) : null}
       {kop ? <Kop className="mb-2 text-kop-m text-balance break-words">{kop}</Kop> : null}
       {tekst ? <p className="text-lopend-m text-tekst-zacht">{tekst}</p> : null}

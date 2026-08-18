@@ -5,6 +5,13 @@ import { verhoudingKlasse, type VerhoudingToken } from '../../lib/tokens';
 export type Sluier = 'onder' | 'zij' | 'vlak';
 
 /**
+ * De toon van de sluier. donker = bruin op 62%, voor witte tekst op beeld.
+ * licht = de bijna-sepia laag uit de hero van de mockup, cream op 72%, voor
+ * donkere tekst op beeld.
+ */
+export type SluierToon = 'donker' | 'licht';
+
+/**
  * De drie verhoudingen staan in tokens.ts, want ze zijn niet van dit component
  * alleen: BeeldTekst zet dezelfde drie op een foto zonder tekst erop.
  */
@@ -13,8 +20,18 @@ export type Verhouding = VerhoudingToken;
 export interface BeeldvlakProps {
   bron: string;
   alt?: string;
-  /** onder = verloop van onderaf; zij = verloop van links; vlak = 62% zwart over alles. */
+  /** onder = verloop van onderaf; zij = verloop van links; vlak = dekkend over alles. */
   sluier?: Sluier;
+  /**
+   * donker = witte tekst op de foto, licht = donkere tekst.
+   *
+   * De lichte toon zet `data-thema="licht"` én `data-vlak="cream"`. Het eerste
+   * laat alles binnen het vlak meekantelen — een bovenkop, een knop, een lijn.
+   * Het tweede haalt de gedempte tekstkleuren weg: grafiet haalt op cream
+   * 4,37:1 en zakt daarmee onder AA, dus op een creamvlak bestaat alleen de
+   * hoofdtekstkleur.
+   */
+  toon?: SluierToon;
   /** breed = 16/9, portret = 4/5, vierkant = 1/1. */
   verhouding?: Verhouding;
   /** onder = tekst onderin; zij = tekst links gecentreerd. */
@@ -41,21 +58,39 @@ export interface BeeldvlakProps {
  * CSS-waarde, en `hoogte` is weggelaten. Allebei omdat een vrije maat een
  * style-attribuut vraagt en de CSP dat blokkeert.
  */
-const sluierKlasse: Record<Sluier, string> = {
-  onder: 'bg-[image:var(--sluier-onder)]',
-  zij: 'bg-[image:var(--sluier-zij)]',
-  vlak: 'bg-[color:var(--sluier-donker)]',
+/*
+ * De donkere toon heeft drie vormen, de lichte één.
+ *
+ * Dat is geen omissie maar de meting: de mockup zet de lichte sluier één keer
+ * neer, als vlakke laag over de hele hero. Er is geen licht verloop gemeten, en
+ * er staat hier niets bij verzonnen — de drie plekken van de lichte toon wijzen
+ * daarom alle drie naar dezelfde vlakke laag. Levert de klant alsnog een licht
+ * verloop, dan is dat één token erbij en twee regels hier.
+ */
+const sluierKlasse: Record<SluierToon, Record<Sluier, string>> = {
+  donker: {
+    onder: 'bg-[image:var(--sluier-onder)]',
+    zij: 'bg-[image:var(--sluier-zij)]',
+    vlak: 'bg-[color:var(--sluier-donker)]',
+  },
+  licht: {
+    onder: 'bg-[color:var(--sluier-licht)]',
+    zij: 'bg-[color:var(--sluier-licht)]',
+    vlak: 'bg-[color:var(--sluier-licht)]',
+  },
 };
 
 export default function Beeldvlak({
   bron,
   alt = '',
   sluier = 'onder',
+  toon = 'donker',
   verhouding = 'breed',
   positie = 'onder',
   zoom = false,
   children,
 }: BeeldvlakProps) {
+  const licht = toon === 'licht';
   /*
    * De zoom hangt aan de hover van het hele vlak en niet aan die van de foto:
    * de bezoeker ziet één deur, niet een foto met tekst erover.
@@ -79,13 +114,23 @@ export default function Beeldvlak({
     : '';
 
   return (
-    <div className={`relative block overflow-hidden bg-inkt ${zoom ? 'group' : ''}`}>
+    /*
+      De grondkleur onder de foto hoort bij de toon: bruin onder een donkere
+      sluier, cream onder een lichte. Hij is te zien zolang de foto nog niet
+      binnen is en langs de randen van een beeld dat het vlak niet helemaal
+      vult.
+    */
+    <div
+      data-thema={licht ? 'licht' : undefined}
+      data-vlak={licht ? 'cream' : undefined}
+      className={`relative block overflow-hidden ${licht ? 'bg-cream' : 'bg-bruin'} ${zoom ? 'group' : ''}`}
+    >
       <img
         src={bron}
         alt={alt}
         className={`absolute inset-0 size-full object-cover ${zoomKlassen}`}
       />
-      <span aria-hidden="true" className={`absolute inset-0 ${sluierKlasse[sluier]}`} />
+      <span aria-hidden="true" className={`absolute inset-0 ${sluierKlasse[toon][sluier]}`} />
       {/*
         Beeld en inhoud liggen op dezelfde rastercel, zodat de verhouding een
         ondergrens is en geen keurslijf: past de tekst er niet in, dan groeit het
@@ -108,8 +153,8 @@ export default function Beeldvlak({
           <div
             className={
               positie === 'zij'
-                ? 'col-start-1 row-start-1 flex flex-col items-start justify-center p-8 text-krijt md:max-w-[62%]'
-                : 'col-start-1 row-start-1 flex flex-col justify-end p-8 text-krijt'
+                ? `col-start-1 row-start-1 flex flex-col items-start justify-center p-8 md:max-w-[62%] ${licht ? 'text-inkt' : 'text-krijt'}`
+                : `col-start-1 row-start-1 flex flex-col justify-end p-8 ${licht ? 'text-inkt' : 'text-krijt'}`
             }
           >
             {children}

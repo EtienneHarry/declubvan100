@@ -124,8 +124,19 @@ export default function Hero({
           data-onthul-stap={volgende()}
           className="mt-10 flex flex-wrap items-center gap-4"
         >
+          {/*
+            De primaire actie staat sinds de restyle op vuur. Dat is de knop uit de
+            mockup, en het is de enige plek waar die kleur op de site terechtkomt: als
+            vlak, met witte tekst, nooit als woord op bruin.
+
+            De tweede actie blijft een lijnknop. De mockup zet er twee gevulde naast
+            elkaar — zwart en rood — maar welke van de twee acties op deze pagina
+            welke kleur verdient, hangt aan de nieuwe koppen en die komen pas in
+            sessie 2. Tot die tijd blijft de regel staan die er al was: één gevulde
+            knop per blikveld.
+          */}
           {knop ? (
-            <Knop variant="vol" maat="l" href={knop.href}>
+            <Knop variant="vuur" maat="l" href={knop.href}>
               {knop.label}
             </Knop>
           ) : null}

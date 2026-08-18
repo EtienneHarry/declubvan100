@@ -245,9 +245,52 @@ kaart krijgt daar bij hover `shadow-licht-2`.
 
 ## Componenten
 
-Vijf gebouwd: `Knop`, `Kaart`, `Bovenkop` (`components/basis/`), `Beeldvlak`
-(`components/beeld/`) en `Bliksem` (`components/merk/`). De propscontracten
-staan in de bron; hieronder alleen waar de uitwerking afwijkt.
+Gebouwd: `Knop`, `Kaart`, `Bovenkop`, `Naad`, `Teller` (`components/basis/`),
+`Beeldvlak` (`components/beeld/`) en `Bliksem` (`components/merk/`). De
+propscontracten staan in de bron; hieronder alleen waar de uitwerking afwijkt.
+
+### Wat de restyle aan de bestaande componenten veranderde
+
+**`Knop` heeft er twee varianten bij: `vuur` en `inkt`.** Allebei gevuld, dus
+allebei onder dezelfde regel als `vol` — maximaal één per blikveld. `vuur` is de
+primaire actie en de enige plek waar die kleur op de site landt; de tekst erop
+is wit en niet cream, want cream haalt er 3,69:1. `inkt` is de zwarte knop uit
+de mockup, met cream als tekst (12,83:1). `vol` — de witte knop van vóór de
+restyle — blijft bestaan omdat het design system hem als primair kent, maar de
+mockup gebruikt hem nergens.
+
+De hover van die twee loopt via dekking en niet via een tweede kleur. Een
+hovertoken erbij zou een waarde zijn die de mockup niet meet; met dekking laat
+de knop een tikje van de sectie erdoor en dat werkt op elke achtergrond dezelfde
+kant op. De lijnvariant deed dat al.
+
+**De knoptekst staat in de typemachine**, net als `Bovenkop`, het nummer op een
+`Kaart`, de menuknop van de navigatie en de kolomkoppen in de voettekst. Dat
+zijn alle labels en knoppen die er zijn; verder komt die familie nergens.
+
+**`Beeldvlak` heeft een `toon`.** `donker` is de bestaande sluier, `licht` de
+bijna-sepia laag uit de hero van de mockup. De lichte zet ook
+`data-thema="licht"` op het vlak, zodat alles erbinnen meekantelt — een
+bovenkop, een knop, een lijn — en niet alleen de tekstkleur klopt.
+
+De lichte toon zet naast `data-thema="licht"` ook `data-vlak="cream"`. Dat
+tweede attribuut haalt `--tekst-zacht` en `--tekst-stil` weg en bindt ze aan de
+hoofdtekstkleur: **op cream bestaat geen gedempte tekst**, want grafiet haalt er
+4,37:1. De hiërarchie komt daar uit maat en gewicht. Dit was bij de meting op
+`/secties` de enige tekst op de hele pagina die onder de drempel viel, en hij
+viel er pas in nadat de lichte sluier erbij kwam.
+
+*Afwijking:* de donkere toon heeft drie vormen (`onder`, `zij`, `vlak`), de
+lichte één. Dat is geen omissie maar de meting: de mockup zet de lichte sluier
+één keer neer, als vlakke laag over de hele hero, en er is geen licht verloop
+gemeten. De drie plekken van de lichte toon wijzen daarom alle drie naar
+dezelfde vlakke laag.
+
+**Welke knop welke kleur krijgt, is nog niet uitgevochten.** `Hero` en `Oproep`
+zetten hun primaire actie nu op `vuur` en hun tweede op `lijn`. De mockup zet er
+twee gevulde naast elkaar — AANMELDEN zwart, INHUREN rood — maar welke van de
+twee acties op een gegeven pagina welke kleur verdient, hangt aan de nieuwe
+koppen. Die komen in sessie 2, en dan verschuift deze toewijzing mee.
 
 **Afwijking — `Scheiding` heet hier `Naad`, en heeft nog geen schicht.** De bron
 kent hem als vervanger van de `<hr>`, met de schicht erin. Hij is in B2 gebouwd

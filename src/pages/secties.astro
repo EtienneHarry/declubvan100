@@ -1,6 +1,9 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import { SectieLijst, type Sectie } from '../lib/SectionRenderer';
+import Knop, { type KnopVariant } from '../components/basis/Knop';
+import Beeldvlak from '../components/beeld/Beeldvlak';
+import Bovenkop from '../components/basis/Bovenkop';
 import Markdoc from '@markdoc/markdoc';
 
 import foto from '../assets/photo/proost-tap.jpg';
@@ -62,6 +65,19 @@ const STAAND_BEELD = {
 const REGRESSIE_KOP =
   'Een kop die zo lang is dat hij op een telefoon acht of negen regels beslaat en daarmee ver voorbij de zestien-negen-verhouding van het beeldvlak groeit, wat precies de situatie is waarin de inhoud vroeger stilzwijgend werd weggeknipt in plaats van het vlak te laten meegroeien';
 
+/*
+ * De vijf knopvarianten. Als Record en niet als losse lijst: komt er in Knop
+ * een variant bij, dan eist TypeScript hier een regel en kan hij niet stil
+ * ongetest blijven.
+ */
+const KNOPVARIANTEN: Record<KnopVariant, string> = {
+  vuur: 'Vuur — de primaire actie',
+  inkt: 'Inkt — de zwarte knop',
+  vol: 'Vol — wit, van vóór de restyle',
+  lijn: 'Lijn — secundair',
+  kaal: 'Kaal — tertiair',
+};
+
 function kolommen(aantal: number, metTekst = true) {
   return Array.from({ length: aantal }, (_, index) => ({
     nummer: String(index + 1).padStart(2, '0'),
@@ -84,7 +100,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       {
         type: 'hero',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-l',
         breedte: 'basis',
         bovenkop: 'Een bovenkop die ook al aan de lange kant is',
@@ -96,7 +112,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'splitscreen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         deuren: [
@@ -127,7 +143,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'beeld-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Werkwijze',
@@ -153,7 +169,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'oproep',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         kop: LANGE_KOP,
@@ -177,7 +193,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         // Met beeld loopt de kop door Beeldvlak. schicht staat hier expres aan:
         // beeld wint, de schicht hoort dan niet te verschijnen.
         type: 'hero',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-s',
         breedte: 'basis',
         kop: 'Een van de 100',
@@ -197,7 +213,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'kop-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-s',
         breedte: 'smal',
         kop: 'Een gewone kop',
@@ -215,7 +231,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'drie-kolommen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-s',
         breedte: 'basis',
         items: kolommen(3, false),
@@ -238,7 +254,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'rijke-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-s',
         breedte: 'smal',
         inhoud: Markdoc.parse(''),
@@ -257,7 +273,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'splitscreen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-l',
         breedte: 'basis',
         deuren: [
@@ -286,7 +302,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'drie-kolommen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-l',
         breedte: 'basis',
         bovenkop: 'Diensten',
@@ -302,7 +318,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'oproep',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-l',
         breedte: 'basis',
         kop: 'Alleen een kop en een knop',
@@ -361,7 +377,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'kop-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Veel tekst',
@@ -379,7 +395,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'drie-kolommen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'breed',
         kop: 'Acht kaarten',
@@ -424,7 +440,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       {
         type: 'splitscreen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         deuren: [
@@ -461,7 +477,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       {
         type: 'beeld-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Staand op 4:5',
@@ -472,7 +488,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'beeld-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Dezelfde foto op 16:9',
@@ -509,7 +525,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         // Geen hero. Zonder de berekening had deze pagina nul h1 en begon ze
         // op h2; nu draagt de eerste sectie met een kop hem.
         type: 'kop-tekst',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Zonder openingssectie',
@@ -518,7 +534,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'drie-kolommen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         kop: 'En deze zakt naar h2',
@@ -531,7 +547,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       {
         type: 'hero',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Eerste',
@@ -542,7 +558,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         // Tweede hero: geen tweede h1 en geen tweede display-xl. Hij zakt naar
         // een gewone sectiekop op display-l.
         type: 'hero',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Tweede',
@@ -566,7 +582,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       {
         type: 'hero',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Met getal',
@@ -608,7 +624,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       {
         type: 'drie-kolommen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Het ritme',
@@ -671,7 +687,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     secties: [
       ...Array.from({ length: 6 }, (_, index) => ({
         type: 'kop-tekst' as const,
-        achtergrond: 'inkt' as const,
+        achtergrond: 'bruin' as const,
         ruimte: 'sectie-s' as const,
         breedte: 'basis' as const,
         kop: `Sectie ${index + 1} van 8`,
@@ -688,13 +704,54 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
     ],
   },
   {
+    /*
+     * Het zwarte vlak op bruin. inkt is sinds de restyle geen paginakleur meer
+     * maar het vlak dat de mockup óp het bruin zet, en roet is het verhoogde
+     * vlak daarbinnen. Ze staan hier onder elkaar omdat het verschil tussen die
+     * drie klein is — 1,10:1 en 1,13:1 — en de lijn het werk doet.
+     *
+     * Waar je op let: de rand van de kaarten. Verdwijnt --lijn, dan verdwijnt
+     * het vlak in de sectie en is er niets meer te zien.
+     */
+    naam: 'restyle · zwart vlak en verhoogd vlak op bruin',
+    secties: [
+      {
+        type: 'kop-tekst',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'De dominante achtergrond',
+        kop: 'Bruin',
+        tekst: LOPENDE_TEKST,
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'inkt',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Het zwarte vlak',
+        kop: 'Inkt, met kaarten op roet',
+        items: kolommen(3),
+      },
+      {
+        type: 'drie-kolommen',
+        achtergrond: 'roet',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Het verhoogde vlak',
+        kop: 'Roet als sectie',
+        items: kolommen(3),
+      },
+    ],
+  },
+  {
     naam: 'regressie · sectie met kop vóór de hero',
     secties: [
       {
         // Deze stond vroeger op h2 met de hero eronder op h1: het niveau ging
         // dan halverwege de pagina omhoog. Nu draagt deze de h1.
         type: 'drie-kolommen',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         kop: 'Deze staat bovenaan en draagt de h1',
@@ -702,7 +759,7 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       },
       {
         type: 'hero',
-        achtergrond: 'inkt',
+        achtergrond: 'bruin',
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Verplaatst',
@@ -748,10 +805,60 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
       Work when you want. Where you want. With people you like.
     </p>
   </div>
+  {/*
+    De vijf knopvarianten naast elkaar, in alle drie de maten. Een sectie
+    rendert er hoogstens twee — vuur en lijn — dus dit is de enige plek waar je
+    ze compleet ziet.
+
+    Waar je op let: de tekst staat in de typemachine, de knop op vuur heeft
+    witte tekst (5,65:1) en die op inkt cream (12,83:1). Cream op vuur zou
+    3,69:1 zijn en staat er daarom niet.
+  */}
+  <div class="mx-auto max-w-breed px-marge pt-sectie-m">
+    <p class="font-machine text-bovenkop text-tekst-stil uppercase">knoppen · vijf varianten</p>
+    {
+      Object.entries(KNOPVARIANTEN).map(([variant, uitleg]) => (
+        <div class="mt-8">
+          <p class="text-lopend-s text-tekst-stil">{uitleg}</p>
+          <div class="mt-3 flex flex-wrap items-center gap-4">
+            <Knop variant={variant as KnopVariant} maat="s" href="/contact">
+              Stuur maar
+            </Knop>
+            <Knop variant={variant as KnopVariant} maat="m" href="/contact">
+              Stuur maar
+            </Knop>
+            <Knop variant={variant as KnopVariant} maat="l" href="/contact">
+              Stuur maar
+            </Knop>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  {/*
+    De twee sluiertonen op dezelfde foto. De lichte zet ook data-thema="licht",
+    dus de bovenkop en de knop erbinnen kantelen mee — dat is precies wat je
+    hier controleert, en niet alleen of de laag de goede kleur heeft.
+  */}
+  <div class="mx-auto max-w-breed px-marge pt-sectie-m">
+    <p class="font-machine text-bovenkop text-tekst-stil uppercase">sluier · donker en licht</p>
+    <div class="mt-8 grid gap-6 md:grid-cols-2">
+      <Beeldvlak bron={foto.src} alt={BEELD.alt} sluier="vlak" toon="donker" verhouding="breed">
+        <Bovenkop>Donker</Bovenkop>
+        <p class="mt-3 text-kop-m">Bruin op 62%, witte tekst</p>
+      </Beeldvlak>
+      <Beeldvlak bron={foto.src} alt={BEELD.alt} sluier="vlak" toon="licht" verhouding="breed">
+        <Bovenkop>Licht</Bovenkop>
+        <p class="mt-3 text-kop-m">Cream op 72%, donkere tekst</p>
+      </Beeldvlak>
+    </div>
+  </div>
+
   {
     gevallen.map((geval) => (
       <>
-        <p class="mx-auto max-w-breed px-marge pt-sectie-s text-bovenkop text-tekst-stil uppercase">
+        <p class="mx-auto max-w-breed px-marge pt-sectie-s font-machine text-bovenkop text-tekst-stil uppercase">
           {geval.naam}
         </p>
         <SectieLijst secties={geval.secties} />
