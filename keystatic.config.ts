@@ -228,6 +228,12 @@ const sectieBlokken = fields.blocks(
               'De grote schicht achter de tekst. Zet hem op één sectie per pagina, niet op meer.',
             defaultValue: false,
           }),
+          dubbellaags: fields.checkbox({
+            label: 'Kop met een donkere laag eronder',
+            description:
+              'De dubbellaagse kop uit het ontwerp. Werkt alleen op de openingssectie die bovenaan de pagina staat, en alleen op een donkere achtergrond.',
+            defaultValue: false,
+          }),
         },
         { label: 'Openingssectie' },
       ),

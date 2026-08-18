@@ -197,6 +197,20 @@
   /* De sticky navigatie is de enige plek met transparantie en blur. Verder
      nergens: glasmorfisme past niet bij een merk dat hard wil zijn. */
   --vlak-nav: color-mix(in srgb, var(--vlak) 88%, transparent);
+
+  /*
+   * De offsetlaag onder de openingskop: de dubbellaagse kop uit de mockup.
+   *
+   * Eén harde verschuiving, geen vervaging — de laatste waarde is 0 en dat is
+   * het verschil tussen een tweede laag en een slagschaduw. De verschuiving
+   * staat in em, dus hij schaalt mee met een kop die van 3,5rem naar 8rem
+   * loopt; in px zou hij op een telefoon een dikke rand zijn en op een breed
+   * scherm een haarlijn.
+   *
+   * Hij staat hier in de semantische laag en niet bij de primitieven, want hij
+   * kantelt: zie de lichte tak hieronder.
+   */
+  --kop-dubbellaags: 0.045em 0.05em 0 var(--inkt);
 }
 
 /* Lichte omgeving. Zet [data-thema="licht"] op een sectie of op <html>. */
@@ -210,6 +224,15 @@
   --lijn-sterk: var(--lijn-licht-sterk);
   --tekst-fout: var(--fout-donker);
   --focus-ring: var(--inkt);
+
+  /*
+   * Geen offsetlaag op licht. De mockup kent dit effect alleen als witte kop op
+   * donker; op een lichte sectie is de tekst zelf al inkt en zou de offset
+   * onder zijn eigen kleur vallen — een tweede laag die je niet ziet. Hij
+   * vervalt daar dus, in plaats van een kleur te verzinnen die nergens gemeten
+   * is.
+   */
+  --kop-dubbellaags: none;
 }
 
 /*

@@ -32,6 +32,12 @@ export interface HeroProps {
    */
   schicht?: boolean;
   /**
+   * De dubbellaagse kop uit de mockup: de witte kop met een harde donkere laag
+   * eronder. Werkt alleen op `display-xl`, dus alleen op de hero die de pagina
+   * opent — een tweede hero zakt naar `display-l` en krijgt hem niet.
+   */
+  dubbellaags?: boolean;
+  /**
    * Gezet door SectieLijst. 1 als deze hero de pagina opent, 2 als er al een
    * kop boven staat. Een tweede hero op dezelfde pagina zakt daarmee naar een
    * gewone sectiekop, zodat er één <h1> en één display-xl overblijft.
@@ -53,6 +59,16 @@ export interface HeroProps {
  * De schicht en het beeld sluiten elkaar uit. De richtlijn kent de grote
  * schicht als uitgesneden vlak op een egale achtergrond; over een foto heen is
  * geen van de drie toegestane rollen, en de sluier zou hem toch opeten.
+ *
+ * HET DUBBELLAAGSE EFFECT IS HERO-EXCLUSIEF EN DISPLAY-XL-EXCLUSIEF. Het hangt
+ * hier aan `kopNiveau === 1` en niet aan de prop alleen: een tweede hero op
+ * dezelfde pagina zakt naar een gewone sectiekop op `display-l`, en dan hoort
+ * hij het effect ook kwijt te raken. Zo blijft er precies één dubbellaagse kop
+ * per pagina, om dezelfde reden waarom er precies één <h1> is.
+ *
+ * Het is een tweede laag en geen contrastmiddel. De kop moet op zichzelf al
+ * genoeg contrast halen tegen zijn achtergrond; een offset telt niet mee in
+ * WCAG. Zie het typografiehoofdstuk van design-system.md.
  */
 export default function Hero({
   achtergrond,
@@ -65,6 +81,7 @@ export default function Hero({
   tweedeKnop,
   beeld,
   schicht = false,
+  dubbellaags = false,
   kopNiveau = 1,
 }: HeroProps) {
   const heeftBeeld = Boolean(beeld?.bron.trim());
@@ -74,6 +91,10 @@ export default function Hero({
   // Staat er al een kop boven, dan is dit gewoon een sectie.
   const Kop = kopNiveau === 1 ? 'h1' : 'h2';
   const kopKlasse = kopNiveau === 1 ? 'text-display-xl' : 'text-display-l';
+  // Alleen op display-xl. Op een lichte sectie valt de laag vanzelf weg: daar
+  // staat --kop-dubbellaags op none.
+  const laagKlasse =
+    dubbellaags && kopNiveau === 1 ? ' [text-shadow:var(--kop-dubbellaags)]' : '';
 
   /*
    * De ploeg: bovenkop, kop, tekst, dan de knoppen. Elk aanwezig onderdeel
@@ -105,7 +126,7 @@ export default function Hero({
       <Kop
         data-onthul="kop"
         data-onthul-stap={volgende()}
-        className={`mt-4 ${kopKlasse} text-balance hyphens-auto break-words first:mt-0`}
+        className={`mt-4 ${kopKlasse}${laagKlasse} text-balance hyphens-auto break-words first:mt-0`}
       >
         <Teller tekst={kop} />
       </Kop>

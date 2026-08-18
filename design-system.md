@@ -286,6 +286,32 @@ lichte één. Dat is geen omissie maar de meting: de mockup zet de lichte sluier
 gemeten. De drie plekken van de lichte toon wijzen daarom alle drie naar
 dezelfde vlakke laag.
 
+**`Hero` heeft het dubbellaagse effect uit de mockup.** De witte kop met een
+harde donkere laag eronder, als `text-shadow` met een blur van 0 — dat laatste
+is het verschil tussen een tweede laag en een slagschaduw. De verschuiving staat
+in em (0,045 bij 0,05), dus hij schaalt mee met een kop die van 3,5rem naar 8rem
+loopt; in px zou hij op een telefoon een dikke rand zijn en op een breed scherm
+een haarlijn.
+
+Hij hangt aan `kopNiveau === 1` en niet aan de prop alleen. Een tweede hero op
+dezelfde pagina zakt naar `display-l` en raakt de laag daarmee ook kwijt, zodat
+er precies één dubbellaagse kop per pagina overblijft — om dezelfde reden waarom
+er precies één `<h1>` is. Op een lichte sectie vervalt hij helemaal:
+`--kop-dubbellaags` staat daar op `none`, want de tekst is er zelf al inkt en de
+laag zou onder zijn eigen kleur vallen.
+
+Nagemeten op `/secties`, drie heroes met alle drie het vinkje aan: de eerste
+staat op 115,2px met `rgb(11, 11, 11) 5.184px 5.76px 0px`, de tweede op 76,8px
+met `none`, en dezelfde kop op papier — als eigen lijst, dus weer op 115,2px —
+óók met `none`.
+
+*Belangrijk:* **het is een tweede laag en geen contrastmiddel.** De kop moet op
+zichzelf al genoeg contrast halen tegen zijn achtergrond; een offset telt in
+WCAG niet mee. De mockup zet deze kop wit over de lichte sepia-sluier, en dat
+haalt 1,53:1 — die combinatie kan niet zo gebouwd worden, ook niet met een laag
+eronder. Waar onze hero wit zet (op `bruin`, of op de donkere sluier) klopt het
+contrast wel, en daar doet de laag wat hij hoort te doen: gewicht geven.
+
 **Welke knop welke kleur krijgt, is nog niet uitgevochten.** `Hero` en `Oproep`
 zetten hun primaire actie nu op `vuur` en hun tweede op `lijn`. De mockup zet er
 twee gevulde naast elkaar — AANMELDEN zwart, INHUREN rood — maar welke van de

@@ -707,6 +707,71 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
   },
   {
     /*
+     * Het dubbellaagse hero-effect. Drie heroes met alle drie het vinkje aan;
+     * er hoort er maar één te zijn waar je het aan ziet.
+     *
+     *   1. de eerste opent de lijst, staat dus op display-xl en krijgt de laag.
+     *   2. de tweede zakt naar display-l — hij is niet meer de paginakop — en
+     *      hoort de laag daarmee ook kwijt te raken. Dat hangt aan het
+     *      kopniveau en niet aan de prop; anders zou een tweede hero er stil
+     *      eentje bij zetten.
+     *
+     * Het geval erna doet de derde: dezelfde kop op papier, als eigen lijst
+     * zodat hij weer op display-xl staat. Daar staat --kop-dubbellaags op none,
+     * want de tekst is er zelf al inkt en de laag zou onder zijn eigen kleur
+     * vallen.
+     *
+     * Het is een tweede laag en geen contrastmiddel: de kop haalt zijn contrast
+     * uit wit op bruin (17,96:1), en een offset telt in WCAG niet mee.
+     */
+    naam: 'restyle · de dubbellaagse kop',
+    secties: [
+      {
+        type: 'hero',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        bovenkop: 'Meer dan een uitzendbureau',
+        kop: 'De Club van 100',
+        tekst: LOPENDE_TEKST,
+        dubbellaags: true,
+      },
+      {
+        type: 'hero',
+        achtergrond: 'bruin',
+        ruimte: 'sectie-m',
+        breedte: 'basis',
+        bovenkop: 'Tweede hero, zelfde vinkje',
+        kop: 'Deze zakt naar display-l en verliest de laag',
+        tekst: LOPENDE_TEKST,
+        dubbellaags: true,
+      },
+    ],
+  },
+  {
+    /*
+     * Dezelfde kop op papier, en als eigen lijst zodat hij weer de eerste is en
+     * dus op display-xl staat. Zonder die eigen lijst zou hij naar display-l
+     * zakken en zou je meten dat het kopniveau werkt in plaats van dat het
+     * lichte thema de laag laat vervallen — twee redenen voor dezelfde
+     * uitkomst, en dan bewijst de meting niets.
+     */
+    naam: 'restyle · de dubbellaagse kop vervalt op licht',
+    secties: [
+      {
+        type: 'hero',
+        achtergrond: 'papier',
+        ruimte: 'sectie-l',
+        breedte: 'basis',
+        bovenkop: 'Op papier',
+        kop: 'Hier vervalt de laag helemaal',
+        tekst: LOPENDE_TEKST,
+        dubbellaags: true,
+      },
+    ],
+  },
+  {
+    /*
      * Het zwarte vlak op bruin. inkt is sinds de restyle geen paginakleur meer
      * maar het vlak dat de mockup óp het bruin zet, en roet is het verhoogde
      * vlak daarbinnen. Ze staan hier onder elkaar omdat het verschil tussen die

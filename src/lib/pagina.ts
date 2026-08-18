@@ -85,6 +85,7 @@ export async function leesPagina(naam: PaginaNaam) {
           knop: knopUit(blok.value.knop),
           tweedeKnop: knopUit(blok.value.tweedeKnop),
           schicht: blok.value.schicht,
+          dubbellaags: blok.value.dubbellaags,
         };
 
       case 'splitscreen':
