@@ -5,8 +5,7 @@
 > en dat is voor de redacteur. Voeg die twee niet samen: ze zijn voor andere
 > mensen en veranderen op andere momenten.
 
-Bijgewerkt na B8, sessie 2. Wat er af is, wat er open ligt, en waar je verder
-gaat.
+Bijgewerkt na B9. Wat er af is, wat er open ligt, en waar je verder gaat.
 
 De git-geschiedenis vertelt wat er gebeurd is; dit document vertelt wat er nog
 moet. Werk het bij aan het eind van elke sessie.
@@ -21,6 +20,7 @@ moet. Werk het bij aan het eind van elke sessie.
 | B7 | Beweging: scrollonthulling op alle acht sectietypes, masker op koppen, zoom op klikbaar beeld, de naad tussen twee secties |
 | B8-1 | Restyle, deel 1: kleurtokens (bruin, cream, vuur, twee sluiers), typografie (Montserrat, Special Elite, Caveat), de ovaal, het onderstreepje en de dubbellaagse hero-kop |
 | B8-2 | Restyle, deel 2: de haal als markering in de kop, de teksten uit de mockup, de hero met foto, het accordeon als negende sectietype en de twaalf vragen |
+| B9 | Landingspagina: de beeldvullende hero, de naad eruit, de teller per bezoek, de haal-tekening gerepareerd (Chrome negeert pathLength naast non-scaling-stroke), fotokaarten op het drieluik |
 
 De site is compleet en `npm run check` is groen. Wat hieronder staat is wat er
 tussen nu en livegang moet gebeuren.
@@ -59,6 +59,10 @@ Wat nog openstaat:
 - **De typemachine en het handschrift zijn een gok.** De brief zet de zekerheid
   op matig en laag. Heeft de maker van de mockup de echte namen, dan is omzetten
   één regel in `global.css` en één token in `tokens.css`.
+- **De foto "lachende man met kopje" ontbreekt in public/beeld.** De mockup
+  noemt hem voor het drieluik; alle kandidaten zijn bekeken en lach-deur.jpg
+  (de lachende man, zonder kopje) staat er nu. Heeft de klant het origineel,
+  dan is het één upload en één keuze in het CMS.
 - **365Werk verwerkt persoonsgegevens van Clubleden.** Dat staat nu als antwoord
   op de site. De privacyverklaring dekt de website en dat blijft kloppen zolang
   de site zelf niets naar 365Werk stuurt — maar bij het formulier is dit de
