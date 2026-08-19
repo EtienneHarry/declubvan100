@@ -50,26 +50,32 @@
  */
 
 [data-haal] [data-haal-lijn] {
-  /*
-   * Op --vuur, en dat mag omdat de haal geen tekst is. Hij stond eerst op
-   * --tekst en dat was op papier logisch — maar een witte ovaal om een witte
-   * kop loopt dwars door de letters en maakt ze onleesbaar; gezien op de 100
-   * in de openingskop. Het accent legt de lijn naast de tekst in plaats van
-   * erdoorheen.
-   *
-   * De contrasteis voor tekst geldt hier niet: de haal is decoratief en staat
-   * op aria-hidden. Wat wel moet, is dat de líjn zichtbaar is, en dat haalt
-   * vuur op elk vlak van de site — 3,18:1 op bruin en 5,41:1 op papier, beide
-   * boven de 3:1 die WCAG aan niet-tekstuele onderdelen stelt, en dit hoeft
-   * niet eens dat: het is versiering. Zie het kleurhoofdstuk van
-   * design-system.md.
-   *
-   * Eén vaste kleur en geen thema-alias, want het accent kantelt niet mee met
-   * licht en donker — vuur is vuur, op elk vlak.
-   */
-  stroke: var(--vuur);
-  stroke-width: var(--haal-dikte);
   visibility: hidden;
+}
+
+/*
+ * Kleur en dikte, per vorm — en sinds de definitieve vormen liggen de lijnen
+ * áchter de tekst (z-index 0 tegen 1 op de tekst-span), dus waar een haal een
+ * letter raakt wordt de lijn onderbroken en blijft de letter scherp.
+ *
+ * De ovaal staat op vuur. De contrasteis voor tekst geldt niet — de haal is
+ * decoratief en staat op aria-hidden — maar de lijn moet zichtbaar zijn, en
+ * dat haalt vuur op elk vlak: 3,18:1 op bruin en 5,41:1 op papier, boven de
+ * 3:1 die WCAG aan niet-tekstuele onderdelen stelt. Eén vaste kleur en geen
+ * thema-alias, want het accent kantelt niet mee met licht en donker.
+ *
+ * De streep staat op papier, niet op vuur: hij staat onder een grote witte
+ * kop en een tweede kleur maakt het daar onrustig. Dat hij achter de tekst
+ * ligt en onder de regel hangt, houdt hem uit de letters.
+ */
+[data-haal='ovaal'] [data-haal-lijn] {
+  stroke: var(--vuur);
+  stroke-width: var(--haal-dikte-ovaal);
+}
+
+[data-haal='streep'] [data-haal-lijn] {
+  stroke: var(--papier);
+  stroke-width: var(--haal-dikte-streep);
 }
 
 [data-haal][data-haal-staat='past'] [data-haal-lijn] {

@@ -177,10 +177,11 @@
   --haal-wacht: calc(var(--duur-inslag-hef) + var(--haal-pauze));
   --duur-haal-ovaal: 450ms; /* de hele ronde, in één doorlopende haal */
   --duur-haal-streep: 350ms; /* korter, want de streep is korter */
-  /* Lijndikte, in em zodat hij meeschaalt met de tekst waar hij omheen staat:
-     op een displaykop hoort een dikke haal en in lopende tekst een dunne. De
-     ondergrens houdt hem zichtbaar in de kleinste maten. */
-  --haal-dikte: max(1.5px, 0.06em);
+  /* Lijndikte, per vorm en in schermpixels: non-scaling-stroke tekent de lijn
+     in schermruimte, dus dit is de dikte die je echt ziet, op elke maat. De
+     ovaal is dikker dan de streep — de definitieve vormen uit de mockup. */
+  --haal-dikte-ovaal: 4px;
+  --haal-dikte-streep: 2.5px;
 }
 
 /* ---------------------------------------------------------------------------
