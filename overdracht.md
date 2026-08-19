@@ -10,7 +10,7 @@ te leggen.
 
 > **Dit document is een aanzet.** Het staat er sinds B4 en bevat alleen wat op
 > dat moment vaststond. Vul het aan zodra er meer bij komt — het formulier, de
-> GitHub-modus van het CMS.
+> GitHub-modus van het CMS, en de vragenlijst die met de nieuwe teksten meekomt.
 
 ## Lees dit eerst: zie je "Unsaved" of een lege lijst?
 
@@ -49,6 +49,41 @@ computer kunt inloggen, staat klaar maar is nog niet aangezet.
 | Kolommen onderaan | Hele site → Site-instellingen → Kolommen onderaan |
 | Adres, KvK, telefoon | Hele site → Site-instellingen → Contactgegevens |
 
+## Een ovaal of een streep in een kop
+
+In het ontwerp staat om sommige woorden een met de hand getrokken ovaal, en
+onder sommige koppen een schuine streep. Die zet je zelf, in de tekst van de
+kop, met haakjes eromheen. Er is geen knopje voor.
+
+**Een ovaal: vierkante haken.**
+
+    Geen nummertjes, maar [1 van de 100]
+
+Op de pagina staat er dan "Geen nummertjes, maar 1 van de 100", met een ovaal om
+die laatste vier woorden. De haken zelf zie je niet.
+
+**Een streep: accolades.**
+
+    Omdat groter niet altijd {beter is.}
+
+Op de pagina staat er "Omdat groter niet altijd beter is.", met een streep onder
+de laatste twee woorden.
+
+Vier dingen om te weten:
+
+- **Eén ovaal en één streep per kop.** Meer is volgens het ontwerp te veel. Zet
+  je er een tweede in, dan blijft die staan zoals je hem typte — mét haakjes en
+  al. Zie je op de pagina ergens `[woorden]` staan, dan is dat het.
+- **Vergeet je het sluitteken, dan gebeurt hetzelfde.** `Kosten [vanaf 2026`
+  levert precies die letters op. Er gaat niets stuk en er verdwijnt niets; het
+  is alleen zichtbaar niet gelukt.
+- **Kort houden.** Een ovaal om een halve zin wordt een ovaal over twee regels,
+  en dan verdwijnt hij vanzelf — dat is met opzet zo gebouwd, want uitgerekt
+  over twee regels wijst hij nergens meer naar. Twee tot vier woorden werkt.
+- **Alleen in de kop van een sectie.** Niet in de bovenkop, niet in de lopende
+  tekst, en niet in de koppen van de twee deuren op de home. Daar blijven de
+  haakjes gewoon staan.
+
 ## Handelingen om op te letten
 
 **Het mailadres wijzigen staat op twee plekken.** Het adres staat in
@@ -73,13 +108,28 @@ dat mist verschijnt een melding, en die is Engels. `must not be empty` betekent
 dat het veld leeg is, `is required` dat er nog niets gekozen is. Een sterretje
 achter het label betekent dat je het veld niet kunt overslaan.
 
+**Een vraag toevoegen aan de vragenlijst.** Op Voor ondernemers en Voor wie is
+de club? staat een sectie "Vragen en antwoorden". Klik erop, klik op Add onder
+Vragen, en typ de vraag en het antwoord. Ze staan op de pagina in de volgorde
+waarin ze hier staan, dus zet de vraag die het vaakst gesteld wordt bovenaan.
+Elk antwoord klapt open als de bezoeker op de vraag klikt.
+
 **De foto's van de twee deuren op de home liggen vast.** Die staan niet in het
 CMS. De tekst eromheen kun je wel wijzigen.
+
+**"Kop met een donkere laag eronder" werkt maar op één plek.** Dat vinkje staat
+bij elke openingssectie, maar je ziet het alleen op de openingssectie die
+bovenaan de pagina staat, en alleen op een donkere achtergrond. Zet je het aan
+op een openingssectie halverwege de pagina of op een lichte pagina, dan gebeurt
+er niets. Dat is geen storing: die kop is dan kleiner en de laag hoort daar niet
+bij.
 
 ## Wat je niet zelf kunt
 
 - Een zesde pagina aanmaken. De pagina's liggen vast; een nieuwe erbij is werk
   voor de bouwer.
-- Kleuren kiezen. Achtergronden zijn een keuzelijst met vier namen, en die zijn
-  doorgerekend op leesbaarheid.
+- Kleuren kiezen. Achtergronden zijn een keuzelijst met vijf namen, en die zijn
+  doorgerekend op leesbaarheid. "Bruin" is de gewone; "Inkt" is het zwarte vlak
+  daarop en "Roet" het iets lichtere bruin. Houd één donkere en één lichte kleur
+  per pagina aan.
 - De koppen groter of kleiner maken. Dat volgt de plek van de sectie.

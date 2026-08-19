@@ -1,6 +1,15 @@
 import type { ReactNode } from 'react';
 
+import { verhoudingKlasse } from '../../lib/tokens';
+
 export interface KaartProps {
+  /**
+   * Foto boven de inhoud, altijd op 4:5. De verhouding ligt vast omdat de
+   * kaarten naast elkaar staan: één afwijkende foto zet de hele rij scheef.
+   * De tekst staat onder de foto en niet erop, dus dit gaat — net als bij
+   * BeeldTekst — bewust niet via Beeldvlak: de sluier heeft hier geen functie.
+   */
+  beeld?: { bron: string; alt: string };
   /** verhoogd = vlak in roet of mist; vlak = alleen een lijn. */
   variant?: 'verhoogd' | 'vlak';
   /** Volgnummer of telwaarde, boven de kop. Staat op tabular-nums. */
@@ -38,6 +47,7 @@ function Skelet({ klasse }: { klasse: string }) {
 
 export default function Kaart({
   variant = 'verhoogd',
+  beeld,
   nummer,
   kop,
   tekst,
@@ -52,7 +62,10 @@ export default function Kaart({
 
   const klassen = [
     // Lijn en vlak op --duur-1, de verschuiving op --duur-2, curve --soepel-uit.
-    'relative flex flex-col rounded-none border border-lijn p-6 ' +
+    // grow: in het raster van DrieKolommen vult de kaart zijn hele cel, zodat
+    // kaarten naast elkaar even hoog zijn ongeacht hun tekst. Buiten een
+    // flexkolom doet grow niets.
+    'relative flex grow flex-col rounded-none border border-lijn p-6 ' +
       '[transition:background-color_var(--duur-1)_var(--soepel-uit),border-color_var(--duur-1)_var(--soepel-uit),box-shadow_var(--duur-1)_var(--soepel-uit),transform_var(--duur-2)_var(--soepel-uit)]',
     variant === 'verhoogd' ? 'bg-vlak-verhoogd' : 'bg-transparent',
     klikbaar
@@ -74,8 +87,21 @@ export default function Kaart({
     </>
   ) : (
     <>
+      {/*
+        De foto loopt tot de rand van de kaart: de negatieve marges heffen de
+        padding op, zodat het beeld het kader vult en de tekst eronder zijn
+        gewone binnenruimte houdt. object-cover snijdt de foto op 4:5, zoals
+        overal waar een beeld in een vast vlak valt.
+      */}
+      {beeld?.bron.trim() ? (
+        <div className={`relative -mx-6 -mt-6 mb-6 overflow-hidden ${verhoudingKlasse['portret']}`}>
+          <img src={beeld.bron} alt={beeld.alt} className="absolute inset-0 size-full object-cover" />
+        </div>
+      ) : null}
       {nummer ? (
-        <span className="mb-4 text-bovenkop text-tekst-stil tabular-nums uppercase">{nummer}</span>
+        <span className="mb-4 font-machine text-bovenkop text-tekst-stil tabular-nums uppercase">
+          {nummer}
+        </span>
       ) : null}
       {kop ? <Kop className="mb-2 text-kop-m text-balance break-words">{kop}</Kop> : null}
       {tekst ? <p className="text-lopend-m text-tekst-zacht">{tekst}</p> : null}

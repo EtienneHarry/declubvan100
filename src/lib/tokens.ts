@@ -25,12 +25,36 @@
  */
 
 /**
- * De vier achtergronden uit het contrasthoofdstuk, en niet meer. Twee donkere
- * en twee lichte. Meer dan één lichte en één donkere achtergrond op dezelfde
- * pagina is volgens het design system een fout.
+ * De achtergronden uit het contrasthoofdstuk, en niet meer. Drie donkere en
+ * twee lichte. Meer dan één lichte en één donkere achtergrond op dezelfde
+ * pagina is volgens het design system een fout — de donkere familie telt er
+ * sinds de restyle drie, maar een pagina kiest er nog steeds één.
+ *
+ * `bruin` staat vooraan omdat het de dominante achtergrond is; `inkt` is sinds
+ * de restyle het zwarte vlak óp bruin en niet meer de standaard.
  */
-export const ACHTERGROND_TOKENS = ['inkt', 'roet', 'papier', 'mist'] as const;
+export const ACHTERGROND_TOKENS = ['bruin', 'inkt', 'roet', 'papier', 'mist'] as const;
 export type AchtergrondToken = (typeof ACHTERGROND_TOKENS)[number];
+
+/**
+ * De kleur van een gevulde knop, als kleurcode voor de doelgroep.
+ *
+ * `vuur` hoort bij inhuren en dus bij opdrachtgevers, `inkt` bij aanmelden en
+ * dus bij de Clubleden. Dat is de code uit de mockup: niet twee tinten voor de
+ * variatie, maar één kleur per publiek, zodat een bezoeker aan de knop ziet of
+ * die voor hem bedoeld is.
+ *
+ * Alleen deze twee. `vol`, `lijn` en `kaal` bestaan wel als knopvariant maar
+ * horen niet in deze lijst: dat zijn rangordes en geen doelgroepen, en die
+ * keuze hoort niet bij de redacteur.
+ *
+ * Dat elke naam hier ook een bestaande knopvariant ís, wordt afgedwongen waar
+ * de twee elkaar raken — `Oproep` geeft dit token rechtstreeks aan `Knop` door,
+ * dus een naam die daar niet bestaat is een compileerfout. Geen extra
+ * machinerie nodig.
+ */
+export const KNOPKLEUR_TOKENS = ['vuur', 'inkt'] as const;
+export type KnopkleurToken = (typeof KNOPKLEUR_TOKENS)[number];
 
 /** Het sectieritme: de verticale lucht boven en onder een sectie. */
 export const RUIMTE_TOKENS = ['sectie-s', 'sectie-m', 'sectie-l'] as const;
@@ -52,9 +76,10 @@ export const VERHOUDING_TOKENS = ['breed', 'portret', 'vierkant'] as const;
 export type VerhoudingToken = (typeof VERHOUDING_TOKENS)[number];
 
 /**
- * Achtergrond levert vlak- én tekstkleur. Die twee horen bij elkaar: op inkt en
- * roet haalt `krijt` 19,8:1 en 17,6:1, op papier en mist haalt `inkt` 19,0:1 en
- * 15,6:1. Losgekoppeld is de kans op een verboden combinatie te groot.
+ * Achtergrond levert vlak- én tekstkleur. Die twee horen bij elkaar: op bruin,
+ * inkt en roet haalt `krijt` 17,96:1, 19,68:1 en 15,93:1, op papier en mist
+ * haalt `inkt` 18,83:1 en 15,45:1. Losgekoppeld is de kans op een verboden
+ * combinatie te groot.
  *
  * Let op: dit levert alleen de klassen. Een sectie op `papier` of `mist` hoort
  * daarnaast `data-thema="licht"` te dragen, zodat de semantische aliassen
@@ -62,6 +87,7 @@ export type VerhoudingToken = (typeof VERHOUDING_TOKENS)[number];
  * erbinnen staat.
  */
 export const achtergrondKlasse: Record<AchtergrondToken, string> = {
+  bruin: 'bg-bruin text-krijt',
   inkt: 'bg-inkt text-krijt',
   roet: 'bg-roet text-krijt',
   papier: 'bg-papier text-inkt',
@@ -70,6 +96,7 @@ export const achtergrondKlasse: Record<AchtergrondToken, string> = {
 
 /** Welke achtergronden licht zijn. Bepaalt of `data-thema="licht"` meegaat. */
 export const isLichteAchtergrond: Record<AchtergrondToken, boolean> = {
+  bruin: false,
   inkt: false,
   roet: false,
   papier: true,
@@ -81,6 +108,7 @@ export const isLichteAchtergrond: Record<AchtergrondToken, boolean> = {
  * 60ch tegen 66ch — omdat licht op donker optisch zwaarder leest.
  */
 export const maatRegelKlasse: Record<AchtergrondToken, string> = {
+  bruin: 'max-w-[var(--maat-regel-donker)]',
   inkt: 'max-w-[var(--maat-regel-donker)]',
   roet: 'max-w-[var(--maat-regel-donker)]',
   papier: 'max-w-[var(--maat-regel)]',

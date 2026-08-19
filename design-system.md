@@ -15,37 +15,209 @@ staat er hier een afwijking genoteerd, dan is die bewust.
 
 ## Kleur
 
-Monochroom, zwart dominant. **Geen accentkleur** — dat is een merkregel, geen
-smaak: alle logo's zijn monochroom op `currentColor`.
+Warm bruin dominant, met vuur als enige accent. Gemeten uit de mockup die de
+klant in augustus 2026 aanleverde; `bron/restyle-brief-v2.md` legt de meting
+vast, dit hoofdstuk de uitwerking.
 
-Vier achtergronden en niet meer, uitspreekbaar zodat ze in een CMS-keuzelijst
-passen: `inkt` (dominant), `roet` (verhoogd vlak op inkt), `papier` (lichte
-pagina), `mist` (rustig vlak op papier). Meer dan één lichte en één donkere
-achtergrond per pagina is een fout.
+**De regel "geen accentkleur" is vervallen.** Ze stond hier tot de restyle, en
+haar onderbouwing was dat alle logo's monochroom op `currentColor` staan. Dat
+klopt nog steeds — de logo's zijn niet veranderd — maar het was een gevolgtrekking
+uit het logo en geen uitspraak over de site. De mockup zet er een rode
+INHUREN-knop in, en daarmee is de vraag beantwoord door degene die hem stelde.
+Wat blijft staan is de reden achter de oude regel: één accent, en het draagt
+nooit tekst. Zie `vuur` hieronder.
+
+Vijf achtergronden, uitspreekbaar zodat ze in een CMS-keuzelijst passen. Drie
+donker en twee licht:
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `bruin` | `#201410` | dominant; het vlak waar de site op staat |
+| `inkt` | `#0b0b0b` | het zwarte vlak óp bruin, en de zwarte knop |
+| `roet` | `#2c1f1a` | verhoogd vlak op bruin: kaart, invoerveld, sticky balk |
+| `papier` | `#fafaf8` | lichte pagina: voorwaarden, privacy, print |
+| `mist` | `#e4e4e1` | rustig vlak op papier |
+
+**Meer dan één lichte en één donkere achtergrond per pagina blijft een fout.**
+De donkere familie telt er drie, maar een pagina kiest er één. `roet` is dan het
+verhoogde vlak binnen die pagina en geen tweede sectieachtergrond.
 
 Tekst: `krijt` / `krijt-zacht` / `krijt-stil` op donker, `inkt` / `grafiet` op
-licht. Functionele kleur bestaat alleen in paren (`fout` + `fout-donker`) en is
-gedempt.
+licht, met `cream` als accent op donker. Functionele kleur bestaat alleen in
+paren (`fout` + `fout-donker`) en is gedempt.
 
 De semantische aliassen — `--vlak`, `--tekst`, `--lijn`, `--focus-ring` —
 kantelen onder `[data-thema="licht"]`. Een sectie op `papier` of `mist` zet dat
 attribuut zelf, zodat alles erbinnen meekantelt.
 
-**`krijt-stil` mag nooit op `papier` of `mist`**: dat haalt 2,9:1. Gebruik daar
-`grafiet`.
+### Contrast, herrekend op de definitieve waardes
+
+Alle verhoudingen hieronder zijn WCAG 2.1, berekend op de waardes zoals ze nu in
+`tokens.css` staan — niet op de afgeronde meting uit de brief. AA vraagt 4,5:1
+voor gewone tekst en 3:1 voor groot (24px, of 19px vet) en voor UI-randen.
+
+Op de drie donkere vlakken:
+
+| Tekst | op `bruin` | op `inkt` | op `roet` |
+|---|---|---|---|
+| `krijt` | 17,96 | 19,68 | 15,93 |
+| `papier` | 17,19 | 18,83 | 15,25 |
+| `mist` | 14,10 | 15,45 | 12,51 |
+| `cream` | 11,71 | 12,83 | 10,39 |
+| `krijt-zacht` | 10,82 | 11,86 | 9,60 |
+| `krijt-stil` | 5,19 | 5,69 | 4,60 |
+| `vuur` | **3,18** | **3,48** | **2,82** |
+| `grafiet` | **2,68** | **2,93** | **2,37** |
+
+Op de twee lichte vlakken, en op `cream` als vlak:
+
+| Tekst | op `papier` | op `mist` | op `cream` |
+|---|---|---|---|
+| `inkt` | 18,83 | 15,45 | 12,83 |
+| `bruin` | 17,19 | 14,10 | 11,71 |
+| `grafiet` | 6,42 | 5,27 | **4,37** |
+| `vuur` | 5,41 | **4,44** | **3,69** |
+| `krijt-stil` | **3,31** | **2,72** | **2,26** |
+
+Tekst óp `vuur`: `krijt` 5,65 · `papier` 5,41 · `cream` 3,69 · `inkt` 3,48 ·
+`bruin` 3,18.
+
+Daaruit volgen zes regels, en die zijn niet onderhandelbaar:
+
+- **`vuur` is nooit tekstkleur op `bruin`.** 3,18:1 haalt AA niet, ook niet voor
+  groot. Het is een vlak — een knop, een klein blok — of een **decoratieve
+  lijn**: de ovaal staat sinds B10 op `vuur` (de streep sinds B12 op `papier`,
+  een rustkeuze en geen contrasteis). Vuur op een lijn mag omdat
+  een haal geen tekst is en op `aria-hidden` staat; de tekstcontrasteis geldt er
+  niet, en als lijn haalt vuur op elk vlak van de site de 3:1 die WCAG aan
+  niet-tekstuele onderdelen stelt (3,18 op bruin, 5,41 op papier). Nooit een
+  woord — het verschil tussen een lijn en een letter is precies het verschil
+  tussen mogen en niet mogen.
+- **Knoptekst op `vuur` is wit.** 5,65:1, en dat geldt voor elke maat. De mockup
+  zet er cream-typemachinetekst op; die haalt 3,69:1 en dus alleen de
+  groot-tekstdrempel, en alleen zolang die knop groot en gespatieerd blijft.
+  Dat is een voorwaarde die een redacteur kan breken zonder het te zien, dus de
+  `vuur`-knop staat op wit.
+- **`grafiet` mag niet op `cream`** (4,37:1) en `vuur` ook niet (3,69:1). Op een
+  creamvlak schrijf je met `inkt` of `bruin`.
+- **`krijt-stil` mag nooit op `papier`, `mist` of `cream`.** Gebruik daar
+  `grafiet`. Op de drie donkere vlakken mag hij wel, tot en met `roet` (4,60:1).
+- **`vuur` op `mist`** haalt 4,44:1 en is dus geen gewone tekst; op `papier`
+  haalt het 5,41:1 en mag het wel. Praktisch: houd `vuur` ook op licht een vlak.
+- **De randen doen het werk tussen twee donkere vlakken.** `inkt` op `bruin` is
+  1,10:1 en `roet` op `bruin` 1,13:1. Dat is met opzet zo klein — het design
+  system zegt dat diepte op donker een verhoogd vlak plus een lijn is, en die
+  lijn (`--lijn`, 0,16 wit) is hier het enige dat de rand echt zichtbaar maakt.
+  Haal je hem weg, dan verdwijnt de kaart in de sectie.
+
+**Afwijking — `roet` is afgeleid en niet gemeten.** De mockup toont geen
+verhoogd vlak, en het oude `roet` (`#191919`) is een koud grijs dat naast bruin
+uit de toon valt. `#2c1f1a` is 94% `bruin` met 6% `cream`: dezelfde stap omhoog
+die `roet` op `inkt` had (1,13 tegen 1,12), zodat de verhouding tussen vlak en
+verhoogd vlak niet verandert. `krijt-stil` houdt er 4,60:1 en dat is precies de
+ondergrens waarop deze waarde is uitgekozen. Levert de klant alsnog een gemeten
+verhoogd vlak, dan wint dat.
+
+### Contrast op een sluier meet je op het slechtste geval
+
+**Een sluier is geen vlak. Het is een laag over onbekend beeld.** Dat klinkt als
+een woordspel en het is het verschil tussen een meting die klopt en een die
+vleit.
+
+Een vlak heeft één kleur, dus daar is één verhouding uit te rekenen. Een sluier
+heeft een dekking, en wat eronder ligt is een foto — en een foto is geen token.
+Hij wordt vervangen zodra de redacteur er een andere kiest, en zelfs binnen één
+foto verschilt elke plek van de plek ernaast. Er ís dus geen gemiddelde
+achtergrond om tegen af te rekenen.
+
+**De regel: reken elke tekst op een sluier af op het slechtst denkbare beeld.**
+Voor lichte tekst is dat een foto die op die plek volledig wit is; voor donkere
+tekst een die er volledig zwart is. Haalt de tekst het daar, dan haalt hij het
+overal. Haalt hij het daar niet, dan is hij op sommige foto's onleesbaar en op
+andere niet — en dat is geen ontwerp maar een gok die van de fotokeuze afhangt.
+
+**Wat er misgaat als je het niet zo doet.** Een meting die `rgba(32 20 16 / .62)`
+als achtergrondkleur invult, behandelt de sluier alsof hij dekkend is en levert
+een veel te gunstig getal op. Dat is precies wat er in B8 gebeurde, en het hield
+een fout verborgen die er al vóór de restyle stond: **de vier bovenkoppen in de
+splitscreen-deuren stonden in `krijt-stil` op 1,46:1.** Op de dekkende meting
+leek dat ruim in orde. Dezelfde plek, dezelfde CSS, twee metingen, en alleen de
+strenge liet zien dat een grijze label op een foto in het slechtste geval
+onleesbaar is.
+
+De rest van die meting, op `--sluier-donker` vlak over een witte foto:
+
+| Tekstkleur | Slechtste geval | Mag het? |
+|---|---|---|
+| `krijt` | 5,04 | ja |
+| `cream` | 3,29 | alleen groot |
+| `krijt-stil` | **1,46** | nee |
+
+Daaruit volgt de regel die `Beeldvlak` nu afdwingt: **op een foto bestaat geen
+gedempte tekstkleur.** Het vlak zet altijd een `data-vlak`, en die regel in
+`tokens.css` bindt `--tekst-zacht` en `--tekst-stil` aan de hoofdtekstkleur. De
+sluier is doorgerekend op één kleur, en dat is de enige die hij draagt; de
+hiërarchie komt daar uit maat en gewicht.
+
+**En dus ook: verhoog de dekking niet om een kleur te redden.** Wie `krijt-stil`
+leesbaar wil maken op de vlakke sluier, komt uit op een dekking waarop de foto
+niet meer te zien is — en dan is de foto een achtergrondkleur geworden met een
+plaatje eronder dat niemand nodig had. De goede uitweg is de tekstkleur, niet de
+laag.
+
+### Sluiers
+
+Twee tonen, allebei verplicht onder tekst op foto en allebei niet uit te zetten:
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `--sluier-donker` | `bruin` op 62% | witte tekst op beeld |
+| `--sluier-licht` | `cream` op 72% | donkere tekst op beeld, de hero van de mockup |
+
+De donkere is bruin geworden en niet meer inkt: dezelfde dekking, maar op de
+nieuwe achtergrond, anders ligt er een koude vlek op een warm vlak. De
+verloopvarianten `--sluier-onder` en `--sluier-zij` zijn mee overgezet.
+
+Doorgerekend op de uitersten van een foto — een plek die volledig wit is en een
+plek die volledig zwart is, want de foto zelf is geen token:
+
+- **`--sluier-donker`**: wit haalt in het slechtste geval 5,05:1 en in het beste
+  19,32:1. Cream haalt in het slechtste geval 3,29:1 en is dus **geen tekstkleur
+  op beeld**.
+- **`--sluier-licht`**: `inkt` haalt in het slechtste geval 6,69:1 en in het
+  beste 14,57:1; `bruin` 6,11:1 en 13,30:1. Allebei ruim boven AA.
 
 ## Typografie
 
-**Archivo Variable**, één familie, twee assen: gewicht 100–900, breedte 62–125.
-Zelf gehost via `@fontsource-variable/archivo/wdth.css` — bewust die import en
-niet de standaard, want die laat de breedte-as weg.
+Drie families sinds de restyle, alle drie zelf gehost via `@fontsource` en alle
+drie via een token. `scripts/check-tokens.mjs` leest de tokennamen uit
+`tokens.css` en laat de build vallen op elke letterlijke familienaam daarbuiten,
+dus deze drie zijn ook de enige drie die er kunnen zijn.
 
-Displaykoppen op `wdth 118` (`display-xl`) en `112` (`display-l`), lopende tekst
-op `100`. Dat is het grafische verschil dat de site draagt en het kost nul extra
-bytes. Gemeten: dezelfde tekst is op 118 ruim 19% breder dan op 100.
+| Token | Familie | Rol |
+|---|---|---|
+| `--font-sans` | Montserrat Variable | dragend: koppen én lopende tekst |
+| `--font-machine` | Special Elite | labels, knoppen, één uitgelichte regel |
+| `--font-hand` | Caveat | één decoratieve regel per pagina |
 
-Tailwind kent geen namespace voor `font-variation-settings`, dus de breedte-as
-staat als twee losse regels in laag 4 van `tokens.css`.
+**De dragende letter is Montserrat, Route A uit de brief.** Woordmerk en site
+vallen daarmee samen: Montserrat was al bevestigd als woordmerkletter, en de
+sans in de mockup zit er dicht op. Route B — Archivo laten staan — zou het
+systeem niet hoeven omzetten, maar de site hoekiger laten ogen dan wat de klant
+heeft goedgekeurd.
+
+**De prijs van die keuze is de breedte-as.** Archivo had er twee (gewicht
+100–900, breedte 62–125) en de displayniveaus stonden op `wdth 118` en `112`;
+dat was het grafische verschil dat de site droeg. Montserrat heeft alleen een
+gewichtsas. De twee `font-variation-settings`-regels in laag 4 van `tokens.css`
+zijn daarom weg, en de displayniveaus dragen het verschil nu op gewicht (800) en
+grootte — `display-xl` loopt tot 8rem, `display-l` tot 5rem.
+
+De brief noemt de dragende letter `--font-basis`. Hier heet hij `--font-sans`,
+en dat is geen slordigheid: Tailwind hangt aan die naam zowel de
+`font-sans`-utility als de standaardfamilie van de `body`. Onder een andere naam
+zou `font-sans` stilletjes Tailwinds eigen stack blijven — precies de val die
+`check-tokens` moet vangen.
 
 Leesbreedte is 66ch op licht en 60ch op donker; `maatRegelKlasse` in `tokens.ts`
 kiest de juiste per achtergrond.
@@ -54,6 +226,58 @@ kiest de juiste per achtergrond.
 een eigen lettergrootte (`.9375rem` en `1.125rem`). Daar bestaat geen token
 voor, dus alle drie de maten staan op `--text-knop` en verschillen alleen in
 hoogte en padding.
+
+### De typemachine
+
+Special Elite: een gestempelde slab met de onregelmatigheid van een echte
+typemachine. Vier regels, en ze zijn er alle vier om te voorkomen dat hij
+lopende tekst wordt:
+
+- **Altijd hoofdletters.**
+- **Altijd op `--machine-tracking` (0,14em).** Die spatiëring hoort bij de
+  familie en niet bij één maat, dus hij staat als primitief in laag 1 en wordt
+  door `--text-bovenkop`, `--text-knop` en de utility `tracking-machine`
+  gelezen. In `@theme inline` kon hij niet staan: dat blok bakt zijn waardes in
+  de utility en stuurt ze niet als variabele uit, dus een token dat door andere
+  tokens gelezen wordt moet een primitief zijn.
+- **Alleen labels, knoppen en maximaal één uitgelichte regel per sectie.**
+- **Nooit voor lopende tekst langer dan twee regels.** Special Elite is
+  monospaced en licht versleten; op regellengte leest hij traag en op een
+  telefoon breekt hij lelijk.
+
+  *Eén plek haalt deze regel niet.* De kop op Voor wie is de club? heeft een
+  typemachinedeel dat op 1440 drie regels telt en op 375 vijf. Dat is al de
+  ingekorte versie — de mockup zet de wissel op de komma en dan wordt het vijf en
+  acht. Verder inkorten verandert de zin en schalen vraagt een maat die nergens
+  gemeten is, dus het staat er zo, met de meting erbij in
+  `bron/mockup-notities.md`.
+
+In de praktijk raakt dat vandaag twee componenten — `Bovenkop` en `Knop` — plus
+het nummer op een `Kaart`. De uitgelichte regel bestaat nog niet als component;
+komt hij er, dan is `font-machine tracking-machine uppercase` de hele vorm.
+
+### Het handschrift
+
+Caveat, en het is het enige element op deze site dat puur decoratief is. Twee
+regels:
+
+- **Maximaal één regel per pagina.** Niet per sectie — per pagina. Twee
+  handgeschreven regels op één pagina maken er een sfeerbeeld van in plaats van
+  een accent.
+- **`aria-hidden` zodra dezelfde boodschap al in gewone tekst op de pagina
+  staat.** De mockup doet precies dat: drie bijschriften onder een drieluik, en
+  eronder dezelfde tekst nog eens in handschrift. Dat tweede exemplaar is een
+  plaatje van een zin, geen zin — een schermlezer hoort hem niet te herhalen.
+  Staat de boodschap er níet al, dan is hij wél betekenisdragend, en dan hoort
+  hij niet in het handschrift maar in de dragende letter.
+
+Caveat is een gok. De brief zet de zekerheid van deze familie op laag en van
+Special Elite op matig; heeft de maker van de mockup de echte namen, dan winnen
+die. Omzetten is één regel in `global.css` en één token in `tokens.css`.
+
+**Het dubbellaagse hero-effect** — de witte kop met de donkere offsetlaag
+eronder — hoort ook bij dit hoofdstuk maar staat bij `Hero` onder *Componenten*,
+want het is een variant van dat sectietype en nergens anders toepasbaar.
 
 ## Ruimte
 
@@ -82,34 +306,128 @@ kaart krijgt daar bij hover `shadow-licht-2`.
 
 ## Componenten
 
-Vijf gebouwd: `Knop`, `Kaart`, `Bovenkop` (`components/basis/`), `Beeldvlak`
-(`components/beeld/`) en `Bliksem` (`components/merk/`). De propscontracten
-staan in de bron; hieronder alleen waar de uitwerking afwijkt.
+Gebouwd: `Knop`, `Kaart`, `Bovenkop`, `Teller` (`components/basis/`),
+`Beeldvlak` (`components/beeld/`) en `Bliksem` (`components/merk/`). De
+propscontracten staan in de bron; hieronder alleen waar de uitwerking afwijkt.
 
-**Afwijking — `Scheiding` heet hier `Naad`, en heeft nog geen schicht.** De bron
-kent hem als vervanger van de `<hr>`, met de schicht erin. Hij is in B2 gebouwd
-en in B4 weggehaald omdat geen enkele sectie hem inzette; in B7 is hij
-teruggekomen als `Naad` (`components/basis/`), en nu met een gebruiker: hij
-staat op elke sectiegrens.
+### Wat de restyle aan de bestaande componenten veranderde
 
-Wat er anders is dan in de bron:
+**`Knop` heeft er twee varianten bij: `vuur` en `inkt`.** Allebei gevuld, dus
+allebei onder dezelfde regel als `vol` — maximaal één per blikveld. `vuur` is de
+primaire actie en de enige plek waar die kleur op de site landt; de tekst erop
+is wit en niet cream, want cream haalt er 3,69:1. `inkt` is de zwarte knop uit
+de mockup, met cream als tekst (12,83:1). `vol` — de witte knop van vóór de
+restyle — blijft bestaan omdat het design system hem als primair kent, maar de
+mockup gebruikt hem nergens.
 
-- **Hij wordt niet door een sectie ingezet maar door `SectieLijst`.** Een
-  scheiding is de enige plek die per definitie twee buren heeft, en dat is
-  precies wat een sectie volgens regel 4 niet mag weten. `SectieLijst` weet het
-  wel — daar wordt het kopniveau ook al over de hele lijst berekend.
-- **Hij hoort bij de sectie eronder** en krijgt haar achtergrond en haar
-  breedte. Hij is de bovenrand van wat er komt, niet de voet van wat er was.
-- **De schicht zit er nog niet in.** De richtlijn staat er hoogstens twee per
-  pagina toe; welke twee dat op een pagina zijn, is een redactionele keuze en
-  geen instelling van het component. Zolang die keuze niet gemaakt is, is de
-  naad alleen de lijn.
-- **Geen `role="separator"`.** De koppen structureren de pagina al, en zestien
-  separators erbij zijn ruis voor wie met een schermlezer door de elementen
-  loopt. Hij staat op `aria-hidden`.
+De hover van die twee loopt via dekking en niet via een tweede kleur. Een
+hovertoken erbij zou een waarde zijn die de mockup niet meet; met dekking laat
+de knop een tikje van de sectie erdoor en dat werkt op elke achtergrond dezelfde
+kant op. De lijnvariant deed dat al.
 
-Van de drie rollen van de schicht zijn `groot` en `opsomming` in gebruik. Rol 2
-heeft in de lijn zijn plek terug; de schicht erin wacht op die keuze.
+**De knoptekst staat in de typemachine**, net als `Bovenkop`, het nummer op een
+`Kaart`, de menuknop van de navigatie en de kolomkoppen in de voettekst. Dat
+zijn alle labels en knoppen die er zijn; verder komt die familie nergens.
+
+**`Beeldvlak` heeft een `toon`.** `donker` is de bestaande sluier, `licht` de
+bijna-sepia laag uit de hero van de mockup. De lichte zet ook
+`data-thema="licht"` op het vlak, zodat alles erbinnen meekantelt — een
+bovenkop, een knop, een lijn — en niet alleen de tekstkleur klopt.
+
+De lichte toon zet naast `data-thema="licht"` ook `data-vlak="cream"`. Dat
+tweede attribuut haalt `--tekst-zacht` en `--tekst-stil` weg en bindt ze aan de
+hoofdtekstkleur: **op cream bestaat geen gedempte tekst**, want grafiet haalt er
+4,37:1. De hiërarchie komt daar uit maat en gewicht. Dit was bij de meting op
+`/secties` de enige tekst op de hele pagina die onder de drempel viel, en hij
+viel er pas in nadat de lichte sluier erbij kwam.
+
+*Afwijking:* de donkere toon heeft drie vormen (`onder`, `zij`, `vlak`), de
+lichte één. Dat is geen omissie maar de meting: de mockup zet de lichte sluier
+één keer neer, als vlakke laag over de hele hero, en er is geen licht verloop
+gemeten. De drie plekken van de lichte toon wijzen daarom alle drie naar
+dezelfde vlakke laag.
+
+**`Hero` heeft het dubbellaagse effect uit de mockup.** De witte kop met een
+harde donkere laag eronder, als `text-shadow` met een blur van 0 — dat laatste
+is het verschil tussen een tweede laag en een slagschaduw. De verschuiving staat
+in em (0,045 bij 0,05), dus hij schaalt mee met een kop die van 3,5rem naar 8rem
+loopt; in px zou hij op een telefoon een dikke rand zijn en op een breed scherm
+een haarlijn.
+
+Hij hangt aan `kopNiveau === 1` en niet aan de prop alleen. Een tweede hero op
+dezelfde pagina zakt naar `display-l` en raakt de laag daarmee ook kwijt, zodat
+er precies één dubbellaagse kop per pagina overblijft — om dezelfde reden waarom
+er precies één `<h1>` is. Op een lichte sectie vervalt hij helemaal:
+`--kop-dubbellaags` staat daar op `none`, want de tekst is er zelf al inkt en de
+laag zou onder zijn eigen kleur vallen.
+
+Nagemeten op `/secties`, drie heroes met alle drie het vinkje aan: de eerste
+staat op 115,2px met `rgb(11, 11, 11) 5.184px 5.76px 0px`, de tweede op 76,8px
+met `none`, en dezelfde kop op papier — als eigen lijst, dus weer op 115,2px —
+óók met `none`.
+
+*Belangrijk:* **het is een tweede laag en geen contrastmiddel.** De kop moet op
+zichzelf al genoeg contrast halen tegen zijn achtergrond; een offset telt in
+WCAG niet mee. De mockup zet deze kop wit over de lichte sepia-sluier, en dat
+haalt 1,53:1 — die combinatie kan niet zo gebouwd worden, ook niet met een laag
+eronder. Waar onze hero wit zet (op `bruin`, of op de donkere sluier) klopt het
+contrast wel, en daar doet de laag wat hij hoort te doen: gewicht geven.
+
+**`Accordeon` is het negende sectietype.** Het volgt de disclosure-richtlijn en
+niet die van een tablijst, en dat verklaart de twee dingen die eraan ontbreken:
+
+- **Geen pijltoetsen.** Elke vraag is een losse knop en die bereik je met tab, in
+  leesvolgorde. Een accordeon die de pijltoetsen kaapt, breekt het scrollen
+  ermee — en de richtlijn vraagt ze alleen voor een tablijst, waar de pijlen de
+  enige manier zijn om bij het volgende tabblad te komen.
+- **Geen `aria-controls`.** De richtlijn kent hem, maar hij vraagt een id dat
+  over de hele pagina uniek is, en dat is uit de inhoud niet te maken: twee
+  accordeons op één pagina kunnen dezelfde vraag op dezelfde plek hebben. Voor
+  een disclosure is `aria-expanded` op de knop het dragende deel, en het paneel
+  staat er direct achter in de DOM. De ondersteuning van `aria-controls` in
+  schermlezers is bovendien wisselend.
+
+De vraag is een kop met de knop erín, en niet andersom: een kop binnen een knop
+maakt van die kop een stuk knoptekst. Het niveau zakt onder de sectiekop mee,
+net als een kaartkop, zodat `check-koppen` erover kan oordelen.
+
+**De kleur van een gevulde knop is een doelgroepcode.** `vuur` hoort bij
+inhuren en dus bij opdrachtgevers, `inkt` bij aanmelden en dus bij de
+Clubleden. Dat is wat de mockup doet met AANMELDEN in zwart en INHUREN in rood:
+niet twee tinten voor de variatie, maar één kleur per publiek, zodat een
+bezoeker aan de knop ziet of die voor hem bedoeld is.
+
+De code geldt overal waar één gevulde knop staat. `Oproep` heeft daarvoor
+`knopKleur`, een keuze uit `KNOPKLEUR_TOKENS` in `lib/tokens.ts` — een
+tokennaam en geen vrije waarde, net als de achtergronden. In het CMS staat de
+keuze in de taal van de redacteur ("Rood — voor wie personeel zoekt"), want die
+kiest een publiek en geen kleur.
+
+Twee dingen die daar bewust níet in zitten. `vol`, `lijn` en `kaal` staan niet
+in de lijst: dat zijn rangordes en geen doelgroepen, en die keuze hoort niet bij
+de redacteur. En de tweede knop van een `Oproep` blijft een lijnknop — daar
+geldt "één gevulde knop per blikveld" gewoon, want daar ís een eerste actie.
+
+De hero is de uitzondering die de regel bevestigt: daar staan de twee deuren
+náást elkaar, allebei gevuld, met de code als enige onderscheid. Dat is geen
+rangorde en dus geen overtreding van die regel.
+
+Dat elke tokennaam ook een bestaande knopvariant is, wordt afgedwongen waar de
+twee elkaar raken: `Oproep` geeft het token rechtstreeks aan `Knop` door, dus
+een naam die daar niet bestaat is een compileerfout. Nagemeten door `mist` aan
+de lijst toe te voegen: één fout, en zonder die toevoeging nul.
+
+**Afwijking — `Scheiding` bestaat hier niet meer.** De bron kent hem als
+vervanger van de `<hr>`, met de schicht erin. Hij is in B2 gebouwd, in B4
+weggehaald omdat geen sectie hem inzette, in B7 teruggekomen als `Naad` op elke
+sectiegrens, en in B9 opnieuw verwijderd: de mockup van de restyle heeft geen
+scheidingslijnen, en een element aanhouden dat het ontwerp niet toont is
+voorraad. De git-geschiedenis heeft hem nog, met de ontwerpbeslissingen erin.
+
+Van de drie rollen van de schicht zijn `groot` en `opsomming` in gebruik.
+**Rol 2 (`scheiding`) is met het verdwijnen van de naad opnieuw zonder
+gebruiker.** `Bliksem` ondersteunt de rol nog; er is alleen geen element meer
+dat hem inzet, en dat blijft zo tot een ontwerp er weer om vraagt.
 
 Alle drie de afwijkingen hebben dezelfde oorzaak: **`security.csp` blokkeert
 inline stijl**, en dit project staat geen spread-attributen, `className` of
@@ -175,21 +493,160 @@ omhoog schuift. Hij loopt 12% onder de kop door, want een displaykop staat op
 een regelhoogte onder 1 en op precies 100% knipt het masker de staarten van de
 `p` en de `g` af.
 
+**Een animatie die niet start mag nooit tot onzichtbare tekst leiden.** Dat is
+sinds B11 een regel, en hij is er omdat het één keer stil is misgegaan: de
+wachttoestand van een kop was een gepauzeerde animatie op zijn nulhoge masker,
+Chrome knipt de intersection-rect van de waarnemer op de clip-path van het
+element zélf, en dus haalde een kop de losllaatdrempel van 0,2 nooit — op elke
+pagina onzichtbare koppen die wél ruimte innamen. De verborgen begintoestand
+verhinderde precies de melding die hem moest opheffen.
+
+Daaruit volgen drie handhavingen:
+
+1. **De wachttoestand mag de meting niet raken.** Hij is `opacity: 0` — geen
+   clip-path, geen gepauzeerde animatie. Dekking raakt de intersection-rect
+   niet en houdt het element in de toegankelijkheidsboom. De animatie komt pas
+   op het element bij 'loopt'; de backwards-vulling houdt het beginbeeldje vast
+   zolang de ploegvertraging loopt.
+2. **De opening heeft een vangnet.** Wat binnen `data-onthul-entree` na de
+   aanloop plus 500ms nog niet is losgelaten, wordt alsnog op klaar gezet en
+   staat er dan gewoon. Het eerste scherm mag nooit leeg blijven omdat een
+   waarnemer zweeg.
+3. **De poort bewaakt de voorwaarden.** `check-onthul` controleert na elke
+   build dat elke regel die onthul-inhoud verbergt aan het scriptvlagje hangt
+   en dat het loslaatmechanisme plus het vangnet in de gebundelde scripts
+   zitten. Wat statisch niet te bewijzen valt — dat de waarnemer echt vuurt —
+   is precies waar het vangnet voor is.
+
+**De opening van de pagina animeert, wat er al staat niet.** De
+scrollonthulling slaat over wat bij het laden in beeld staat — wie de pagina
+opent, kijkt naar iets dat er is. De hero die de pagina opent is daar de
+uitzondering op: zijn binnenkomst ís het moment, dus zijn elementen lopen het
+gewone ritme met `--aanloop` (300ms) ervoor, zodat de pagina eerst staat en dan
+pas de klap valt. Eén uitzondering, aan het sectietype gebonden, en alleen op
+kopniveau 1: een tweede hero gedraagt zich als elke andere sectie.
+
 **De ploeg is 70ms.** Elk aanwezig onderdeel van een sectie schuift één stap op:
 bovenkop, kop, tekst, dan de items. Onderdelen die er niet zijn tellen niet mee,
 dus een sectie zonder bovenkop begint gewoon op nul en heeft geen gat aan het
 begin. Kaarten en citaten lopen in datzelfde ritme door.
 
-**De naad tussen twee secties trekt zichzelf.** Een haarlijn in `--lijn`, van de
-marge naar rechts, `scaleX` van 0 naar 1 in `--duur-inslag-hef`. Geen dekking en
-geen verplaatsing: er beweegt niets dat gelezen moet worden, dus de regel dat
-verplaatsing altijd omhoog gaat is hier niet in het geding.
+### De haal — de ovaal en het onderstreepje
 
-Hij krijgt geen eigen stap in de ploeg. Hij staat hoger op de pagina dan de
-bovenkop eronder en haalt de drempel dus vanzelf eerder — daarmee is hij de
-nulde tel zonder dat iemand hem hoeft in te delen. Dat is ook de reden dat hij
-bij herhaling blijft werken: hij is geen gebeurtenis náást de sectie maar de
-eerste beweging ván de sectie. Er staan er zestien op de site.
+De mockup introduceert twee met de hand getekende vormen naast de
+bliksemschicht: een ellips om een woordgroep ("1 van de 100", "hele agenda") en
+een losse, licht scheve streep onder een kop ("NODIG HEBT.", "BETER IS."). Ze
+staan op `vuur` — de brief noemde papier-op-donker, maar een witte haal om een
+witte kop loopt dwars door de letters; zie de vuur-regel in het kleurhoofdstuk. Ze
+horen bij dezelfde familie als de schicht — één beweging, geen constructie — en
+zijn dus een verwantschap en geen stijlbreuk. De rollen van de schicht blijven
+zoals ze waren.
+
+**Dit is de enige beweging op de site die niet op `--inslag` loopt.** De inslag
+is een klap die scherp afremt en stilvalt; een haal is een hand die doorstreept.
+`--haal` is daarom precies andersom gebouwd:
+
+| Token | Waarde | Waarvoor |
+|---|---|---|
+| `--haal` | `cubic-bezier(0.35, 0.08, 0.75, 0.6)` | de curve van een pennenstreek |
+| `--haal-pauze` | 200ms | stilte tussen binnenkomst en haal |
+| `--haal-wacht` | `--duur-inslag-hef` + `--haal-pauze` | 620ms, bovenop de plek in de ploeg |
+| `--duur-haal-ovaal` | 450ms | de hele ronde, in één doorlopende haal |
+| `--duur-haal-streep` | 350ms | korter, want de streep is korter |
+| `--haal-dikte-ovaal` | `4px` | schermdikte van de ovaal (non-scaling-stroke) |
+| `--haal-dikte-streep` | `2.5px` | schermdikte van de streep |
+
+Het tweede stuurpunt van `--haal` ligt op `0.75, 0.6`, dus de helling waarmee de
+curve bij 1 aankomt is 1,6: **de lijn is nog in beweging op het moment dat hij
+ophoudt.** `--inslag` doet het omgekeerde en dempt uit op `0.1, 1`.
+
+**Eerst het element, dan de haal.** Het element komt binnen in het gewone ritme
+van de ploeg; pas als het stilstaat, 200ms later, wordt de haal eromheen gezet.
+Ze horen niet tegelijk te gebeuren — dan is het één effect in plaats van een
+aanwijzing achteraf. De vertraging is dus de stap van het element plus
+`--haal-wacht`, en die eerste helft komt via `--stap-vertraging` binnen: elke
+stapregel in `beweging.css` zet die variabele, en een custom property erft. Een
+haal binnen een kop op stap 2 leest daardoor vanzelf 2 × `--ploeg`, zonder dat
+iemand die stap nog een keer doorgeeft.
+
+**De ovaal vertrekt links, gaat met de klok mee en trekt over zijn eigen begin
+door.** De staart kruist de bovenrand nog een keer en eindigt halverwege de
+bovenkant. Dat overschot is het verschil tussen een gebaar en een vorm: een
+ellips die netjes aansluit is een figuur, een lijn die er voorbij loopt is een
+hand geweest. De haal is niet symmetrisch — rond hem niet af.
+
+**De lijn ligt achter de tekst.** De svg staat op z-index 0 en de tekst-span op
+1, en de svg steekt ruim om de tekst heen (19% links, 56% boven, 138% breed,
+212% hoog). Samen maken die twee een aanraking onschuldig: de afstand maakt de
+kans klein dat de lijn een stok of schreef van de typemachineletter raakt, en
+de z-orde zorgt dat wáár het toch gebeurt de lijn wordt onderbroken en niet de
+letter.
+
+Drie dingen aan de uitwerking die gemeten zijn en niet bedacht:
+
+- **`vector-effect="non-scaling-stroke"`.** De ovaal spant zich om een
+  woordgroep van elke lengte, dus hij rekt in de breedte mee
+  (`preserveAspectRatio="none"`). Zonder dit attribuut rekt de lijn mee: dikke
+  zijkanten, dunne boven- en onderkant.
+- **Breedte én hoogte staan uitgeschreven.** Een svg is een vervangen element
+  met een eigen verhouding, en die verhouding wint van een insetpaar zodra de
+  andere maat op `auto` staat. Met alleen insets werd het vlak om een kop van
+  467×73 pixels 531×319 — de hoogte kwam uit het viewBox. Met alleen een hoogte
+  erbij werd het 173×104: toen kwam de bréédte eruit.
+- **De dash is een gemeten schermlengte, geen genormaliseerd pad.** De eerste
+  uitwerking zette `pathLength="100"` zodat ovaal en streep één keyframe konden
+  delen. Chrome bleek pathLength te negeren zodra non-scaling-stroke op het pad
+  staat: de dash wordt in schérmruimte gerekend, dus "100" was 100 schermpixels
+  — een lijn met een gat van 45 tot 80% en een tekening die het patroon maar
+  100px verschoof. Nu meet `HaalScript` de schermlengte van elk pad en zet die
+  als `stroke-dasharray` en beginnende `stroke-dashoffset` op het pad zelf;
+  `haal.css` zet de offset op 0 zodra de waarnemer het element loslaat en de
+  transitie — zelfde curve, zelfde duren, zelfde wachttijd — is het tekenen.
+
+**Bij een woordgroep die over twee regels breekt komt er geen ovaal.** Een
+uitgerekte ellips over twee regels heen is geen aanwijzing meer. Dat is niet uit
+te rekenen tijdens het bouwen — het hangt aan de vensterbreedte, aan het
+lettertype dat al dan niet geladen is en aan wat de redacteur invult — dus
+`HaalScript.astro` meet het: een inline element dat over twee regels loopt,
+levert twee rechthoeken op. Het meet opnieuw zodra het lettertype binnen is en
+bij elke verandering van de vensterbreedte.
+
+*Afwijking:* de lijn begint daardoor verborgen en wordt zichtbaar gemaakt, en
+**zonder JavaScript staat er dus geen ovaal.** Dat is de andere kant op dan de
+scrollonthulling, waar het uitgangspunt juist is dat er zonder script niets
+verborgen blijft. De reden voor het verschil is dat de haal decoratief is en op
+`aria-hidden` staat: er gaat geen betekenis verloren, en een ontbrekende
+versiering is beter dan een uitgerekte. Bij gereduceerde beweging draait het
+script gewoon — het meet alleen, het beweegt niets — dus daar staat de haal er
+wél, volledig getekend en meteen.
+
+**Het onderstreepje is de kleine broer.** Zelfde curve, zelfde pasvorm, zelfde
+tekenlogica, alleen korter: 350ms tegen 450. Drie dingen zijn anders:
+
+- **Het is één pad dat heen en terug gaat, geen twee losse lijnen.** De pen
+  loopt naar rechts langs de onderkant en komt terug langs de bovenkant, dus de
+  uiteinden rechts komen vanzelf samen — zoals in de mockup. Links blijft er
+  lucht tussen begin en eind: daar is de pen opgetild.
+- **Hij staat op `papier` en niet op `vuur`.** De streep staat onder een grote
+  witte kop, en een tweede kleur maakt het daar onrustig. De ovaal houdt vuur:
+  die wijst iets aan en mag opvallen.
+- **Hij hangt ónder de staarten en niet erdoor.** Die inset is gemeten: het
+  regelvak van een displaykop staat op een regelhoogte onder 1, dus de letters
+  steken er onderuit. Op 0,22em begon de lijn 13,9px bóven de onderkant van de
+  letters op een kop van 76,8px en liep hij dwars door de staart van een p en
+  een g; op 0,42em begint hij er 4,5px onder, en op een kop van 41px 5,2px.
+
+**Maximaal één ovaal en één streep per sectie.** Dezelfde soort regel als bij de
+schicht en net zomin af te dwingen in code: twee ovalen in één blikveld maken er
+een stijlmiddel van in plaats van een aanwijzing. Het verschil tussen de twee zit
+in de pagina: een ovaal wijst iets aan en verdient schaarste over de hele
+pagina, een streep bevestigt een slotzin en mag dus in meer secties staan.
+
+**Ze verschuiven niets.** Allebei staan ze absoluut gepositioneerd buiten de
+stroom. Nagemeten op `/secties` met vier halen: de paginahoogte is 35646px in
+alle drie de toestanden — vóór de meting, met alles verborgen en met alles
+zichtbaar — en `offsetTop`, `offsetLeft`, `offsetWidth` en `offsetHeight` van
+elke alinea en elke kop zijn in die drie toestanden identiek.
 
 **Op beeld dat ergens heen gaat staat een lichte zoom.** 1.05 in 700ms, en dus
 ruim trager dan een binnenkomst — die is over voor de zoom halverwege is. Alleen
@@ -245,13 +702,46 @@ verschuift.
 beeld en niet erop, dus de sluier heeft er geen functie en zou de foto alleen
 verduisteren. Wat gedeeld wordt is de verhoudingstabel, niet het component.
 
+**Op een foto bestaat geen gedempte tekstkleur.** `Beeldvlak` zet daarom altijd
+`data-vlak`, en die regel in `tokens.css` bindt `--tekst-zacht` en `--tekst-stil`
+aan de hoofdtekstkleur. Waarom dat moet en met welke cijfers staat bij *Contrast
+op een sluier meet je op het slechtste geval*, in het kleurhoofdstuk — daar
+staat ook de fout die dit blootlegde: vier bovenkoppen op 1,46:1.
+
+**Afwijking — de hero gebruikt óók de vlakke sluier.** De beeldrichtlijn wijst
+`onder` toe aan "hero, tekst onderaan", en dat klopt zolang die tekst één regel
+is. De hero uit de mockup is dat niet: bovenkop, displaykop, een zin en twee
+knoppen beslaan samen meer dan de helft van het vlak. Gemeten op 1137×640 met
+het verloop:
+
+| Regel | Bovenkant, vanaf onder | Dekking daar | Wit op een witte foto |
+|---|---|---|---|
+| bovenkop | 54% | 0,53 | **3,75** |
+| displaykop | 49% | 0,59 | 4,54 |
+| lopende zin | 29% | 0,77 | 8,52 |
+| knoppen | 10% | 0,87 | 12,2 |
+
+De bovenkop zakt daar onder AA. Met de vlakke sluier is het overal 0,62 en haalt
+wit in datzelfde geval 5,04:1. Dat is dezelfde afweging die de splitscreen-deur
+al maakte, om precies dezelfde reden: zodra de tekst het vlak vult, staat de
+bovenste helft ervan op het doorzichtige deel van het verloop.
+
+**De sluier uit de mockup haalt het niet.** De hero op p1 zet witte tekst op de
+lichte sepia-laag. Doorgerekend: wit op `--sluier-licht` haalt tussen 1,35:1 en
+2,95:1, afhankelijk van wat er op de foto staat — nergens genoeg, ook niet voor
+groot. Er zijn twee uitwegen en allebei geven ze iets op: donkere tekst op die
+lichte sluier haalt 6,67 tot 14,55:1 maar verliest de dubbellaagse kop, want die
+vervalt op een licht thema; witte tekst op de donkere sluier haalt 5,04 tot
+19,3:1 en houdt de dubbellaagse kop. Dat tweede is het geworden.
+
 **Afwijking — splitscreen gebruikt de vlakke sluier.** De beeldtabel wijst
 splitscreen `--sluier-zij` toe, bedoeld voor tekst in de linkerhelft. Een deur
 is op mobiel ongeveer 335px breed; daar heeft tekst de volle breedte nodig en
 staat de rechterhelft op het doorzichtige deel van dat verloop. Gemeten op
-375px besloeg de tekst 88% van het vlak. Daarom `--sluier` (62% over alles), de
-regel die de bron aan "kaart met tekst over beeld" hangt — en een splitscreen-
-deur ís dat functioneel. Wit haalt daar 5,4:1.
+375px besloeg de tekst 88% van het vlak. Daarom `--sluier-donker` (62% over
+alles), de regel die de bron aan "kaart met tekst over beeld" hangt — en een
+splitscreen-deur ís dat functioneel. Wit haalt daar in het slechtste geval
+5,05:1; die 5,4 uit B2 was op de oude sluier, die op inkt stond.
 
 In de repo staat één foto, `src/assets/photo/proost-tap.png`, gebruikt als
 og:image en in het sectieoverzicht. De overige zeven zitten in de bron. Let op:

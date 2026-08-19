@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import Naad from '../components/basis/Naad';
+import Accordeon, { type AccordeonProps } from '../components/sections/Accordeon';
 import BeeldTekst, { type BeeldTekstProps } from '../components/sections/BeeldTekst';
 import Citaten, { type CitatenProps } from '../components/sections/Citaten';
 import DrieKolommen, { type DrieKolommenProps } from '../components/sections/DrieKolommen';
@@ -27,7 +27,8 @@ export type Sectie =
   | ({ type: 'drie-kolommen' } & DrieKolommenProps)
   | ({ type: 'citaten' } & CitatenProps)
   | ({ type: 'oproep' } & OproepProps)
-  | ({ type: 'rijke-tekst' } & RijkeTekstProps);
+  | ({ type: 'rijke-tekst' } & RijkeTekstProps)
+  | ({ type: 'accordeon' } & AccordeonProps);
 
 export type SectieType = Sectie['type'];
 
@@ -55,6 +56,7 @@ function draagtPaginakop(sectie: Sectie): boolean {
       return true;
     case 'drie-kolommen':
     case 'rijke-tekst':
+    case 'accordeon':
       return Boolean(sectie.kop?.trim());
     case 'splitscreen':
     case 'citaten':
@@ -112,14 +114,6 @@ export function SectieLijst({ secties }: { secties: Sectie[] }) {
 
         return (
           <Fragment key={`${sectie.type}-${index}`}>
-            {/*
-              De naad hoort bij de sectie eronder en krijgt daarom haar
-              achtergrond en haar breedte: hij is de bovenrand van wat er komt,
-              niet de voet van wat er was. Dit is de enige plek die weet dat er
-              iets boven staat — dezelfde reden waarom het kopniveau hier wordt
-              uitgerekend.
-            */}
-            {index > 0 ? <Naad achtergrond={sectie.achtergrond} breedte={sectie.breedte} /> : null}
             <SectionRenderer sectie={sectie} kopNiveau={opentPagina ? 1 : 2} />
           </Fragment>
         );
@@ -167,6 +161,10 @@ export default function SectionRenderer({
     case 'rijke-tekst': {
       const { type: _type, ...props } = sectie;
       return <RijkeTekst {...props} kopNiveau={kopNiveau} />;
+    }
+    case 'accordeon': {
+      const { type: _type, ...props } = sectie;
+      return <Accordeon {...props} kopNiveau={kopNiveau} />;
     }
     default: {
       // Compileerfout zodra de union een type kent dat hierboven geen case

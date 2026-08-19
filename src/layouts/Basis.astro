@@ -20,15 +20,19 @@ import LogoHorizontaal from '../components/logo/LogoHorizontaal.astro';
 import Navigatie from '../components/navigatie/Navigatie.astro';
 import TellerScript from '../components/basis/TellerScript.astro';
 import OnthulScript from '../components/beweging/OnthulScript.astro';
+import HaalScript from '../components/merk/HaalScript.astro';
+import AccordeonScript from '../components/sections/AccordeonScript.astro';
 
 // De merkkleur hoort niet als losse hex in dit bestand, dus lezen we hem bij
-// het bouwen uit de tokenlaag. Verdwijnt of hernoemt --inkt, dan breekt de
-// build hier hard af in plaats van stilletjes een lege theme-color te zetten.
-const merkkleurTreffer = tokensCss.match(/--inkt: *(#[0-9a-fA-F]+) *;/);
+// het bouwen uit de tokenlaag. Sinds de restyle is dat --bruin en niet --inkt:
+// theme-color kleurt de browserbalk mee met het vlak waar de site op staat.
+// Verdwijnt of hernoemt --bruin, dan breekt de build hier hard af in plaats van
+// stilletjes een lege theme-color te zetten.
+const merkkleurTreffer = tokensCss.match(/--bruin: *(#[0-9a-fA-F]+) *;/);
 
 if (!merkkleurTreffer) {
   throw new Error(
-    'Token --inkt niet gevonden in src/styles/tokens.css; theme-color kan niet worden afgeleid.',
+    'Token --bruin niet gevonden in src/styles/tokens.css; theme-color kan niet worden afgeleid.',
   );
 }
 
@@ -135,7 +139,7 @@ const jaar = new Date().getFullYear();
 
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body class="bg-inkt text-krijt">
+  <body class="bg-bruin text-krijt">
     <a
       href="#inhoud"
       class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-krijt focus:px-4 focus:py-3 focus:text-inkt"
@@ -218,7 +222,7 @@ const jaar = new Date().getFullYear();
                   en groeit een kolom van drie links met 17px. De kopmarge gaat
                   van 4 naar 2 omdat min-h-11 er zelf 8,8px lucht boven zet.
                 */}
-                <h2 class="mb-2 text-bovenkop uppercase text-tekst-stil">{kolom.kop}</h2>
+                <h2 class="mb-2 font-machine text-bovenkop uppercase text-tekst-stil">{kolom.kop}</h2>
                 <ul class="flex list-none flex-col p-0">
                   {kolom.items.map((item) => (
                     <li>
@@ -246,5 +250,7 @@ const jaar = new Date().getFullYear();
 
     <TellerScript />
     <OnthulScript />
+    <HaalScript />
+    <AccordeonScript />
   </body>
 </html>

@@ -10,7 +10,7 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: Privacy
-      kop: Privacyverklaring
+      kop: "Privacy\xADverklaring"
       tekst: "Laatst gewijzigd: 11 augustus 2026"
       knop:
         label: ""

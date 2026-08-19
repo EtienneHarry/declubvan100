@@ -84,7 +84,12 @@ export async function leesPagina(naam: PaginaNaam) {
           tekst: tekstUit(blok.value.tekst),
           knop: knopUit(blok.value.knop),
           tweedeKnop: knopUit(blok.value.tweedeKnop),
+          // Het vinkje staat vóór het beeld: uit betekent geen object om uit
+          // te lezen, niet een leeg object.
+          beeld: blok.value.beeld.discriminant ? beeldUit(blok.value.beeld.value) : undefined,
           schicht: blok.value.schicht,
+          vullend: blok.value.vullend,
+          dubbellaags: blok.value.dubbellaags,
         };
 
       case 'splitscreen':
@@ -132,7 +137,9 @@ export async function leesPagina(naam: PaginaNaam) {
             kop: item.kop,
             tekst: tekstUit(item.tekst),
             href: tekstUit(item.href),
+            beeld: item.beeld.discriminant ? (beeldUit(item.beeld.value) ?? undefined) : undefined,
           })),
+          handschrift: tekstUit(blok.value.handschrift),
         };
 
       case 'citaten':
@@ -155,6 +162,7 @@ export async function leesPagina(naam: PaginaNaam) {
           kop: blok.value.kop,
           tekst: tekstUit(blok.value.tekst),
           knop: knopUit(blok.value.knop),
+          knopKleur: blok.value.knopKleur,
           tweedeKnop: knopUit(blok.value.tweedeKnop),
         };
 
@@ -165,6 +173,18 @@ export async function leesPagina(naam: PaginaNaam) {
           kop: tekstUit(blok.value.kop),
           inhoud: blok.value.inhoud.node,
           schichtLijst: blok.value.schichtLijst,
+        };
+
+      case 'accordeon':
+        return {
+          type: 'accordeon',
+          ...basis,
+          bovenkop: tekstUit(blok.value.bovenkop),
+          kop: tekstUit(blok.value.kop),
+          items: blok.value.items.map((item) => ({
+            vraag: item.vraag,
+            antwoord: item.antwoord.node,
+          })),
         };
 
       default: {

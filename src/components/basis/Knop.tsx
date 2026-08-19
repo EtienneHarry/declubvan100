@@ -1,10 +1,18 @@
 import type { ReactNode } from 'react';
 
-export type KnopVariant = 'vol' | 'lijn' | 'kaal';
+export type KnopVariant = 'vol' | 'vuur' | 'inkt' | 'lijn' | 'kaal';
 export type KnopMaat = 's' | 'm' | 'l';
 
 export interface KnopProps {
-  /** vol = primaire actie, max 1 per blikveld; lijn = secundair; kaal = tertiair. */
+  /**
+   * vol, vuur en inkt zijn alle drie gevuld: max 1 per blikveld. lijn is
+   * secundair, kaal tertiair.
+   *
+   * vuur is de knop uit de mockup en de primaire actie van de site. inkt is de
+   * zwarte knop ernaast, met cream als tekst. vol is de witte knop van vóór de
+   * restyle; die blijft bestaan omdat het design system hem als primair kent,
+   * maar de mockup gebruikt hem nergens.
+   */
   variant?: KnopVariant;
   maat?: KnopMaat;
   /** Volle breedte. Alleen in formulieren en op mobiel. */
@@ -32,6 +40,11 @@ export interface KnopProps {
  * De maten verschillen alleen in hoogte en padding, niet in lettergrootte. Het
  * design system zet daar .9375rem en 1.125rem neer, maar daar bestaat geen
  * token voor; `--text-knop` geldt dus voor alle drie.
+ *
+ * De knoptekst staat sinds de restyle in de typemachine: hoofdletters op
+ * --machine-tracking, precies zoals de mockup. Dat is een van de drie plekken
+ * waar die familie mag komen; zie het typografiehoofdstuk van
+ * design-system.md.
  */
 /*
  * Motion: kleur en lijn wisselen op --duur-1, de indruk op --duur-2. Dat zijn
@@ -42,11 +55,22 @@ export interface KnopProps {
  * Bij prefers-reduced-motion zet de regel in tokens.css elke transitie op 1ms.
  */
 const basis =
-  'relative inline-flex items-center justify-center gap-2 rounded-none border-2 border-transparent text-knop uppercase no-underline ' +
+  'relative inline-flex items-center justify-center gap-2 rounded-none border-2 border-transparent font-machine text-knop uppercase no-underline ' +
   '[transition:background-color_var(--duur-1)_var(--soepel-uit),border-color_var(--duur-1)_var(--soepel-uit),color_var(--duur-1)_var(--soepel-uit),opacity_var(--duur-1)_var(--soepel-uit),transform_var(--duur-2)_var(--soepel-uit)]';
 
+/*
+ * De hover van vuur en inkt loopt via dekking en niet via een tweede kleur.
+ * Een hovertoken erbij zou een waarde zijn die de mockup niet meet; met
+ * dekking laat de knop een tikje van de sectie erdoor en dat werkt op elke
+ * achtergrond dezelfde kant op. De lijnvariant deed dat al.
+ *
+ * De tekst op vuur is wit en niet cream: cream haalt er 3,69:1 en dus alleen
+ * de groot-tekstdrempel. Zie het contrasthoofdstuk.
+ */
 const variantKlasse: Record<KnopVariant, string> = {
   vol: 'bg-tekst text-vlak border-tekst hover:bg-tekst-zacht hover:border-tekst-zacht active:bg-tekst-stil active:border-tekst-stil',
+  vuur: 'bg-vuur text-krijt border-vuur hover:bg-vuur/88 hover:border-vuur/88 active:bg-vuur/76 active:border-vuur/76',
+  inkt: 'bg-inkt text-cream border-inkt hover:bg-inkt/88 hover:border-inkt/88 active:bg-inkt/76 active:border-inkt/76',
   lijn: 'bg-transparent text-tekst border-lijn-sterk hover:border-tekst hover:bg-tekst/8 active:bg-tekst/16',
   kaal: 'bg-transparent text-tekst border-transparent hover:text-tekst-zacht hover:underline active:text-tekst-stil',
 };

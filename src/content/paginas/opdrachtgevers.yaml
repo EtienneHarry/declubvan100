@@ -1,4 +1,4 @@
-titel: Opdrachtgevers — De Club van 100
+titel: Voor ondernemers — De Club van 100
 beschrijving: >-
   Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe een tap
   onder druk werkt. Wij regelen de mensen in en rond Groningen.
@@ -6,12 +6,12 @@ secties:
   - discriminant: hero
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
-      bovenkop: Opdrachtgevers
-      kop: Jij hebt een avond te draaien
-      tekst: Wij regelen de mensen en zorgen dat er niets misgaat.
+      bovenkop: ""
+      kop: "Voor onder\xADnemers."
+      tekst: ""
       knop:
         label: ""
         href: ""
@@ -19,10 +19,25 @@ secties:
         label: ""
         href: ""
       schicht: true
+  - discriminant: rijke-tekst
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: smal
+      # De aanhef en de twee alinea's van pagina 2 van de mockup, letterlijk;
+      # zie bron/mockup-teksten.md. Rijke tekst en geen kop-tekst, want een
+      # tekstveld rendert één alinea en dit zijn er twee.
+      kop: Echte mensen. *Geen nummertjes, maar [1 van de 100].*
+      schichtLijst: false
+      inhoud: |
+        Een vol terras. Een groot evenement. Iemand die onverwacht uitvalt. Of simpelweg een weekend waarin je nét wat extra handen kunt gebruiken. De Club van 100 koppelt horecazaken en evenementen aan een vaste community van flexibele horecamedewerkers.
+
+        Geen eindeloze zoektocht naar personeel, maar toegang tot een club mensen die graag werkt en zelf kiest wanneer ze beschikbaar zijn.
   - discriminant: drie-kolommen
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: ""
@@ -45,7 +60,7 @@ secties:
   - discriminant: beeld-tekst
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Waarom geen uitzendbureau
@@ -62,7 +77,7 @@ secties:
   - discriminant: citaten
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-m
         breedte: basis
       bovenkop: Wat opdrachtgevers zeggen
@@ -75,18 +90,49 @@ secties:
         - citaat: '"Leuke mensen, harde werkers"'
           naam: Stadslab Groningen
           rol: ""
+  - discriminant: accordeon
+    value:
+      weergave:
+        achtergrond: bruin
+        ruimte: sectie-m
+        breedte: smal
+      bovenkop: ""
+      kop: Veelgestelde vragen
+      items:
+        - vraag: Wat kost het?
+          antwoord: |
+            Het factuurtarief hangt af van het soort opdracht en de werkzaamheden. Neem contact op en je hoort direct het actuele tarief.
+        - vraag: Hoe snel kunnen jullie iemand regelen?
+          antwoord: |
+            Vraag bij voorkeur zo vroeg mogelijk aan, maar last-minute kan ook — als er iemand beschikbaar is soms dezelfde dag nog. Een inzet is definitief zodra wij hem bevestigd hebben.
+        - vraag: Wat als er iemand niet komt opdagen?
+          antwoord: |
+            Neem direct contact op met De Club. Wij benaderen meteen beschikbare Clubleden en regelen zo snel mogelijk vervanging. Je betaalt nooit voor niet-gewerkte uren.
+        - vraag: Hoe zit het met de factuur?
+          antwoord: |
+            Je krijgt achteraf een factuur op basis van de daadwerkelijk gewerkte uren. Betaaltermijn: 30 dagen.
+        - vraag: Werken jullie ook buiten Groningen?
+          antwoord: |
+            We zitten in Groningen, maar inzet kan door heel Nederland — afhankelijk van de opdracht en de beschikbaarheid van Clubleden.
+        - vraag: Wat voor werk pakken jullie aan?
+          antwoord: |
+            Bediening, bar, barista's, gastheren en gastvrouwen, festivals, evenementen, garderobe en afwas. Breed inzetbaar binnen horeca en events.
+        - vraag: Wat is de minimale afname?
+          antwoord: |
+            Vanaf één medewerker. Er is geen minimum per opdracht.
   - discriminant: oproep
     value:
       weergave:
-        achtergrond: inkt
+        achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
       bovenkop: Aan de slag
-      kop: Vertel wat je nodig hebt.
+      kop: Goede mensen op het moment dat je ze {nodig hebt.}
       tekst: Mail wat het is en wanneer. Je hoort binnen een dag van ons.
       knop:
-        label: Ik zoek personeel
+        label: Inhuren
         href: /contact
+      knopKleur: vuur
       tweedeKnop:
         label: ""
         href: ""

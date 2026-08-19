@@ -31,6 +31,10 @@
       const stijl = getComputedStyle(document.documentElement);
       const duur = Number.parseFloat(stijl.getPropertyValue('--duur-4'));
       const curve = stijl.getPropertyValue('--soepel-uit');
+      // De aanloop van de opening: de kop staat bij het laden al in beeld, dus
+      // zonder dit begint de telling terwijl de pagina nog aan het opbouwen
+      // is. Zelfde token als de scrollonthulling van de hero gebruikt.
+      const aanloop = Number.parseFloat(stijl.getPropertyValue('--aanloop')) || 0;
 
       /**
        * Dezelfde curve als de CSS, maar dan in JavaScript. We animeren tekst en
@@ -97,7 +101,14 @@
             if (!ingang.isIntersecting || gestart) continue;
             gestart = true;
             waarnemer.disconnect();
-            tel();
+            /*
+             * Elke lading telt — er is met opzet geen onthouden vlag. De teller
+             * is de opening van de home; wie herlaadt, krijgt de opening.
+             *
+             * Het getal blijft op 100 staan tot de aanloop om is: pas in tel()
+             * gaat het naar 0. Zo staat er nooit een 0 te wachten.
+             */
+            window.setTimeout(tel, aanloop);
           }
         },
         { threshold: 0.5 },

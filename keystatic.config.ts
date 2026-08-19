@@ -2,10 +2,12 @@ import { config, fields, singleton } from '@keystatic/core';
 
 import {
   ACHTERGROND_TOKENS,
+  KNOPKLEUR_TOKENS,
   BREEDTE_TOKENS,
   RUIMTE_TOKENS,
   VERHOUDING_TOKENS,
   type AchtergrondToken,
+  type KnopkleurToken,
   type BreedteToken,
   type RuimteToken,
   type VerhoudingToken,
@@ -54,10 +56,20 @@ const opslag =
    --------------------------------------------------------------------------- */
 
 const ACHTERGROND_UITLEG: Partial<Record<AchtergrondToken, string>> = {
-  inkt: 'Inkt — zwart, de standaard',
-  roet: 'Roet — iets lichter zwart',
+  bruin: 'Bruin — warm donker, de standaard',
+  inkt: 'Inkt — zwart vlak op het bruin',
+  roet: 'Roet — iets lichter bruin',
   papier: 'Papier — licht, voor een leespagina',
   mist: 'Mist — rustig grijs op papier',
+};
+
+/*
+ * De kleurcode van de knop, in de taal van de redacteur. Niet "vuur" en "inkt"
+ * maar wat de kleur betekent: de doelgroep waar de knop voor is.
+ */
+const KNOPKLEUR_UITLEG: Partial<Record<KnopkleurToken, string>> = {
+  vuur: 'Rood — voor wie personeel zoekt',
+  inkt: 'Zwart — voor wie zich wil aanmelden',
 };
 
 const RUIMTE_UITLEG: Partial<Record<RuimteToken, string>> = {
@@ -100,7 +112,7 @@ const weergave = fields.object(
       description:
         'De kleur van het vlak waarop deze sectie staat. Houd één donkere en één lichte kleur per pagina aan.',
       options: keuzeUit(ACHTERGROND_TOKENS, ACHTERGROND_UITLEG),
-      defaultValue: 'inkt' satisfies AchtergrondToken,
+      defaultValue: 'bruin' satisfies AchtergrondToken,
     }),
     ruimte: fields.select({
       label: 'Ruimte boven en onder',
@@ -125,6 +137,20 @@ const weergave = fields.object(
 /* ---------------------------------------------------------------------------
    Kleine bouwstenen
    --------------------------------------------------------------------------- */
+
+/*
+ * De haal in een kop. Staat achter elke sectiekop in het paneel, want de
+ * redacteur ziet hem niet aan het veld zelf: het is één regel tekst en er is
+ * geen knopje voor.
+ *
+ * Bewust kort en met een voorbeeld erin. De volledige uitleg — wat er gebeurt
+ * bij een vergeten sluiting, en waarom er maar één van elk mag — staat in
+ * overdracht.md, en dat is het document dat naast het scherm ligt.
+ */
+const HAAL_UITLEG =
+  ' Wil je een ovaal om een paar woorden, zet er dan [vierkante haken] omheen;' +
+  ' voor een streep eronder {accolades}, en voor een stuk in de typemachine' +
+  ' *sterretjes*. Eén van elk per kop.';
 
 function bovenkopVeld() {
   return fields.text({
@@ -192,6 +218,35 @@ function beeldVeld() {
   );
 }
 
+/*
+ * Beeld dat écht overgeslagen mag worden.
+ *
+ * beeldVeld() heeft validatie op allebei zijn velden: een foto is verplicht en
+ * alt-tekst ook. Dat is met opzet — bij alt-tekst is validatie het verschil
+ * tussen een afspraak en een regel — maar het maakt het hele object verplicht
+ * zodra het in een blok staat. Op de openingssectie kan dat niet: vier van de
+ * vijf hero's op deze site hebben geen foto.
+ *
+ * Een vinkje ervoor lost dat op zonder de alt-regel op te geven. Staat hij uit,
+ * dan is er niets in te vullen en niets te valideren; staat hij aan, dan gelden
+ * dezelfde twee eisen als overal. Het alternatief — de validatie weghalen zodat
+ * het veld leeg mag blijven — zou precies de controle slopen die de
+ * toegankelijkheid bewaakt.
+ */
+function optioneelBeeldVeld(label: string, beschrijving: string) {
+  return fields.conditional(
+    fields.checkbox({
+      label,
+      description: beschrijving,
+      defaultValue: false,
+    }),
+    {
+      false: fields.empty(),
+      true: beeldVeld(),
+    },
+  );
+}
+
 /* ---------------------------------------------------------------------------
    De secties
 
@@ -212,7 +267,7 @@ const sectieBlokken = fields.blocks(
           kop: fields.text({
             label: 'Kop',
             description:
-              'De grootste kop van de pagina. Er hoort er één per pagina te zijn, dus gebruik deze sectie ook één keer.',
+              'De grootste kop van de pagina. Er hoort er één per pagina te zijn, dus gebruik deze sectie ook één keer.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('Een korte zin onder de kop. Zeg het in de helft van de woorden.'),
@@ -221,10 +276,26 @@ const sectieBlokken = fields.blocks(
             'Tweede knop — mag je overslaan',
             'Een tweede actie, minder opvallend dan de eerste.',
           ),
+          beeld: optioneelBeeldVeld(
+            'Foto op de achtergrond',
+            'Met een foto komt de tekst op het beeld te staan, met een donkere laag ertussen. Zonder foto staat de sectie op een egaal vlak.',
+          ),
           schicht: fields.checkbox({
             label: 'Bliksemschicht op de achtergrond',
             description:
               'De grote schicht achter de tekst. Zet hem op één sectie per pagina, niet op meer.',
+            defaultValue: false,
+          }),
+          vullend: fields.checkbox({
+            label: 'Foto vult het eerste scherm',
+            description:
+              'De landingsopening: het beeld loopt van rand tot rand en vult het scherm. Werkt alleen met een foto, en alleen op de openingssectie bovenaan de pagina.',
+            defaultValue: false,
+          }),
+          dubbellaags: fields.checkbox({
+            label: 'Kop met een donkere laag eronder',
+            description:
+              'De dubbellaagse kop uit het ontwerp. Werkt alleen op de openingssectie die bovenaan de pagina staat, en alleen op een donkere achtergrond.',
             defaultValue: false,
           }),
         },
@@ -270,7 +341,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
-            description: 'De kop van deze sectie. Hij staat groot op de pagina.',
+            description: 'De kop van deze sectie. Hij staat groot op de pagina.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('De lopende tekst onder de kop.'),
@@ -288,7 +359,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
-            description: 'De kop die naast het beeld komt te staan.',
+            description: 'De kop die naast het beeld komt te staan.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('De tekst die naast het beeld komt te staan.'),
@@ -323,7 +394,7 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop — mag je overslaan',
-            description: 'De kop boven de kaarten.',
+            description: 'De kop boven de kaarten.' + HAAL_UITLEG,
           }),
           items: fields.array(
             fields.object({
@@ -337,6 +408,10 @@ const sectieBlokken = fields.blocks(
                 validation: { length: { min: 1 } },
               }),
               tekst: tekstVeld('De tekst op de kaart.'),
+              beeld: optioneelBeeldVeld(
+                'Foto boven de kaart',
+                'De foto staat boven de tekst, altijd staand op 4:5. De kaarten naast elkaar houden zo dezelfde vorm.',
+              ),
               href: fields.text({
                 label: 'Waar de kaart heen gaat — mag je overslaan',
                 description: 'Vul je dit in, dan wordt de hele kaart klikbaar.',
@@ -348,6 +423,11 @@ const sectieBlokken = fields.blocks(
               itemLabel: (props) => props.fields.kop.value || 'Kaart zonder kop',
             },
           ),
+          handschrift: fields.text({
+            label: 'Handgeschreven regel eronder — mag je overslaan',
+            description:
+              'Eén regel in het handschrift, onder de kaarten. Vul hier alleen iets in wat de kaarten hierboven al zeggen: de regel is versiering en wordt niet voorgelezen. Eén per pagina, niet één per sectie.',
+          }),
         },
         { label: 'Kaarten naast elkaar' },
       ),
@@ -396,11 +476,18 @@ const sectieBlokken = fields.blocks(
           bovenkop: bovenkopVeld(),
           kop: fields.text({
             label: 'Kop',
-            description: 'De kop van het afsluitende blok. Hij staat groot op de pagina.',
+            description: 'De kop van het afsluitende blok. Hij staat groot op de pagina.' + HAAL_UITLEG,
             validation: { length: { min: 1 } },
           }),
           tekst: tekstVeld('Eén zin die zegt wat je van de bezoeker wilt.'),
           knop: knopVeld('Knop — mag je overslaan', 'De actie waar het om gaat.'),
+          knopKleur: fields.select({
+            label: 'Kleur van de knop',
+            description:
+              'De kleur zegt voor wie de knop is: rood voor opdrachtgevers die personeel zoeken, zwart voor mensen die zich willen aanmelden. Kies de kleur die bij deze pagina hoort.',
+            options: keuzeUit(KNOPKLEUR_TOKENS, KNOPKLEUR_UITLEG),
+            defaultValue: 'vuur' satisfies KnopkleurToken,
+          }),
           tweedeKnop: knopVeld(
             'Tweede knop — mag je overslaan',
             'Een tweede actie, minder opvallend dan de eerste.',
@@ -419,7 +506,7 @@ const sectieBlokken = fields.blocks(
           kop: fields.text({
             label: 'Kop — mag je overslaan',
             description:
-              'Laat je dit leeg, dan worden de koppen in de tekst zelf het bovenste niveau.',
+              'Laat je dit leeg, dan worden de koppen in de tekst zelf het bovenste niveau.' + HAAL_UITLEG,
           }),
           /*
            * Alles staat hier expliciet, ook wat uit staat. Keystatic vult
@@ -458,6 +545,69 @@ const sectieBlokken = fields.blocks(
           }),
         },
         { label: 'Lopende tekst' },
+      ),
+    },
+
+    accordeon: {
+      label: 'Vragen en antwoorden',
+      itemLabel: (props) =>
+        `Vragen — ${props.fields.items.elements.length} stuks`,
+      schema: fields.object(
+        {
+          weergave,
+          bovenkop: bovenkopVeld(),
+          kop: fields.text({
+            label: 'Kop — mag je overslaan',
+            description: 'De kop boven de vragen.' + HAAL_UITLEG,
+          }),
+          items: fields.array(
+            fields.object({
+              vraag: fields.text({
+                label: 'De vraag',
+                description:
+                  'Schrijf hem zoals iemand hem zelf zou stellen, dus "Wat kost het?" en niet "Tarieven".',
+                validation: { length: { min: 1 } },
+              }),
+              /*
+               * Dezelfde kale set als de lopende tekst, en met opzet dezelfde:
+               * een antwoord is lopende tekst die toevallig ingeklapt staat.
+               * Koppen staan hier wél aan omdat een lang antwoord ze kan
+               * gebruiken; ze zakken onder de vraag mee.
+               */
+              antwoord: fields.markdoc.inline({
+                label: 'Het antwoord',
+                description:
+                  'Koppen, vet, cursief, links en lijsten. Houd het bij wat de vraag echt beantwoordt.',
+                options: {
+                  heading: [2, 3],
+                  bold: true,
+                  italic: true,
+                  link: true,
+                  orderedList: true,
+                  unorderedList: true,
+                  strikethrough: false,
+                  code: false,
+                  codeBlock: false,
+                  blockquote: false,
+                  table: false,
+                  image: false,
+                  divider: false,
+                },
+              }),
+            }),
+            {
+              label: 'Vragen',
+              description:
+                'Ze staan op de pagina in deze volgorde. Zet de vraag die het vaakst gesteld wordt bovenaan.',
+              itemLabel: (props) => props.fields.vraag.value || 'Vraag zonder tekst',
+            },
+          ),
+        },
+        {
+          label: 'Vragen en antwoorden',
+          description:
+            'Elk antwoord klapt open als de bezoeker op de vraag klikt. Zonder JavaScript staan ze gewoon allemaal open.',
+        },
       ),
     },
   },

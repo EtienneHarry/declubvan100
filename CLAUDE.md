@@ -105,14 +105,21 @@ hebt.
 
 ```
 oxlint  →  check-tokens  →  astro check  →  astro build
-        →  check-csp  →  check-nesting  →  check-koppen
+        →  check-csp  →  check-nesting  →  check-koppen  →  check-onthul
 ```
 
-De laatste drie staan achter de build omdat ze de gebouwde HTML lezen. Ze
-bewaken alle drie iets dat stil misgaat: geen foutmelding, geen kapotte pagina,
+De laatste vier staan achter de build omdat ze de gebouwde uitvoer lezen. Ze
+bewaken alle vier iets dat stil misgaat: geen foutmelding, geen kapotte pagina,
 en lokaal zie je er niets van.
 
 Dezelfde `check` draait in GitHub Actions bij elke push en pull request.
+
+**Een nieuwe poortstap wordt getoetst met een injectie voordat hij vertrouwd
+wordt.** Dat is geen gewoonte maar een regel, en hij staat er omdat het twee
+keer is misgegaan: een verloren backslash en een `` die als backspace-byte in
+het bestand belandde, allebei met een poort die daarna stil groen stond. Zie
+*Vaste regel: een ongetoetste poort staat mogelijk stil groen* in
+`docs/stand-van-zaken.md`.
 
 Wie bewaakt wat:
 
@@ -128,6 +135,8 @@ Wie bewaakt wat:
 | Vertraging per element zonder `style`-attribuut | `scripts/check-csp.mjs` |
 | Blokelement binnen een inline-element | `scripts/check-nesting.mjs` |
 | Eén `<h1>` vooraan, geen overgeslagen kopniveau | `scripts/check-koppen.mjs` |
+| Lang woord in een display-xl-kop zonder afbreekmogelijkheid | `scripts/check-koppen.mjs` (zeef) |
+| Verborgen onthul-inhoud heeft altijd een uitweg | `scripts/check-onthul.mjs` |
 
 `_adherence.oxlintrc.json` is samengevoegd uit de adherence-config van De Club
 van 100 en die van het Kick&Work-sjabloon. Twee blokken uit die bronnen konden
@@ -178,7 +187,7 @@ staan, want daar worden de tokens gedefinieerd.
 1. **Primitieven** — de rauwe waardes, één keer, in `:root`.
 2. **Semantische laag** — aliassen die onder `[data-thema="licht"]` kantelen.
 3. **`@theme inline`** — wat Tailwind tot utilities maakt.
-4. **Basis** — reset, links, focus, de breedte-as, gereduceerde beweging.
+4. **Basis** — reset, links, focus, gereduceerde beweging.
 
 Laag 2 en 4 staan bewust buiten `@theme`: een alias die per thema iets anders
 betekent en een CSS-reset zijn geen themetokens. Let op dat `@theme inline` de
@@ -220,28 +229,54 @@ React, want `SectionRenderer.tsx` en de secties zijn dat ook.
 | `Kaart` | `components/basis/` | Alles wat in een raster staat |
 | `Bovenkop` | `components/basis/` | Het labeltje boven een sectiekop |
 | `Teller` | `components/basis/` | Kop waarin een getal naar boven telt |
-| `Naad` | `components/basis/` | De haarlijn tussen twee secties |
 | `Beeldvlak` | `components/beeld/` | Elke foto met tekst erop |
 | `Bliksem` | `components/merk/` | De schicht, in drie rollen |
+| `Koptekst` | `components/basis/` | Vertaalt `[...]` en `{...}` in een sectiekop naar een haal |
+| `RijkeInhoud` | `components/basis/` | De kale markdoc-set, gedeeld door rijke tekst en accordeon |
+| `Ovaal` | `components/merk/` | De haal om een woordgroep. Max 1 per sectie |
+| `Streep` | `components/merk/` | De haal onder een kop. Ook max 1 per sectie |
+| `Handschrift` | `components/merk/` | De decoratieve regel. Altijd `aria-hidden`, max 1 per pagina |
 
 De logo's staan apart in `src/components/logo/` en zijn Astro-componenten, geen
 React: ze worden door de layout gebruikt, niet door secties. Alle vier houden
 `fill="currentColor"` en nemen geen props aan.
 
-**Elk bestand in `components/` wordt gebruikt.** `Scheiding` en `KaartenRij`
-stonden er ongebruikt bij en zijn weggehaald; staat hier weer iets dat nergens
-geïmporteerd wordt, dan is dat een fout en geen voorraad. De git-geschiedenis
-heeft ze nog als je ze terug wilt.
+**Elk bestand in `components/` wordt gebruikt — behalve de logoset.**
+`Scheiding` en `KaartenRij` stonden er ongebruikt bij en zijn weggehaald; staat
+er weer iets dat nergens geïmporteerd wordt, dan is dat een fout en geen
+voorraad. De git-geschiedenis heeft ze nog als je ze terug wilt.
+
+**`src/components/logo/` is de benoemde uitzondering**, en dat is niet
+hetzelfde als vergeten opruimen. Van de vier is alleen `LogoHorizontaal`
+geïmporteerd, door de layout. De andere drie staan er compleet omdat een logoset
+een set is: de bron levert vier merktekens met elk een eigen toepassing —
+`Bliksem` als social avatar en watermerk, `Woordmerk` voor waar de schicht al
+elders staat, `MerktekenVierkant` als favicon en app-icoon. Drie kwart van de
+merktekens van een klant weggooien omdat de site ze deze maand niet toont, is
+geen opruimen maar de set slopen; ze horen bij het merk en niet bij de pagina's.
+
+Wat níet onder deze uitzondering valt: het uitbreiden ervan. Komt er een vijfde
+bestand in die map dat niet uit de aangeleverde logoset komt, dan geldt de
+gewone regel weer.
+
+Eén ding om te weten en niet stilzwijgend te laten: `components/logo/Bliksem.astro`
+en `components/merk/Bliksem.tsx` tekenen dezelfde SVG. Ze zijn niet elkaars
+dubbele — de eerste is het merkteken uit de set, de tweede is het vormelement
+met de drie rollen die de richtlijn eraan hangt, en alleen die tweede wordt
+gebruikt. Ze delen `src/assets/logo/bliksem.svg`, dus er is één bron; wie ze ooit
+samenvoegt, moet de rollen meenemen en niet andersom.
 
 ### Er gaat wél JavaScript naar de browser
 
-Drie bestanden, samen ongeveer 3 kB, alle drie uit een Astro-component:
+Vijf bestanden, samen ongeveer 5 kB, alle vijf uit een Astro-component:
 
 | Bestand | Waarvoor |
 |---|---|
 | `components/navigatie/Navigatie.astro` | De menuknop onder 900px, met focusval |
 | `components/basis/TellerScript.astro` | De teller in de openingskop |
 | `components/beweging/OnthulScript.astro` | De scrollonthulling |
+| `components/merk/HaalScript.astro` | Past de haal op één regel? |
+| `components/sections/AccordeonScript.astro` | Klapt de antwoorden dicht en weer open |
 
 **Een `<script>` hoort in een `.astro`-bestand, nooit in een `.tsx`.** Astro
 bundelt een script uit een Astro-component tot een gewoon bestand; een `<script>`
@@ -261,7 +296,7 @@ contrast niet meer.
 
 ## Sectietypes
 
-Acht, allemaal in `src/components/sections/` en gekoppeld in
+Negen, allemaal in `src/components/sections/` en gekoppeld in
 `SectionRenderer.tsx`:
 
 | Type | Component | Waarvoor |
@@ -274,10 +309,18 @@ Acht, allemaal in `src/components/sections/` en gekoppeld in
 | `citaten` | `Citaten` | Klantquotes |
 | `oproep` | `Oproep` | Afsluitend blok met een actie |
 | `rijke-tekst` | `RijkeTekst` | Lopende tekst met koppen en lijsten |
+| `accordeon` | `Accordeon` | Vragen met een antwoord dat openklapt |
 
 Met beeld loopt de kop door `Beeldvlak` en vervalt de schicht. De grote schicht
 is een uitgesneden vlak op een egale achtergrond — over een foto is dat geen
 van de drie toegestane rollen, en de sluier zou hem toch opeten.
+
+`hero` heeft sinds B8 één variant erbij: `dubbellaags`, de witte kop met de
+harde donkere laag eronder uit de mockup. Die hangt aan `kopNiveau === 1` en
+niet aan de prop alleen, dus een tweede hero op dezelfde pagina zakt naar
+`display-l` en raakt hem ook kwijt. Op een lichte sectie vervalt hij helemaal.
+Zie het componentenhoofdstuk van `design-system.md` voor waarom hij geen
+contrastmiddel is.
 
 ### Het kopniveau komt uit de lijst, niet uit de sectie
 
@@ -292,8 +335,8 @@ rijke tekst landt een `##` op het niveau eronder.
 
 `draagtPaginakop()` bepaalt wie in aanmerking komt. `splitscreen` en `citaten`
 slaan hun beurt over — twee koppen naast elkaar is geen paginakop en citaten
-hebben er geen. `drie-kolommen` en `rijke-tekst` doen alleen mee als ze een
-sectiekop hebben.
+hebben er geen. `drie-kolommen`, `rijke-tekst` en `accordeon` doen alleen mee
+als ze een sectiekop hebben.
 
 Daarmee gelden deze drie vanzelf, en `check-koppen` houdt ze vast:
 
@@ -305,6 +348,32 @@ Daarmee gelden deze drie vanzelf, en `check-koppen` houdt ze vast:
 Staat er geen enkele sectie die een kop kan dragen, dan heeft de pagina geen
 `<h1>`. Dat wordt niet stilletjes gerepareerd — er valt niets te kiezen — maar
 `check-koppen` laat de build erop vallen.
+
+### Het accordeon
+
+Staat er sinds B8 en is het negende type. Vier dingen die je niet moet weghalen:
+
+- **Open is de begintoestand.** In de HTML staat elk antwoord uitgeklapt, met
+  `aria-expanded="true"`; `AccordeonScript` klapt ze bij het laden dicht. Zonder
+  JavaScript is de sectie dus een gewone lijst met vragen en antwoorden. Draai
+  je het om, dan levert een uitgevallen script twaalf vragen op die niet
+  opengaan — dezelfde fout die de scrollonthulling met zijn vlagje vermijdt.
+  Nagemeten in de gebouwde HTML: nul keer `data-accordeon-dicht`.
+- **`inert` op een dichtgeklapt paneel.** Het paneel staat op
+  `grid-template-rows: 0fr` met `overflow: hidden`, en dat haalt de links erin
+  niet uit de tab-volgorde. Zonder `inert` tabt de bezoeker door antwoorden die
+  hij niet ziet.
+- **Het paneel animeert op `grid-template-rows`, van `0fr` naar `1fr`.** Dat is
+  de enige manier om naar de eigen hoogte van de inhoud te lopen zonder die
+  hoogte te kennen — en kennen kan niet, want een hoogte in een
+  `style`-attribuut wordt door de CSP geblokkeerd.
+- **Het vlagje `data-accordeon-stil` op `<html>`.** Zonder dat klapt elk
+  antwoord bij het laden zichtbaar omhoog, want het dichtzetten gebeurt op een
+  element dat een transitie heeft. Het script haalt het vlagje weg na twee
+  beeldjes.
+
+Geen `aria-controls` en geen pijltoetsen, allebei met opzet: zie het
+componentenhoofdstuk van `design-system.md`.
 
 ### Een nieuwe sectie toevoegen
 
@@ -366,8 +435,11 @@ Drie bestanden, en dat zijn ze alle drie:
 | `src/styles/beweging.css` | het mechanisme: de animaties en de vertraging per stap |
 | `src/components/beweging/OnthulScript.astro` | de waarnemer die zegt wanneer |
 
+De haal — de ovaal en het onderstreepje uit B8 — hangt eraan maar staat er
+naast; zie *De haal* hieronder.
+
 Een sectie doet mee door twee attributen op een element te zetten:
-`data-onthul="blok"`, `="kop"` of `="naad"`, en `data-onthul-stap="0"` tot en met `8`. Het
+`data-onthul="blok"` of `="kop"`, en `data-onthul-stap="0"` tot en met `8`. Het
 nummer komt uit `ploeg()` in `src/lib/beweging.ts`, een teller per sectie: elk
 aanwezig onderdeel schuift één stap op, en wat ontbreekt telt niet mee. Roep hem
 aan in de volgorde waarin de onderdelen in het ritme horen — bij `beeld-tekst`
@@ -381,6 +453,13 @@ Vijf dingen die je niet moet weghalen:
   JavaScript blijft het weg en staat er dus niets verborgen. Een begintoestand
   die niet aan dat vlagje hangt, maakt van een uitgevallen script een lege
   pagina.
+- **De opening animeert wél, met een aanloop.** Elementen binnen
+  `[data-onthul-entree]` — de hero op kopniveau 1 zet dat attribuut — worden
+  bij het laden níet op klaar gezet maar aan de waarnemer gegeven, die voor een
+  zichtbaar element direct vuurt. `beweging.css` telt er `--aanloop` (300ms)
+  bij op, zodat de pagina eerst even staat. De teller wacht diezelfde aanloop.
+  De regel "wat er al staat, staat er meteen" blijft gelden voor elke gewone
+  sectie die toevallig in beeld is.
 - **Het script meet eerst alles en zet daarna pas het vlagje.** In die volgorde
   krijgt wat al in beeld staat de verborgen toestand nooit te zien: op het
   moment dat `beweging.css` gaat gelden, staat er al `klaar` op. Andersom
@@ -397,32 +476,64 @@ Vijf dingen die je niet moet weghalen:
   kop op een telefoon. Dat haalt die 0.2 nooit en zou zonder de tweede drempel
   helemaal geen melding meer krijgen, en dus voorgoed onzichtbaar blijven.
 
-### De naad tussen twee secties
+### De naad is weg
 
-Sinds B7 staat op elke sectiegrens een haarlijn die zichzelf trekt: `Naad` in
-`components/basis/`, gerenderd door `SectieLijst`. Dat is de lijnhelft van rol 2
-van de bliksemschicht; de schicht zelf zit er nog niet in, want de richtlijn
-staat er hoogstens twee per pagina toe en welke twee dat zijn is een
-redactionele keuze. Zestien naden op de site, 43 op `/secties`.
+Van B7 tot B9 stond op elke sectiegrens een haarlijn die zichzelf trok (`Naad`).
+De mockup heeft geen scheidingslijnen, dus hij is verwijderd: het component, de
+aanroep in `SectieLijst`, het beeldje `inslag-naad` in `beweging.css` en het
+geval op `/secties`. De git-geschiedenis heeft hem nog, mét de vier
+ontwerpbeslissingen die erin zaten — wie hem terughaalt, leest eerst dat
+commentaar.
 
-Vier dingen die je niet moet weghalen:
+Daarmee is rol 2 van de bliksemschicht (`scheiding`) opnieuw zonder gebruiker.
+`Bliksem` ondersteunt de rol nog; er is alleen geen plek meer die hem inzet.
 
-- **Hij hoort bij de sectie eronder** en krijgt haar `achtergrond` en haar
-  `breedte` mee. Hij schildert die achtergrond ook zelf: zonder dat staat de
-  strook van één pixel op de bodykleur, en dat is op een lichte pagina een
-  donkere streep tussen twee lichte vlakken.
-- **Hij staat in `SectieLijst` en nergens anders.** Een scheiding is het enige
-  element dat per definitie twee buren heeft, en dat is precies wat een sectie
-  volgens regel 4 niet mag weten.
-- **Hij krijgt geen `data-onthul-stap`.** Hij staat hoger op de pagina dan de
-  bovenkop eronder en haalt de drempel dus vanzelf eerder. Een eigen stap zou
-  betekenen dat elke sectie op 1 begint, en dat is een prop door alle acht
-  sectietypes voor 70ms winst.
-- **`[&:not(:has(+_section))]:hidden` is geen sierklasse.** Een rijke-tekst
-  zonder kop en zonder inhoud rendert niets, en dan blijft zijn naad achter als
-  losse streep. Gemeten op `/secties`: precies één geval, en die is nu verborgen.
-  Het alternatief was `SectieLijst` laten uitrekenen wat `RijkeTekst` gaat
-  renderen — dezelfde voorwaarde op twee plekken.
+### De haal — de ovaal en het onderstreepje
+
+Staat er sinds B8, en het is de enige beweging op de site die **niet** op
+`--inslag` loopt. De inslag is een klap die scherp afremt en stilvalt; een haal
+is een hand die doorstreept, dus `--haal` is nog in beweging op het moment dat
+hij ophoudt. Het motion-hoofdstuk van `design-system.md` legt de waardes uit.
+
+Drie bestanden en twee componenten:
+
+| Bestand | Wat erin staat |
+|---|---|
+| `src/styles/tokens.css` | de waardes: de curve, de pauze, twee duren, de dikte |
+| `src/styles/haal.css` | het mechanisme: de pasvorm, de kleur, het tekenen |
+| `src/components/merk/HaalScript.astro` | de meting: past de tekst op één regel? |
+| `src/components/merk/Ovaal.tsx` | het pad van de ellips |
+| `src/components/merk/Streep.tsx` | het pad van de streep |
+
+Vijf dingen die je niet moet weghalen:
+
+- **`haal.css` staat apart van `beweging.css`** omdat maar één van de drie
+  dingen die hij doet beweging is. De pasvorm en de kleur staan buiten het
+  `no-preference`-blok, want een ovaal om een woordgroep die over twee regels
+  breekt is voor iedereen verkeerd.
+- **De vertraging komt via `--stap-vertraging`.** Elke stapregel in
+  `beweging.css` zet die variabele en leest hem daarna zelf; een custom property
+  erft, dus een haal binnen een kop op stap 2 telt er vanzelf zijn eigen
+  wachttijd bij op. Haal die variabele weg en elke haal heeft een eigen
+  stap-prop nodig door alle acht sectietypes heen.
+- **De lijn begint verborgen en wordt zichtbaar gemaakt.** Dat is de andere kant
+  op dan de scrollonthulling, en het is bewust: de haal is decoratief en staat
+  op `aria-hidden`, dus zonder JavaScript is een ontbrekende versiering beter
+  dan een uitgerekte. Bij gereduceerde beweging draait `HaalScript` gewoon — dat
+  meet alleen — dus daar staat de haal er wél, volledig getekend en meteen.
+- **De dash komt uit een gemeten attribuut, niet uit `pathLength`.** Dat stond
+  er wel en het was fout: Chrome negeert `pathLength` zodra
+  `vector-effect="non-scaling-stroke"` op het pad staat en rekent de dash in
+  schérmruimte — gemeten met `isPointInStroke` gaf dat een gat van 45 tot 80% in
+  de lijn, en een tekening die onzichtbaar bleef. `HaalScript` meet daarom de
+  schermlengte en zet die als presentatie-attribuut (geen `style`, dus geen
+  CSP-conflict); het tekenen is een transitie naar de 0 die `haal.css` zet.
+  Non-scaling-stroke zelf blijft: die houdt de lijn overal even dik terwijl het
+  vlak in de breedte uitrekt.
+- **Breedte én hoogte staan uitgeschreven op de svg.** Een svg is een vervangen
+  element met een eigen verhouding, en die wint van een insetpaar zodra de
+  andere maat op `auto` staat. Gemeten om een kop van 467×73: met alleen insets
+  werd het vlak 531×319, met alleen een hoogte erbij 173×104.
 
 De zoom bij hover zit in `Beeldvlak` achter `zoom`, en staat alleen aan waar het
 beeld ergens heen gaat: in de praktijk een splitscreen-deur mét knop. Let op dat
@@ -479,10 +590,12 @@ De voorwaardentekst staat er sinds `bron/voorwaarden.md` binnenkwam, letterlijk
 overgenomen. Punt 6 linkt naar `/privacy`; die pagina staat er sinds
 `bron/privacyverklaring.md` binnenkwam en is daarmee geen blokkade meer.
 
-Achtergronden per pagina: de vier donkere pagina's staan overal op `inkt`,
-voorwaarden overal op `papier`. Meer dan één lichte en één donkere achtergrond
-per pagina is volgens het design system een fout; `roet` en `mist` zijn
-verhoogde vlakken bínnen een sectie (`Kaart`), geen tweede sectieachtergrond.
+Achtergronden per pagina: de vier donkere pagina's staan sinds B8 overal op
+`bruin`, voorwaarden en privacy overal op `papier`. Meer dan één lichte en één
+donkere achtergrond per pagina is volgens het design system een fout; `roet` en
+`mist` zijn verhoogde vlakken bínnen een sectie (`Kaart`), geen tweede
+sectieachtergrond, en `inkt` is sinds B8 het zwarte vlak óp bruin — een knop of
+een blok, geen paginakleur.
 
 ## Wat er nog niet staat
 

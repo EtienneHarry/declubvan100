@@ -5,12 +5,14 @@ import {
   maatRegelKlasse,
   ruimteKlasse,
   type AchtergrondToken,
+  type KnopkleurToken,
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
+import Koptekst from '../basis/Koptekst';
 import Knop from '../basis/Knop';
 
 export interface OproepProps {
@@ -21,6 +23,11 @@ export interface OproepProps {
   kop: string;
   tekst?: string;
   knop?: { label: string; href: string };
+  /**
+   * De kleur van de gevulde knop, als doelgroepcode: `vuur` voor inhuren,
+   * `inkt` voor aanmelden. Zie KNOPKLEUR_TOKENS in lib/tokens.
+   */
+  knopKleur?: KnopkleurToken;
   tweedeKnop?: { label: string; href: string };
   /** Gezet door SectieLijst; 1 als deze sectie de pagina opent. */
   kopNiveau?: KopNiveau;
@@ -40,6 +47,7 @@ export default function Oproep({
   kop,
   tekst,
   knop,
+  knopKleur = 'vuur',
   tweedeKnop,
   kopNiveau = 2,
 }: OproepProps) {
@@ -60,7 +68,7 @@ export default function Oproep({
           data-onthul-stap={volgende()}
           className="mt-4 text-display-l text-balance break-words first:mt-0"
         >
-          {kop}
+          <Koptekst tekst={kop} />
         </Kop>
         {tekst?.trim() ? (
           <p
@@ -77,8 +85,19 @@ export default function Oproep({
             data-onthul-stap={volgende()}
             className="mt-10 flex flex-wrap items-center gap-4"
           >
+            {/*
+              De primaire actie staat sinds de restyle op vuur. Dat is de knop uit de
+              mockup, en het is de enige plek waar die kleur op de site terechtkomt: als
+              vlak, met witte tekst, nooit als woord op bruin.
+
+              De tweede actie blijft een lijnknop. De mockup zet er twee gevulde naast
+              elkaar — zwart en rood — maar welke van de twee acties op deze pagina
+              welke kleur verdient, hangt aan de nieuwe koppen en die komen pas in
+              sessie 2. Tot die tijd blijft de regel staan die er al was: één gevulde
+              knop per blikveld.
+            */}
             {knop ? (
-              <Knop variant="vol" maat="l" href={knop.href}>
+              <Knop variant={knopKleur} maat="l" href={knop.href}>
                 {knop.label}
               </Knop>
             ) : null}

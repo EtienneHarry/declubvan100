@@ -10,13 +10,17 @@ import {
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
+import Koptekst from '../basis/Koptekst';
 import Kaart from '../basis/Kaart';
+import Handschrift from '../merk/Handschrift';
 
 export interface Kolom {
   nummer?: string;
   kop: string;
   tekst?: string;
   href?: string;
+  /** Foto boven de kaart, altijd 4:5. Zie Kaart. */
+  beeld?: { bron: string; alt: string };
 }
 
 export interface DrieKolommenProps {
@@ -26,6 +30,14 @@ export interface DrieKolommenProps {
   bovenkop?: string;
   kop?: string;
   items: Kolom[];
+  /**
+   * Eén handgeschreven regel onder het raster, altijd `aria-hidden`.
+   *
+   * Alleen invullen met een tekst die de kaarten erboven herhalen — zie
+   * Handschrift. Eén per pagina, niet per sectie; dat is een redactionele regel
+   * en geen instelling van dit component.
+   */
+  handschrift?: string;
   /** Gezet door SectieLijst; 1 als deze sectie de pagina opent. */
   kopNiveau?: KopNiveau;
 }
@@ -42,6 +54,7 @@ export default function DrieKolommen({
   bovenkop,
   kop,
   items,
+  handschrift,
   kopNiveau = 2,
 }: DrieKolommenProps) {
   const heeftKop = Boolean(kop?.trim());
@@ -76,12 +89,18 @@ export default function DrieKolommen({
             data-onthul-stap={volgende()}
             className="mt-4 text-kop-l text-balance break-words first:mt-0"
           >
-            {kop}
+            <Koptekst tekst={kop ?? ""} />
           </Kop>
         ) : null}
+        {/*
+          auto-rows-fr maakt elke rij even hoog als de hoogste, dus de kaarten
+          zijn gelijk ongeacht hoeveel tekst erop staat — ook de kaart die op
+          een tussenbreedte alleen op de tweede rij belandt. De kaart zelf vult
+          zijn cel met grow; zie Kaart.
+        */}
         {items.length > 0 ? (
           <ul
-            className={`grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 ${
+            className={`grid auto-rows-fr list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 ${
               heeftKop || heeftBovenkop ? 'mt-10' : ''
             }`}
           >
@@ -94,6 +113,7 @@ export default function DrieKolommen({
               >
                 <div className="flex w-full flex-col">
                   <Kaart
+                    beeld={item.beeld}
                     nummer={item.nummer}
                     kop={item.kop}
                     tekst={item.tekst}
@@ -104,6 +124,16 @@ export default function DrieKolommen({
               </li>
             ))}
           </ul>
+        ) : null}
+        {/*
+          De handgeschreven regel komt als laatste binnen, ná de kaarten. Hij
+          herhaalt wat er net gestaan heeft, dus hij hoort ook pas te komen als
+          dat er staat.
+        */}
+        {handschrift?.trim() ? (
+          <div data-onthul="blok" data-onthul-stap={volgende()} className="mt-10">
+            <Handschrift tekst={handschrift} />
+          </div>
         ) : null}
       </div>
     </section>

@@ -12,7 +12,7 @@ Bron: huidige website declubvan.nl, augustus 2026.
 
 \- contact@declubvan.nl
 
-\- Telefoon: 06 25 33 15 97
+\- Telefoon: +31 6 19004878
 
 \- KvK 93868405
 

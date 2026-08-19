@@ -5,7 +5,7 @@
 > en dat is voor de redacteur. Voeg die twee niet samen: ze zijn voor andere
 > mensen en veranderen op andere momenten.
 
-Bijgewerkt na B7. Wat er af is, wat er open ligt, en waar je verder gaat.
+Bijgewerkt na B9. Wat er af is, wat er open ligt, en waar je verder gaat.
 
 De git-geschiedenis vertelt wat er gebeurd is; dit document vertelt wat er nog
 moet. Werk het bij aan het eind van elke sessie.
@@ -18,14 +18,63 @@ moet. Werk het bij aan het eind van elke sessie.
 | B3 | De vijf pagina's, tekst uit `bron/` |
 | B4 | Keystatic, zes pagina's uit het CMS, navigatie, privacyverklaring |
 | B7 | Beweging: scrollonthulling op alle acht sectietypes, masker op koppen, zoom op klikbaar beeld, de naad tussen twee secties |
+| B8-1 | Restyle, deel 1: kleurtokens (bruin, cream, vuur, twee sluiers), typografie (Montserrat, Special Elite, Caveat), de ovaal, het onderstreepje en de dubbellaagse hero-kop |
+| B8-2 | Restyle, deel 2: de haal als markering in de kop, de teksten uit de mockup, de hero met foto, het accordeon als negende sectietype en de twaalf vragen |
+| B9 | Landingspagina: de beeldvullende hero, de naad eruit, de teller per bezoek, de haal-tekening gerepareerd (Chrome negeert pathLength naast non-scaling-stroke), fotokaarten op het drieluik |
 
 De site is compleet en `npm run check` is groen. Wat hieronder staat is wat er
 tussen nu en livegang moet gebeuren.
 
 ## Eerstvolgende stap: het aanmeldformulier
 
-Eigen sessie. Het is het enige dat de site nog mist en het raakt drie dingen die
-nergens anders in dit project zitten.
+De restyle is af. Wat hieronder staat is wat er tussen nu en livegang moet
+gebeuren, en het formulier is het enige dat de site nog mist.
+
+### Wat de restyle heeft opgeleverd, en wat er van openbleef
+
+Drie vragen die sessie 1 openliet zijn beantwoord:
+
+- **Hoe een redacteur een ovaal zet.** Met haakjes in de koptekst: `[…]` voor de
+  ovaal, `{…}` voor de streep. De regels staan in `overdracht.md` en in
+  `Koptekst.tsx`.
+- **Welke knop welke kleur krijgt.** In de hero staan de twee deuren van de site
+  naast elkaar — inkt voor aanmelden, vuur voor inhuren — en dat is een code en
+  geen rangorde. Overal anders blijft het één gevulde knop per blikveld.
+- **Enthousiast, Ervaren en Trots.** Die drie stonden er zonder zin erbij. Het
+  drieluik uit de mockup vervangt ze, met drie hele zinnen.
+
+Wat nog openstaat:
+
+- **De typemachine in de kop op Voor wie is de club? telt te veel regels.** De
+  zin is compleet — de eerste helft kwam alsnog uit de mockup — maar het deel in
+  de typemachine staat op drie regels op 1440 en vijf op 375, terwijl de regel er
+  twee toestaat. Het is al ingekort ten opzichte van de mockup, die de wissel op
+  de komma zet; verder inkorten verandert de zin en schalen vraagt een maat die
+  nergens gemeten is. De meting en de twee uitwegen staan in
+  `bron/mockup-notities.md`.
+- **`roet` is afgeleid en niet gemeten.** De mockup toont geen verhoogd vlak.
+  `#2c1f1a` is 94% bruin met 6% cream, gekozen zodat de stap omhoog dezelfde is
+  als die `roet` op `inkt` had en `krijt-stil` er nog 4,60:1 haalt. Levert de
+  klant alsnog een gemeten waarde, dan wint die.
+- **De typemachine en het handschrift zijn een gok.** De brief zet de zekerheid
+  op matig en laag. Heeft de maker van de mockup de echte namen, dan is omzetten
+  één regel in `global.css` en één token in `tokens.css`.
+- **De foto "lachende man met kopje" ontbreekt in public/beeld.** De mockup
+  noemt hem voor het drieluik; alle kandidaten zijn bekeken en lach-deur.jpg
+  (de lachende man, zonder kopje) staat er nu. Heeft de klant het origineel,
+  dan is het één upload en één keuze in het CMS.
+- **365Werk verwerkt persoonsgegevens van Clubleden.** Dat staat nu als antwoord
+  op de site. De privacyverklaring dekt de website en dat blijft kloppen zolang
+  de site zelf niets naar 365Werk stuurt — maar bij het formulier is dit de
+  eerste vraag die op tafel ligt.
+
+### Het formulier zelf
+
+Eigen sessie. Het raakt drie dingen die nergens anders in dit project zitten.
+
+Let op dat de FAQ er inmiddels twee velden bij heeft gezet: het formulier vraagt
+naar horeca-ervaring en naar waar iemand enthousiast van wordt. Dat zijn twee
+velden meer dan de privacyverklaring nu noemt, dus die tekst gaat mee.
 
 **Wat er moet gebeuren.** Een formulier op `/contact` dat naar
 `contact@declubvan.nl` verstuurt via Resend, met een route die op verzoek
@@ -121,23 +170,116 @@ redenering, geen meting.
 langs en lees een `PerformanceObserver` op `layout-shift` uit. Zie *Beweging
 meet je niet in een pane die niet composit* in `CLAUDE.md` voor waar je in loopt.
 
-### Welke twee naden krijgen de schicht
+### Vaste regel: een ongetoetste poort staat mogelijk stil groen
 
-Uit B7, en het is een redactionele keuze en geen technische. Op elke sectiegrens
-staat sinds B7 een haarlijn (`Naad`), maar dat is alleen de lijnhelft van rol 2
-van de bliksemschicht. De richtlijn staat de schicht in die lijn **hoogstens
-twee keer per pagina** toe.
+Een bewaker die je schrijft maar niet functioneel toetst, is geen bewaker. Hij
+draait, hij zegt niets, en dat lijkt op "er is niets mis" terwijl het net zo
+goed "ik kijk nergens naar" kan betekenen. Het verschil is van buiten niet te
+zien — en dat is precies het soort stille fout waar de poort voor bestaat.
 
-**Wat er moet gebeuren.** Per pagina aanwijzen welke twee grenzen dat verdienen
-— de plekken waar de pagina echt van onderwerp wisselt — en pas dan bouwen. De
-schicht komt in `Naad` binnen, niet in een tweede component; `Bliksem`
-ondersteunt `rol="scheiding"` al.
+**Dit is in dit project twee keer gebeurd, allebei door een verloren escape.**
 
-**De valkuil.** De naad staat vlak boven de bovenkop van de volgende sectie, dus
-allebei de waarnemers gaan binnen ongeveer honderd milliseconde af. Wordt de
-schicht een eigen gebeurtenis met een eigen duur, dan krijg je bij elke
-overgang een keten van vier of vijf tellen. Bij twee per pagina is dat te
-verdedigen; het is precies de reden dat het er niet zestien mogen zijn.
+1. **`check-onthul`.** De attribuuttoets werd opgebouwd in een
+   template-literal, en die kookte de backslash uit `[\s"']` weg. Wat overbleef
+   was de klasse `[s"']` — die matcht de letter s, een aanhalingsteken en een
+   apostrof, en dus nooit een attribuut. De poort meldde netjes dat alles in
+   orde was.
+2. **De afbreekzeef in `check-koppen`.** De `\b` in de kopregex belandde als
+   backspace-byte (0x08) in het bestand. De regex zocht daarmee naar een
+   letterlijk stuurteken achter `<h1`, vond nooit een kop, en liet vier
+   opeenvolgende injectieproeven ten onrechte slagen.
+
+In beide gevallen was de code op het scherm niet te onderscheiden van goede
+code: `cat -A` liet het verschil zien, een blik op het bestand niet.
+
+**Daarom: elke nieuwe poortstap wordt getoetst met een injectie die hem moet
+laten falen, vóór hij wordt vertrouwd.** De toets is klaar als je van allebei
+de kanten bewijs hebt:
+
+- **de injectie laat hem omvallen** — bouw de fout die hij moet vangen na in de
+  gebouwde uitvoer, draai de stap, en zie hem falen mét een melding die de
+  goede plek aanwijst;
+- **na herstel slaagt hij weer** — anders heb je een poort die altijd faalt, en
+  dat wordt binnen een week uitgezet;
+- **en een geval dat er nét buiten valt slaagt ook** — zo weet je dat hij niet
+  alles vlagt.
+
+Dat geldt niet alleen voor poortstappen. Dezelfde regel gaat op voor elke
+bewering die je in een commit zet omdat een controle zweeg. Bij de knopkleur
+stond er "een tokennaam die geen knopvariant is, is een compileerfout"; de
+eerste proef meldde nul fouten, en dat bleek te komen doordat de injectie nooit
+was weggeschreven. Zonder die tweede blik was er een garantie gedocumenteerd
+die er niet was.
+
+**Bewaar de toets niet.** Hij hoort bij het schrijven van de poort, niet bij het
+repertoire: een injectietoets die in de repo blijft staan, moet zelf onderhouden
+worden en gaat meebewegen met de fout die hij moest vangen. Wat blijft is de
+poort, en de commit waarin staat dat hij getoetst is en met welke uitkomst.
+
+### Vaste controle: breekt er een woord middenin?
+
+Dit is twee keer misgegaan — "onderneme/rs." en "privacyverk/laring", allebei in
+een display-xl-kop op 375. Chrome heeft in deze omgeving geen Nederlands
+afbreekwoordenboek, dus `hyphens: auto` doet niets; een woord dat niet past
+wordt door `overflow-wrap: break-word` op een willekeurig punt gehakt.
+
+**De oplossing per geval** is een zachte afbreekstreep (U+00AD) op de juiste
+plek in de brontekst, als yaml-escape zodat het bestand ASCII blijft en de
+streep zichtbaar is in de bron:
+
+    kop: "Voor onder\xADnemers."
+    kop: "Privacy\xADverklaring"
+
+`textContent` verandert daar niet van — de streep telt niet mee in de tekst en
+wordt alleen zichtbaar als de browser hem gebruikt om af te breken.
+
+**`check-koppen` zeeft de kandidaten**, maar bewijst niets: hij vlagt een woord
+van elf of meer tekens zonder afbreekmogelijkheid in een display-xl-kop. Of een
+woord écht breekt hangt af van de gerenderde breedte, en dat vraagt fontshaping
+— glyphbreedtes, kerning, de variabele as. Dat zit niet in de poort en zou een
+woff2-parser plus shaping-machine kosten voor één controle.
+
+**Daarom deze controle met de hand, bij elke tekstwijziging aan een kop.** Zet
+het venster op 375, open elke pagina en plak dit in de console:
+
+```js
+(() => {
+  const ZACHT = String.fromCharCode(0xad);
+  const isLetter = (c) => /[\p{L}\p{N}]/u.test(c);
+  const fouten = [];
+  for (const kop of document.querySelectorAll('h1, h2, h3, h4')) {
+    const wandelaar = document.createTreeWalker(kop, NodeFilter.SHOW_TEXT);
+    let knoop;
+    while ((knoop = wandelaar.nextNode())) {
+      const t = knoop.textContent;
+      if (!t.trim()) continue;
+      const bereik = document.createRange();
+      const y = [];
+      for (let i = 0; i < t.length; i++) {
+        bereik.setStart(knoop, i);
+        bereik.setEnd(knoop, i + 1);
+        const r = bereik.getClientRects();
+        // De LAATSTE rect, niet de eerste: bij een afbreking hangt Chrome het
+        // gerenderde koppelteken ook aan het volgende teken, en met [0] staat
+        // dat teken een regel te hoog. Dat gaf eerst een vals alarm.
+        y.push(r.length ? Math.round(r[r.length - 1].top) : null);
+      }
+      for (let i = 1; i < t.length; i++) {
+        if (y[i] === null || y[i - 1] === null || y[i] <= y[i - 1] + 2) continue;
+        if (t[i - 1] === ZACHT) continue;
+        if (!isLetter(t[i - 1]) || !isLetter(t[i])) continue;
+        fouten.push(kop.textContent.split(ZACHT).join('').trim().slice(0, 44) +
+          ' → ' + t.slice(Math.max(0, i - 8), i) + ' / ' + t.slice(i, i + 8));
+      }
+    }
+  }
+  return fouten;
+})()
+```
+
+Een lege lijst is goed. Staat er iets in, dan wijst de melding het woord en de
+breekplek aan; zet er een zachte afbreekstreep in op de morfologische grens
+(*onder·nemers*, *privacy·verklaring*) en meet opnieuw.
 
 ### Kleine dingen
 

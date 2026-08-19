@@ -11,7 +11,7 @@ import {
 import type { KopNiveau } from '../../lib/SectionRenderer';
 import { ploeg } from '../../lib/beweging';
 import Bovenkop from '../basis/Bovenkop';
-import Teller from '../basis/Teller';
+import Koptekst from '../basis/Koptekst';
 import Knop from '../basis/Knop';
 import Beeldvlak from '../beeld/Beeldvlak';
 import Bliksem from '../merk/Bliksem';
@@ -32,6 +32,19 @@ export interface HeroProps {
    */
   schicht?: boolean;
   /**
+   * De dubbellaagse kop uit de mockup: de witte kop met een harde donkere laag
+   * eronder. Werkt alleen op `display-xl`, dus alleen op de hero die de pagina
+   * opent — een tweede hero zakt naar `display-l` en krijgt hem niet.
+   */
+  dubbellaags?: boolean;
+  /**
+   * De foto vult het eerste scherm, van rand tot rand — de landingshero uit de
+   * mockup. Doet alleen iets mét een foto, en hangt net als de dubbellaagse
+   * laag aan `kopNiveau === 1`: een tweede hero is geen opening en krijgt de
+   * gewone beeldbehandeling.
+   */
+  vullend?: boolean;
+  /**
    * Gezet door SectieLijst. 1 als deze hero de pagina opent, 2 als er al een
    * kop boven staat. Een tweede hero op dezelfde pagina zakt daarmee naar een
    * gewone sectiekop, zodat er één <h1> en één display-xl overblijft.
@@ -47,12 +60,34 @@ export interface HeroProps {
  * vallen zo samen: één hero per pagina en het klopt vanzelf.
  *
  * Met beeld loopt de kop door Beeldvlak, want dan staat tekst op de foto en is
- * de sluier verplicht. `onder` is daar de juiste: de beeldrichtlijn wijst die
- * toe aan "hero, tekst onderaan".
+ * de sluier verplicht.
+ *
+ * DE VLAKKE SLUIER EN NIET HET VERLOOP, EN DAT IS GEMETEN. De beeldrichtlijn
+ * wijst "onder" toe aan een hero met tekst onderaan, en dat klopt zolang die
+ * tekst één regel is. Deze hero is dat niet: bovenkop, displaykop, een zin en
+ * twee knoppen samen beslaan meer dan de helft van het vlak. Gemeten op 1137 bij
+ * 640: de bovenkop begint op 54% van onderaf, en daar is het verloop nog maar
+ * 0,53 dekkend — witte tekst haalt op een foto die daar wit is 3,75:1 en zakt
+ * dus onder AA. De vlakke sluier is overal 0,62 en haalt in datzelfde geval
+ * 5,04:1.
+ *
+ * Dat is dezelfde afweging die de splitscreen-deur al maakte, om precies
+ * dezelfde reden: zodra de tekst het vlak vult, staat de bovenste helft ervan op
+ * het doorzichtige deel van het verloop.
  *
  * De schicht en het beeld sluiten elkaar uit. De richtlijn kent de grote
  * schicht als uitgesneden vlak op een egale achtergrond; over een foto heen is
  * geen van de drie toegestane rollen, en de sluier zou hem toch opeten.
+ *
+ * HET DUBBELLAAGSE EFFECT IS HERO-EXCLUSIEF EN DISPLAY-XL-EXCLUSIEF. Het hangt
+ * hier aan `kopNiveau === 1` en niet aan de prop alleen: een tweede hero op
+ * dezelfde pagina zakt naar een gewone sectiekop op `display-l`, en dan hoort
+ * hij het effect ook kwijt te raken. Zo blijft er precies één dubbellaagse kop
+ * per pagina, om dezelfde reden waarom er precies één <h1> is.
+ *
+ * Het is een tweede laag en geen contrastmiddel. De kop moet op zichzelf al
+ * genoeg contrast halen tegen zijn achtergrond; een offset telt niet mee in
+ * WCAG. Zie het typografiehoofdstuk van design-system.md.
  */
 export default function Hero({
   achtergrond,
@@ -65,15 +100,34 @@ export default function Hero({
   tweedeKnop,
   beeld,
   schicht = false,
+  dubbellaags = false,
+  vullend = false,
   kopNiveau = 1,
 }: HeroProps) {
   const heeftBeeld = Boolean(beeld?.bron.trim());
   const toontSchicht = schicht && !heeftBeeld;
 
+  /*
+   * De opening van de pagina animeert wél, ook al staat hij bij het laden in
+   * beeld. De regel "geen animatie voor wat er al staat" blijft gelden voor de
+   * scrollonthulling van secties; de hero is geen sectie die voorbij komt maar
+   * het eerste dat de bezoeker ziet, en die binnenkomst ís het moment. Het
+   * attribuut hieronder zondert hem uit in OnthulScript, en beweging.css telt
+   * er --aanloop bij op zodat de pagina eerst even staat.
+   *
+   * Alleen op kopNiveau 1: een tweede hero is geen opening en gedraagt zich
+   * als elke andere sectie.
+   */
+  const entree = kopNiveau === 1 ? '' : undefined;
+
   // Opent deze hero de pagina, dan is hij de <h1> en de enige display-xl.
   // Staat er al een kop boven, dan is dit gewoon een sectie.
   const Kop = kopNiveau === 1 ? 'h1' : 'h2';
   const kopKlasse = kopNiveau === 1 ? 'text-display-xl' : 'text-display-l';
+  // Alleen op display-xl. Op een lichte sectie valt de laag vanzelf weg: daar
+  // staat --kop-dubbellaags op none.
+  const laagKlasse =
+    dubbellaags && kopNiveau === 1 ? ' [text-shadow:var(--kop-dubbellaags)]' : '';
 
   /*
    * De ploeg: bovenkop, kop, tekst, dan de knoppen. Elk aanwezig onderdeel
@@ -97,17 +151,19 @@ export default function Hero({
         niet past.
       */}
       {/*
-        De kop loopt door Teller. Zit er een getal in, dan telt dat bij het in
-        beeld komen naar boven; zit er geen getal in, dan verandert er niets aan
-        de uitvoer. Hero weet daar verder niets van.
+        De kop loopt door Koptekst. Die doet twee dingen die Hero niet hoeft te
+        weten: hij zet de haal neer waar de redacteur haakjes heeft getypt, en
+        hij geeft het eerste getal aan Teller door zodat het bij het in beeld
+        komen naar boven telt. Staat er geen haakje en geen getal in, dan
+        verandert er niets aan de uitvoer.
       */}
       {/* De kop komt uit een masker omhoog en fadet dus niet in. */}
       <Kop
         data-onthul="kop"
         data-onthul-stap={volgende()}
-        className={`mt-4 ${kopKlasse} text-balance hyphens-auto break-words first:mt-0`}
+        className={`mt-4 ${kopKlasse}${laagKlasse} text-balance hyphens-auto break-words first:mt-0`}
       >
-        <Teller tekst={kop} />
+        <Koptekst tekst={kop} teller />
       </Kop>
       {tekst?.trim() ? (
         <p
@@ -124,13 +180,26 @@ export default function Hero({
           data-onthul-stap={volgende()}
           className="mt-10 flex flex-wrap items-center gap-4"
         >
+          {/*
+            TWEE GEVULDE KNOPPEN, EN DAT IS HIER GEEN FOUT.
+
+            De regel "één gevulde knop per blikveld" gaat over rangorde: van twee
+            acties is er één de belangrijkste. In de hero staan geen twee acties
+            van verschillend gewicht maar de twee deuren van de site — inhuren en
+            aanmelden — en die zijn even zwaar. De kleur is daar geen nadruk maar
+            een code: zwart voor wie zich aanmeldt, rood voor wie inhuurt, precies
+            zoals de mockup ze zet.
+
+            Overal anders geldt de regel gewoon. Oproep zet zijn tweede actie nog
+            steeds als lijnknop neer, want daar ís er wél een eerste.
+          */}
           {knop ? (
-            <Knop variant="vol" maat="l" href={knop.href}>
+            <Knop variant="inkt" maat="l" href={knop.href}>
               {knop.label}
             </Knop>
           ) : null}
           {tweedeKnop ? (
-            <Knop variant="lijn" maat="l" href={tweedeKnop.href}>
+            <Knop variant="vuur" maat="l" href={tweedeKnop.href}>
               {tweedeKnop.label}
             </Knop>
           ) : null}
@@ -139,14 +208,35 @@ export default function Hero({
     </>
   );
 
+  if (beeld && heeftBeeld && vullend && kopNiveau === 1) {
+    /*
+     * De landingshero: het beeld van rand tot rand, het eerste scherm hoog, de
+     * inhoud onderin op de containerbreedte van de rest van de pagina. Geen
+     * ruimte-token: een vlak dat het scherm vult heeft geen lucht eromheen
+     * nodig, en de sectie eronder schildert zijn eigen ruimte.
+     */
+    return (
+      <section
+        className={achtergrondKlasse[achtergrond]}
+        data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+        data-onthul-entree={entree}
+      >
+        <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="vlak" vullend>
+          <div className={`w-full ${breedteKlasse[breedte]}`}>{inhoud}</div>
+        </Beeldvlak>
+      </section>
+    );
+  }
+
   if (beeld && heeftBeeld) {
     return (
       <section
         className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
         data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+        data-onthul-entree={entree}
       >
         <div className={breedteKlasse[breedte]}>
-          <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="onder" verhouding="breed">
+          <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="vlak" verhouding="breed">
             {inhoud}
           </Beeldvlak>
         </div>
@@ -158,6 +248,7 @@ export default function Hero({
     <section
       className={`relative overflow-hidden ${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+      data-onthul-entree={entree}
     >
       {/*
         De schicht hangt buiten het raster en mag aflopen over de rand; de
