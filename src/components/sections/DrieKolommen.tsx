@@ -92,9 +92,15 @@ export default function DrieKolommen({
             <Koptekst tekst={kop ?? ""} />
           </Kop>
         ) : null}
+        {/*
+          auto-rows-fr maakt elke rij even hoog als de hoogste, dus de kaarten
+          zijn gelijk ongeacht hoeveel tekst erop staat — ook de kaart die op
+          een tussenbreedte alleen op de tweede rij belandt. De kaart zelf vult
+          zijn cel met grow; zie Kaart.
+        */}
         {items.length > 0 ? (
           <ul
-            className={`grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 ${
+            className={`grid auto-rows-fr list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 ${
               heeftKop || heeftBovenkop ? 'mt-10' : ''
             }`}
           >

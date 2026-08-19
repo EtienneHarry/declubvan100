@@ -62,7 +62,10 @@ export default function Kaart({
 
   const klassen = [
     // Lijn en vlak op --duur-1, de verschuiving op --duur-2, curve --soepel-uit.
-    'relative flex flex-col rounded-none border border-lijn p-6 ' +
+    // grow: in het raster van DrieKolommen vult de kaart zijn hele cel, zodat
+    // kaarten naast elkaar even hoog zijn ongeacht hun tekst. Buiten een
+    // flexkolom doet grow niets.
+    'relative flex grow flex-col rounded-none border border-lijn p-6 ' +
       '[transition:background-color_var(--duur-1)_var(--soepel-uit),border-color_var(--duur-1)_var(--soepel-uit),box-shadow_var(--duur-1)_var(--soepel-uit),transform_var(--duur-2)_var(--soepel-uit)]',
     variant === 'verhoogd' ? 'bg-vlak-verhoogd' : 'bg-transparent',
     klikbaar
