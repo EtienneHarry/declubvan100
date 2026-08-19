@@ -170,6 +170,71 @@ redenering, geen meting.
 langs en lees een `PerformanceObserver` op `layout-shift` uit. Zie *Beweging
 meet je niet in een pane die niet composit* in `CLAUDE.md` voor waar je in loopt.
 
+### Vaste controle: breekt er een woord middenin?
+
+Dit is twee keer misgegaan — "onderneme/rs." en "privacyverk/laring", allebei in
+een display-xl-kop op 375. Chrome heeft in deze omgeving geen Nederlands
+afbreekwoordenboek, dus `hyphens: auto` doet niets; een woord dat niet past
+wordt door `overflow-wrap: break-word` op een willekeurig punt gehakt.
+
+**De oplossing per geval** is een zachte afbreekstreep (U+00AD) op de juiste
+plek in de brontekst, als yaml-escape zodat het bestand ASCII blijft en de
+streep zichtbaar is in de bron:
+
+    kop: "Voor onder\xADnemers."
+    kop: "Privacy\xADverklaring"
+
+`textContent` verandert daar niet van — de streep telt niet mee in de tekst en
+wordt alleen zichtbaar als de browser hem gebruikt om af te breken.
+
+**`check-koppen` zeeft de kandidaten**, maar bewijst niets: hij vlagt een woord
+van elf of meer tekens zonder afbreekmogelijkheid in een display-xl-kop. Of een
+woord écht breekt hangt af van de gerenderde breedte, en dat vraagt fontshaping
+— glyphbreedtes, kerning, de variabele as. Dat zit niet in de poort en zou een
+woff2-parser plus shaping-machine kosten voor één controle.
+
+**Daarom deze controle met de hand, bij elke tekstwijziging aan een kop.** Zet
+het venster op 375, open elke pagina en plak dit in de console:
+
+```js
+(() => {
+  const ZACHT = String.fromCharCode(0xad);
+  const isLetter = (c) => /[\p{L}\p{N}]/u.test(c);
+  const fouten = [];
+  for (const kop of document.querySelectorAll('h1, h2, h3, h4')) {
+    const wandelaar = document.createTreeWalker(kop, NodeFilter.SHOW_TEXT);
+    let knoop;
+    while ((knoop = wandelaar.nextNode())) {
+      const t = knoop.textContent;
+      if (!t.trim()) continue;
+      const bereik = document.createRange();
+      const y = [];
+      for (let i = 0; i < t.length; i++) {
+        bereik.setStart(knoop, i);
+        bereik.setEnd(knoop, i + 1);
+        const r = bereik.getClientRects();
+        // De LAATSTE rect, niet de eerste: bij een afbreking hangt Chrome het
+        // gerenderde koppelteken ook aan het volgende teken, en met [0] staat
+        // dat teken een regel te hoog. Dat gaf eerst een vals alarm.
+        y.push(r.length ? Math.round(r[r.length - 1].top) : null);
+      }
+      for (let i = 1; i < t.length; i++) {
+        if (y[i] === null || y[i - 1] === null || y[i] <= y[i - 1] + 2) continue;
+        if (t[i - 1] === ZACHT) continue;
+        if (!isLetter(t[i - 1]) || !isLetter(t[i])) continue;
+        fouten.push(kop.textContent.split(ZACHT).join('').trim().slice(0, 44) +
+          ' → ' + t.slice(Math.max(0, i - 8), i) + ' / ' + t.slice(i, i + 8));
+      }
+    }
+  }
+  return fouten;
+})()
+```
+
+Een lege lijst is goed. Staat er iets in, dan wijst de melding het woord en de
+breekplek aan; zet er een zachte afbreekstreep in op de morfologische grens
+(*onder·nemers*, *privacy·verklaring*) en meet opnieuw.
+
 ### Kleine dingen
 
 - **Enthousiast, Ervaren en Trots** op `/de-100` dragen alleen het woord. Bron

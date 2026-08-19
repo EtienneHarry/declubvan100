@@ -88,6 +88,60 @@ function controleer(html, naam) {
   }
 }
 
+/*
+ * De zeef op afbreken: een lang woord in een displaykop hoort een zachte
+ * afbreekstreep te hebben.
+ *
+ * DIT IS EEN ZEEF EN GEEN BEWIJS, en dat verschil is de kern. Of een woord
+ * echt middenin breekt, hangt af van de gerenderde tekstbreedte, en die volgt
+ * uit fontshaping — glyphbreedtes, kerning, de variabele as. Dat is hier niet
+ * uit te rekenen zonder een woff2-parser en een shaping-machine in de poort te
+ * trekken. Wat wél kan is de kandidaten eruit lichten.
+ *
+ * De drempel komt uit twee gemeten grensgevallen en niet uit een schatting. Op
+ * 375 is de tekstkolom 335px (375 min twee keer de marge van 20px) en staat
+ * display-xl op 56px. Daar past "verklaring" (10 tekens, ~287px) wél op een
+ * regel en breekt "ondernemers" (11 tekens, ~383px) middenin. De grens ligt dus
+ * op elf, en niet op de tien die een schatting met de gemiddelde glyphbreedte
+ * van 35px opleverde — die schatting gaf vals alarm op een kop die aantoonbaar
+ * goed rendert.
+ *
+ * Wat deze zeef dus niet vangt: een woord van tien tekens dat toevallig uit
+ * alleen brede glyphs bestaat — tien keer een m is 570px en breekt wél.
+ * Daarvoor is de browsercontrole in docs/stand-van-zaken.md er: die meet de
+ * echte regelovergangen in plaats van tekens te tellen. Deze zeef leunt bewust
+ * naar zwijgen, want een poort die vals alarm geeft op goede content wordt
+ * weggeklikt in plaats van gelezen.
+ *
+ * Alleen display-xl. Op display-l (40px op 375) passen er ruim dertien tekens
+ * en het is daar nog nooit misgegaan; een zeef die te vaak vals alarm geeft,
+ * wordt weggeklikt in plaats van gelezen.
+ */
+const ZACHTE_STREEP = String.fromCharCode(0xad);
+const MAX_STUK = 11;
+
+function zeefAfbreking(html, naam) {
+  for (const m of html.matchAll(/<(h[1-6])\s[^>]*class="([^"]*)"[^>]*>([\s\S]*?)<\/\1>/gi)) {
+    if (!m[2].includes('text-display-xl')) continue;
+
+    const tekst = m[3].replace(/<[^>]+>/g, '');
+
+    for (const woord of tekst.split(/[^\p{L}\p{N}\xAD]+/u)) {
+      if (!woord) continue;
+
+      const langsteStuk = Math.max(...woord.split(ZACHTE_STREEP).map((deel) => deel.length));
+      if (langsteStuk < MAX_STUK) continue;
+
+      fouten.push(
+        `${naam}: "${woord.split(ZACHTE_STREEP).join('·')}" in een display-xl-kop heeft ` +
+          `${langsteStuk} tekens zonder afbreekmogelijkheid. Op 375 passen er ongeveer tien; ` +
+          'meet het in de browser en zet er een zachte afbreekstreep in als het breekt — ' +
+          String.raw`in de yaml als \xAD, zoals "Voor onder\xADnemers.".`,
+      );
+    }
+  }
+}
+
 async function htmlBestanden(map) {
   const uit = [];
 
@@ -111,7 +165,9 @@ for (const bestand of await htmlBestanden(STATIC)) {
   const naam = relative(WORTEL, bestand);
   if (OVERSLAAN.some((pad) => naam.includes(pad))) continue;
 
-  controleer(readFileSync(bestand, 'utf8'), naam);
+  const html = readFileSync(bestand, 'utf8');
+  controleer(html, naam);
+  zeefAfbreking(html, naam);
   nagekeken++;
 }
 
@@ -123,5 +179,6 @@ if (fouten.length > 0) {
 }
 
 console.log(
-  `check-koppen: ${nagekeken} pagina's, elk één <h1> vooraan en geen overgeslagen niveau.`,
+  `check-koppen: ${nagekeken} pagina's, elk één <h1> vooraan, geen overgeslagen niveau, ` +
+    'en geen lang woord in een display-xl-kop zonder afbreekmogelijkheid.',
 );

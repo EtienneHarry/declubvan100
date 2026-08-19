@@ -10,7 +10,7 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: ""
-      kop: Voor ondernemers.
+      kop: "Voor onder\xADnemers."
       tekst: ""
       knop:
         label: ""

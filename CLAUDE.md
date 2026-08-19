@@ -128,6 +128,7 @@ Wie bewaakt wat:
 | Vertraging per element zonder `style`-attribuut | `scripts/check-csp.mjs` |
 | Blokelement binnen een inline-element | `scripts/check-nesting.mjs` |
 | Eén `<h1>` vooraan, geen overgeslagen kopniveau | `scripts/check-koppen.mjs` |
+| Lang woord in een display-xl-kop zonder afbreekmogelijkheid | `scripts/check-koppen.mjs` (zeef) |
 | Verborgen onthul-inhoud heeft altijd een uitweg | `scripts/check-onthul.mjs` |
 
 `_adherence.oxlintrc.json` is samengevoegd uit de adherence-config van De Club
