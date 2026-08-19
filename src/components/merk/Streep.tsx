@@ -6,68 +6,68 @@ export interface StreepProps {
 }
 
 /*
- * Het onderstreepje: een losse, licht scheve haal onder een kop.
+ * Het onderstreepje: een losse haal onder een kop.
  *
  * Het derde grafische motief uit de mockup — "NODIG HEBT.", "BETER IS." — en de
  * kleine broer van de ovaal. Zelfde familie, zelfde tekenlogica, zelfde curve,
- * alleen korter: 350ms tegen 450, want de streep is korter.
+ * alleen korter: 350ms tegen 450.
+ *
+ * ÉÉN PAD DAT HEEN EN TERUG GAAT, GEEN TWEE LOSSE LIJNEN. De pen loopt naar
+ * rechts langs de onderkant en komt terug langs de bovenkant, dus de twee
+ * uiteinden rechts komen vanzelf samen — zoals in de mockup. Twee losse lijnen
+ * zouden rechts elk hun eigen kant op eindigen, en dan is het arcering in
+ * plaats van een haal. Links blijft er lucht tussen begin en eind: daar zie je
+ * dat de pen is opgetild.
  *
  * MAG VAKER DAN DE OVAAL, MAAR NOG STEEDS MAXIMAAL ÉÉN PER SECTIE. Een ovaal
  * wijst iets aan en verdient daarom schaarste over de hele pagina; een streep
  * bevestigt een slotzin en mag dus in meer secties staan. Twee in dezelfde
  * sectie is in allebei de gevallen te veel.
  *
+ * DE STREEP HANGT ONDER DE REGEL EN LIGT ACHTER DE TEKST. De svg staat buiten
+ * het regelvak (bottom -0.42em, gemeten in B8: daarbinnen loopt hij door de
+ * staarten van een p en een g) én op z-index 0 met de tekst-span op 1 — mocht
+ * een staart hem alsnog raken, dan wordt de líjn onderbroken en niet de
+ * letter. Dezelfde twee verdedigingslinies als de ovaal.
+ *
  * Alles wat hij met de ovaal deelt — de pasvorm, de kleur, de dikte, het
  * tekenen — staat in src/styles/haal.css. Wat hier staat is het pad en waar
- * het hangt. Zie Ovaal.tsx voor waarom `preserveAspectRatio="none"` en
- * `vector-effect="non-scaling-stroke"` er staan, waarom er juist géén
- * `pathLength` meer staat, en waarom breedte én hoogte allebei uitgeschreven
- * zijn.
- *
- * DE STREEP HANGT ONDER DE STAARTEN EN NIET ERDOOR. De inset van 0,42em is
- * gemeten en niet gekozen: het regelvak van een displaykop staat op een
- * regelhoogte onder 1, dus de letters steken er onderuit. Met de eerste waarde
- * (0,22em) begon de lijn 13,9px bóven de onderkant van de letters op een kop van
- * 76,8px, en liep hij dwars door de staart van een p en een g. Op 0,42em begint
- * hij er 4,5px onder, en op een kop van 41px 5,2px. Dat is dezelfde afweging als
- * het masker van een kop, dat om dezelfde reden 12% doorloopt.
+ * het hangt. Zie Ovaal.tsx voor waarom preserveAspectRatio="none" en
+ * vector-effect="non-scaling-stroke" er staan, waarom er juist géén pathLength
+ * staat, en waarom breedte én hoogte allebei uitgeschreven zijn.
  */
 
 /*
- * Eén haal van links naar rechts, iets omhoog en met een knikje halverwege.
- *
- * Het scheve is er met opzet: een streep die precies waterpas loopt, leest als
- * een rand of een onderstreping van de browser. Deze loopt van 10 naar 2 in een
- * viewBox van 12 hoog, dus hij eindigt merkbaar hoger dan hij begint.
- *
- * Twee segmenten en niet één. Een enkele boog is te regelmatig; de knik op 68
- * is waar de hand van richting verandert, en dat is precies wat een boog niet
- * heeft.
+ * Heen langs de onderkant, om bij 390 rechts te keren, terug langs de
+ * bovenkant. De heenweg klimt licht (28 naar 17), de terugweg zakt weer
+ * (25 naar 32): de twee lijnen lopen niet evenwijdig en het tussenvlak is
+ * links breder dan rechts — een haal, geen gelijkteken.
  */
-const PAD = 'M 2 10 C 26 5.5, 48 4.6, 68 4.2 C 82 3.9, 92 3.4, 99 2';
+const PAD = 'M10,28 C104,15 258,8 390,17 C300,25 138,30 26,32';
 
 export default function Streep({ children }: StreepProps) {
   return (
     <span data-haal="streep" data-onthul="haal" className="relative inline-block">
       {/*
-        Zelfde als bij de ovaal: de tekst blijft inline, want dat is wat
-        HaalScript meet. Breekt hij over twee regels, dan zou de streep er
-        schuin doorheen lopen en hoort hij er niet te staan.
+        Zelfde als bij de ovaal: de tekst blijft inline (dat is wat HaalScript
+        meet — breekt hij over twee regels, dan hoort de streep er niet te
+        staan) en ligt met z-index 1 boven de lijn.
       */}
-      <span data-haal-tekst="" className="relative">
+      <span data-haal-tekst="" className="relative z-[1]">
         {children}
       </span>
       <svg
         aria-hidden="true"
-        viewBox="0 0 100 12"
+        viewBox="0 0 400 40"
         preserveAspectRatio="none"
-        className="pointer-events-none absolute -bottom-[0.42em] -left-[0.04em] h-[0.3em] w-[calc(100%_+_0.08em)] max-w-none"
+        className="pointer-events-none absolute -bottom-[0.42em] -left-[2%] z-0 h-[0.42em] w-[104%] max-w-none"
       >
         <path
           data-haal-lijn=""
           d={PAD}
           fill="none"
           strokeLinecap="round"
+          strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
       </svg>

@@ -86,7 +86,8 @@ Daaruit volgen zes regels, en die zijn niet onderhandelbaar:
 
 - **`vuur` is nooit tekstkleur op `bruin`.** 3,18:1 haalt AA niet, ook niet voor
   groot. Het is een vlak — een knop, een klein blok — of een **decoratieve
-  lijn**: de ovaal en het onderstreepje staan sinds B10 op `vuur`. Dat mag omdat
+  lijn**: de ovaal staat sinds B10 op `vuur` (de streep sinds B12 op `papier`,
+  een rustkeuze en geen contrasteis). Vuur op een lijn mag omdat
   een haal geen tekst is en op `aria-hidden` staat; de tekstcontrasteis geldt er
   niet, en als lijn haalt vuur op elk vlak van de site de 3:1 die WCAG aan
   niet-tekstuele onderdelen stelt (3,18 op bruin, 5,41 op papier). Nooit een
@@ -532,7 +533,8 @@ is een klap die scherp afremt en stilvalt; een haal is een hand die doorstreept.
 | `--haal-wacht` | `--duur-inslag-hef` + `--haal-pauze` | 620ms, bovenop de plek in de ploeg |
 | `--duur-haal-ovaal` | 450ms | de hele ronde, in één doorlopende haal |
 | `--duur-haal-streep` | 350ms | korter, want de streep is korter |
-| `--haal-dikte` | `max(1.5px, 0.06em)` | dikte, schaalt mee met de tekst |
+| `--haal-dikte-ovaal` | `4px` | schermdikte van de ovaal (non-scaling-stroke) |
+| `--haal-dikte-streep` | `2.5px` | schermdikte van de streep |
 
 Het tweede stuurpunt van `--haal` ligt op `0.75, 0.6`, dus de helling waarmee de
 curve bij 1 aankomt is 1,6: **de lijn is nog in beweging op het moment dat hij
@@ -547,11 +549,18 @@ stapregel in `beweging.css` zet die variabele, en een custom property erft. Een
 haal binnen een kop op stap 2 leest daardoor vanzelf 2 × `--ploeg`, zonder dat
 iemand die stap nog een keer doorgeeft.
 
-**De ovaal begint linksboven, gaat met de klok mee en schiet over zijn eigen
-begin heen.** Dat overschot is het verschil tussen een gebaar en een vorm: een
+**De ovaal vertrekt links, gaat met de klok mee en trekt over zijn eigen begin
+door.** De staart kruist de bovenrand nog een keer en eindigt halverwege de
+bovenkant. Dat overschot is het verschil tussen een gebaar en een vorm: een
 ellips die netjes aansluit is een figuur, een lijn die er voorbij loopt is een
-hand geweest. Het pad kruist zijn eigen eerste segment; sluit je het netjes, dan
-is het effect weg.
+hand geweest. De haal is niet symmetrisch — rond hem niet af.
+
+**De lijn ligt achter de tekst.** De svg staat op z-index 0 en de tekst-span op
+1, en de svg steekt ruim om de tekst heen (19% links, 56% boven, 138% breed,
+212% hoog). Samen maken die twee een aanraking onschuldig: de afstand maakt de
+kans klein dat de lijn een stok of schreef van de typemachineletter raakt, en
+de z-orde zorgt dat wáár het toch gebeurt de lijn wordt onderbroken en niet de
+letter.
 
 Drie dingen aan de uitwerking die gemeten zijn en niet bedacht:
 
@@ -592,10 +601,15 @@ script gewoon — het meet alleen, het beweegt niets — dus daar staat de haal 
 wél, volledig getekend en meteen.
 
 **Het onderstreepje is de kleine broer.** Zelfde curve, zelfde pasvorm, zelfde
-keyframe, alleen korter: 350ms tegen 450. Twee dingen zijn anders:
+tekenlogica, alleen korter: 350ms tegen 450. Drie dingen zijn anders:
 
-- **Hij loopt merkbaar scheef omhoog.** Waterpas zou hij lezen als een rand of
-  als de onderstreping van de browser, en dan is het geen haal meer.
+- **Het is één pad dat heen en terug gaat, geen twee losse lijnen.** De pen
+  loopt naar rechts langs de onderkant en komt terug langs de bovenkant, dus de
+  uiteinden rechts komen vanzelf samen — zoals in de mockup. Links blijft er
+  lucht tussen begin en eind: daar is de pen opgetild.
+- **Hij staat op `papier` en niet op `vuur`.** De streep staat onder een grote
+  witte kop, en een tweede kleur maakt het daar onrustig. De ovaal houdt vuur:
+  die wijst iets aan en mag opvallen.
 - **Hij hangt ónder de staarten en niet erdoor.** Die inset is gemeten: het
   regelvak van een displaykop staat op een regelhoogte onder 1, dus de letters
   steken er onderuit. Op 0,22em begon de lijn 13,9px bóven de onderkant van de
