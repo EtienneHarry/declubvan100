@@ -24,44 +24,59 @@
  *    geen transform meer, niets dat blijft hangen. Een transitie zou het masker
  *    permanent moeten aanhouden, en dat knipt de staarten van een p en een g af.
  *
- * 3. DE BEGINTOESTAND IS animation-play-state: paused. Een gepauzeerde animatie
- *    staat op zijn 0%-beeldje, dus dat beeldje is meteen de verborgen toestand
- *    en die staat maar op één plek. De waarnemer zet hem op running; daarna
- *    telt de vertraging van de ploeg pas af.
+ * 3. DE WACHTTOESTAND IS opacity: 0, EN NADRUKKELIJK GEEN clip-path EN GEEN
+ *    GEPAUZEERDE ANIMATIE. Dat was hij wel — paused op het 0%-beeldje, zodat
+ *    de verborgen toestand maar op één plek stond — en dat bleek een cirkel:
+ *    Chrome knipt de intersection-rect van de waarnemer op de clip-path van
+ *    het element zélf. Een kop die gepauzeerd op zijn nulhoge masker stond,
+ *    had daardoor eeuwig intersectionRatio 0, haalde de drempel van 0,2
+ *    nooit, en bleef dus onzichtbaar terwijl hij ruimte innam — de verborgen
+ *    begintoestand verhinderde precies de melding die hem moest opheffen.
+ *    Gemeten in Chrome: isIntersecting true, ratio 0, intersectionRect 0 hoog.
+ *
+ *    Opacity raakt de intersection-rect niet en houdt het element in de
+ *    toegankelijkheidsboom. De animatie wordt pas aangekoppeld op 'loopt';
+ *    tijdens de vertraging houdt de backwards-vulling het 0%-beeldje vast, dus
+ *    het masker doet zijn werk nog steeds — alleen niet meer als wachtstand.
  *
  * De vertraging staat als attribuutselector en niet als losse waarde per
  * element: een style-attribuut wordt door de CSP geblokkeerd. Zie CLAUDE.md.
  */
 
 @media (prefers-reduced-motion: no-preference) {
-  [data-beweging='aan'] [data-onthul] {
-    animation-play-state: paused;
+  /*
+   * De wachttoestand: onzichtbaar via dekking, zonder animatie en zonder
+   * clip-path — zie punt 3 hierboven voor waarom dat geen detail is. De haal
+   * ('haal') staat er bewust niet bij: dat element bevat de tekst van de
+   * woordgroep, en die hoort mee te doen met de kop eromheen.
+   */
+  [data-beweging='aan'] [data-onthul='blok']:not([data-onthul-staat]),
+  [data-beweging='aan'] [data-onthul='kop']:not([data-onthul-staat]) {
+    opacity: 0;
+  }
+
+  /*
+   * In beeld gekomen: de waarnemer laat hem los en pas dán komt de animatie
+   * erop. De backwards-vulling houdt het 0%-beeldje vast zolang de vertraging
+   * van de ploeg loopt, dus tussen loslaten en beginnen is er geen beeldje
+   * waarop het element er al staat.
+   *
+   * 'klaar' krijgt geen regel: zonder 'loopt' is er geen animatie, en zonder
+   * de wachtregel hierboven geen dekking van nul. Er staat dus gewoon een
+   * element.
+   */
+  [data-beweging='aan'] [data-onthul='blok'][data-onthul-staat='loopt'] {
+    animation-name: inslag-dekking, inslag-hef;
+    animation-duration: var(--duur-inslag-dekking), var(--duur-inslag-hef);
     animation-fill-mode: backwards;
     animation-timing-function: var(--inslag);
   }
 
-  [data-beweging='aan'] [data-onthul='blok'] {
-    animation-name: inslag-dekking, inslag-hef;
-    animation-duration: var(--duur-inslag-dekking), var(--duur-inslag-hef);
-  }
-
-  [data-beweging='aan'] [data-onthul='kop'] {
+  [data-beweging='aan'] [data-onthul='kop'][data-onthul-staat='loopt'] {
     animation-name: inslag-masker, inslag-hef;
     animation-duration: var(--duur-inslag-dekking), var(--duur-inslag-hef);
-  }
-
-  /* In beeld gekomen: de waarnemer laat hem los. */
-  [data-beweging='aan'] [data-onthul][data-onthul-staat='loopt'] {
-    animation-play-state: running;
-  }
-
-  /*
-   * Stond al in beeld bij het laden. Geen animatie en geen wachttijd: wie de
-   * pagina opent, kijkt naar iets dat er is en niet naar iets dat nog moet
-   * beginnen.
-   */
-  [data-beweging='aan'] [data-onthul][data-onthul-staat='klaar'] {
-    animation: none;
+    animation-fill-mode: backwards;
+    animation-timing-function: var(--inslag);
   }
 
   /*

@@ -472,6 +472,31 @@ omhoog schuift. Hij loopt 12% onder de kop door, want een displaykop staat op
 een regelhoogte onder 1 en op precies 100% knipt het masker de staarten van de
 `p` en de `g` af.
 
+**Een animatie die niet start mag nooit tot onzichtbare tekst leiden.** Dat is
+sinds B11 een regel, en hij is er omdat het één keer stil is misgegaan: de
+wachttoestand van een kop was een gepauzeerde animatie op zijn nulhoge masker,
+Chrome knipt de intersection-rect van de waarnemer op de clip-path van het
+element zélf, en dus haalde een kop de losllaatdrempel van 0,2 nooit — op elke
+pagina onzichtbare koppen die wél ruimte innamen. De verborgen begintoestand
+verhinderde precies de melding die hem moest opheffen.
+
+Daaruit volgen drie handhavingen:
+
+1. **De wachttoestand mag de meting niet raken.** Hij is `opacity: 0` — geen
+   clip-path, geen gepauzeerde animatie. Dekking raakt de intersection-rect
+   niet en houdt het element in de toegankelijkheidsboom. De animatie komt pas
+   op het element bij 'loopt'; de backwards-vulling houdt het beginbeeldje vast
+   zolang de ploegvertraging loopt.
+2. **De opening heeft een vangnet.** Wat binnen `data-onthul-entree` na de
+   aanloop plus 500ms nog niet is losgelaten, wordt alsnog op klaar gezet en
+   staat er dan gewoon. Het eerste scherm mag nooit leeg blijven omdat een
+   waarnemer zweeg.
+3. **De poort bewaakt de voorwaarden.** `check-onthul` controleert na elke
+   build dat elke regel die onthul-inhoud verbergt aan het scriptvlagje hangt
+   en dat het loslaatmechanisme plus het vangnet in de gebundelde scripts
+   zitten. Wat statisch niet te bewijzen valt — dat de waarnemer echt vuurt —
+   is precies waar het vangnet voor is.
+
 **De opening van de pagina animeert, wat er al staat niet.** De
 scrollonthulling slaat over wat bij het laden in beeld staat — wie de pagina
 opent, kijkt naar iets dat er is. De hero die de pagina opent is daar de
