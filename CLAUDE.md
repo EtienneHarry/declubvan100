@@ -114,6 +114,13 @@ en lokaal zie je er niets van.
 
 Dezelfde `check` draait in GitHub Actions bij elke push en pull request.
 
+**Een nieuwe poortstap wordt getoetst met een injectie voordat hij vertrouwd
+wordt.** Dat is geen gewoonte maar een regel, en hij staat er omdat het twee
+keer is misgegaan: een verloren backslash en een `` die als backspace-byte in
+het bestand belandde, allebei met een poort die daarna stil groen stond. Zie
+*Vaste regel: een ongetoetste poort staat mogelijk stil groen* in
+`docs/stand-van-zaken.md`.
+
 Wie bewaakt wat:
 
 | Onderwerp | Bewaker |

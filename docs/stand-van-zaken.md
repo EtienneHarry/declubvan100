@@ -170,6 +170,52 @@ redenering, geen meting.
 langs en lees een `PerformanceObserver` op `layout-shift` uit. Zie *Beweging
 meet je niet in een pane die niet composit* in `CLAUDE.md` voor waar je in loopt.
 
+### Vaste regel: een ongetoetste poort staat mogelijk stil groen
+
+Een bewaker die je schrijft maar niet functioneel toetst, is geen bewaker. Hij
+draait, hij zegt niets, en dat lijkt op "er is niets mis" terwijl het net zo
+goed "ik kijk nergens naar" kan betekenen. Het verschil is van buiten niet te
+zien — en dat is precies het soort stille fout waar de poort voor bestaat.
+
+**Dit is in dit project twee keer gebeurd, allebei door een verloren escape.**
+
+1. **`check-onthul`.** De attribuuttoets werd opgebouwd in een
+   template-literal, en die kookte de backslash uit `[\s"']` weg. Wat overbleef
+   was de klasse `[s"']` — die matcht de letter s, een aanhalingsteken en een
+   apostrof, en dus nooit een attribuut. De poort meldde netjes dat alles in
+   orde was.
+2. **De afbreekzeef in `check-koppen`.** De `\b` in de kopregex belandde als
+   backspace-byte (0x08) in het bestand. De regex zocht daarmee naar een
+   letterlijk stuurteken achter `<h1`, vond nooit een kop, en liet vier
+   opeenvolgende injectieproeven ten onrechte slagen.
+
+In beide gevallen was de code op het scherm niet te onderscheiden van goede
+code: `cat -A` liet het verschil zien, een blik op het bestand niet.
+
+**Daarom: elke nieuwe poortstap wordt getoetst met een injectie die hem moet
+laten falen, vóór hij wordt vertrouwd.** De toets is klaar als je van allebei
+de kanten bewijs hebt:
+
+- **de injectie laat hem omvallen** — bouw de fout die hij moet vangen na in de
+  gebouwde uitvoer, draai de stap, en zie hem falen mét een melding die de
+  goede plek aanwijst;
+- **na herstel slaagt hij weer** — anders heb je een poort die altijd faalt, en
+  dat wordt binnen een week uitgezet;
+- **en een geval dat er nét buiten valt slaagt ook** — zo weet je dat hij niet
+  alles vlagt.
+
+Dat geldt niet alleen voor poortstappen. Dezelfde regel gaat op voor elke
+bewering die je in een commit zet omdat een controle zweeg. Bij de knopkleur
+stond er "een tokennaam die geen knopvariant is, is een compileerfout"; de
+eerste proef meldde nul fouten, en dat bleek te komen doordat de injectie nooit
+was weggeschreven. Zonder die tweede blik was er een garantie gedocumenteerd
+die er niet was.
+
+**Bewaar de toets niet.** Hij hoort bij het schrijven van de poort, niet bij het
+repertoire: een injectietoets die in de repo blijft staan, moet zelf onderhouden
+worden en gaat meebewegen met de fout die hij moest vangen. Wat blijft is de
+poort, en de commit waarin staat dat hij getoetst is en met welke uitkomst.
+
 ### Vaste controle: breekt er een woord middenin?
 
 Dit is twee keer misgegaan — "onderneme/rs." en "privacyverk/laring", allebei in
