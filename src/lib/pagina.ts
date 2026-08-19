@@ -162,6 +162,7 @@ export async function leesPagina(naam: PaginaNaam) {
           kop: blok.value.kop,
           tekst: tekstUit(blok.value.tekst),
           knop: knopUit(blok.value.knop),
+          knopKleur: blok.value.knopKleur,
           tweedeKnop: knopUit(blok.value.tweedeKnop),
         };
 

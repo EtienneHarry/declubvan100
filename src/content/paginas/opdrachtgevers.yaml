@@ -132,6 +132,7 @@ secties:
       knop:
         label: Inhuren
         href: /contact
+      knopKleur: vuur
       tweedeKnop:
         label: ""
         href: ""

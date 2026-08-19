@@ -391,11 +391,31 @@ De vraag is een kop met de knop erín, en niet andersom: een kop binnen een knop
 maakt van die kop een stuk knoptekst. Het niveau zakt onder de sectiekop mee,
 net als een kaartkop, zodat `check-koppen` erover kan oordelen.
 
-**Welke knop welke kleur krijgt, is nog niet uitgevochten.** `Hero` en `Oproep`
-zetten hun primaire actie nu op `vuur` en hun tweede op `lijn`. De mockup zet er
-twee gevulde naast elkaar — AANMELDEN zwart, INHUREN rood — maar welke van de
-twee acties op een gegeven pagina welke kleur verdient, hangt aan de nieuwe
-koppen. Die komen in sessie 2, en dan verschuift deze toewijzing mee.
+**De kleur van een gevulde knop is een doelgroepcode.** `vuur` hoort bij
+inhuren en dus bij opdrachtgevers, `inkt` bij aanmelden en dus bij de
+Clubleden. Dat is wat de mockup doet met AANMELDEN in zwart en INHUREN in rood:
+niet twee tinten voor de variatie, maar één kleur per publiek, zodat een
+bezoeker aan de knop ziet of die voor hem bedoeld is.
+
+De code geldt overal waar één gevulde knop staat. `Oproep` heeft daarvoor
+`knopKleur`, een keuze uit `KNOPKLEUR_TOKENS` in `lib/tokens.ts` — een
+tokennaam en geen vrije waarde, net als de achtergronden. In het CMS staat de
+keuze in de taal van de redacteur ("Rood — voor wie personeel zoekt"), want die
+kiest een publiek en geen kleur.
+
+Twee dingen die daar bewust níet in zitten. `vol`, `lijn` en `kaal` staan niet
+in de lijst: dat zijn rangordes en geen doelgroepen, en die keuze hoort niet bij
+de redacteur. En de tweede knop van een `Oproep` blijft een lijnknop — daar
+geldt "één gevulde knop per blikveld" gewoon, want daar ís een eerste actie.
+
+De hero is de uitzondering die de regel bevestigt: daar staan de twee deuren
+náást elkaar, allebei gevuld, met de code als enige onderscheid. Dat is geen
+rangorde en dus geen overtreding van die regel.
+
+Dat elke tokennaam ook een bestaande knopvariant is, wordt afgedwongen waar de
+twee elkaar raken: `Oproep` geeft het token rechtstreeks aan `Knop` door, dus
+een naam die daar niet bestaat is een compileerfout. Nagemeten door `mist` aan
+de lijst toe te voegen: één fout, en zonder die toevoeging nul.
 
 **Afwijking — `Scheiding` bestaat hier niet meer.** De bron kent hem als
 vervanger van de `<hr>`, met de schicht erin. Hij is in B2 gebouwd, in B4

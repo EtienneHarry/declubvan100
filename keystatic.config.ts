@@ -2,10 +2,12 @@ import { config, fields, singleton } from '@keystatic/core';
 
 import {
   ACHTERGROND_TOKENS,
+  KNOPKLEUR_TOKENS,
   BREEDTE_TOKENS,
   RUIMTE_TOKENS,
   VERHOUDING_TOKENS,
   type AchtergrondToken,
+  type KnopkleurToken,
   type BreedteToken,
   type RuimteToken,
   type VerhoudingToken,
@@ -59,6 +61,15 @@ const ACHTERGROND_UITLEG: Partial<Record<AchtergrondToken, string>> = {
   roet: 'Roet — iets lichter bruin',
   papier: 'Papier — licht, voor een leespagina',
   mist: 'Mist — rustig grijs op papier',
+};
+
+/*
+ * De kleurcode van de knop, in de taal van de redacteur. Niet "vuur" en "inkt"
+ * maar wat de kleur betekent: de doelgroep waar de knop voor is.
+ */
+const KNOPKLEUR_UITLEG: Partial<Record<KnopkleurToken, string>> = {
+  vuur: 'Rood — voor wie personeel zoekt',
+  inkt: 'Zwart — voor wie zich wil aanmelden',
 };
 
 const RUIMTE_UITLEG: Partial<Record<RuimteToken, string>> = {
@@ -470,6 +481,13 @@ const sectieBlokken = fields.blocks(
           }),
           tekst: tekstVeld('Eén zin die zegt wat je van de bezoeker wilt.'),
           knop: knopVeld('Knop — mag je overslaan', 'De actie waar het om gaat.'),
+          knopKleur: fields.select({
+            label: 'Kleur van de knop',
+            description:
+              'De kleur zegt voor wie de knop is: rood voor opdrachtgevers die personeel zoeken, zwart voor mensen die zich willen aanmelden. Kies de kleur die bij deze pagina hoort.',
+            options: keuzeUit(KNOPKLEUR_TOKENS, KNOPKLEUR_UITLEG),
+            defaultValue: 'vuur' satisfies KnopkleurToken,
+          }),
           tweedeKnop: knopVeld(
             'Tweede knop — mag je overslaan',
             'Een tweede actie, minder opvallend dan de eerste.',

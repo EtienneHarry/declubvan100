@@ -5,6 +5,7 @@ import {
   maatRegelKlasse,
   ruimteKlasse,
   type AchtergrondToken,
+  type KnopkleurToken,
   type BreedteToken,
   type RuimteToken,
 } from '../../lib/tokens';
@@ -22,6 +23,11 @@ export interface OproepProps {
   kop: string;
   tekst?: string;
   knop?: { label: string; href: string };
+  /**
+   * De kleur van de gevulde knop, als doelgroepcode: `vuur` voor inhuren,
+   * `inkt` voor aanmelden. Zie KNOPKLEUR_TOKENS in lib/tokens.
+   */
+  knopKleur?: KnopkleurToken;
   tweedeKnop?: { label: string; href: string };
   /** Gezet door SectieLijst; 1 als deze sectie de pagina opent. */
   kopNiveau?: KopNiveau;
@@ -41,6 +47,7 @@ export default function Oproep({
   kop,
   tekst,
   knop,
+  knopKleur = 'vuur',
   tweedeKnop,
   kopNiveau = 2,
 }: OproepProps) {
@@ -90,7 +97,7 @@ export default function Oproep({
               knop per blikveld.
             */}
             {knop ? (
-              <Knop variant="vuur" maat="l" href={knop.href}>
+              <Knop variant={knopKleur} maat="l" href={knop.href}>
                 {knop.label}
               </Knop>
             ) : null}

@@ -156,6 +156,7 @@ secties:
       knop:
         label: Aanmelden
         href: /contact
+      knopKleur: inkt
       tweedeKnop:
         label: ""
         href: ""

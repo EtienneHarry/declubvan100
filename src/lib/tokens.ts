@@ -36,6 +36,26 @@
 export const ACHTERGROND_TOKENS = ['bruin', 'inkt', 'roet', 'papier', 'mist'] as const;
 export type AchtergrondToken = (typeof ACHTERGROND_TOKENS)[number];
 
+/**
+ * De kleur van een gevulde knop, als kleurcode voor de doelgroep.
+ *
+ * `vuur` hoort bij inhuren en dus bij opdrachtgevers, `inkt` bij aanmelden en
+ * dus bij de Clubleden. Dat is de code uit de mockup: niet twee tinten voor de
+ * variatie, maar één kleur per publiek, zodat een bezoeker aan de knop ziet of
+ * die voor hem bedoeld is.
+ *
+ * Alleen deze twee. `vol`, `lijn` en `kaal` bestaan wel als knopvariant maar
+ * horen niet in deze lijst: dat zijn rangordes en geen doelgroepen, en die
+ * keuze hoort niet bij de redacteur.
+ *
+ * Dat elke naam hier ook een bestaande knopvariant ís, wordt afgedwongen waar
+ * de twee elkaar raken — `Oproep` geeft dit token rechtstreeks aan `Knop` door,
+ * dus een naam die daar niet bestaat is een compileerfout. Geen extra
+ * machinerie nodig.
+ */
+export const KNOPKLEUR_TOKENS = ['vuur', 'inkt'] as const;
+export type KnopkleurToken = (typeof KNOPKLEUR_TOKENS)[number];
+
 /** Het sectieritme: de verticale lucht boven en onder een sectie. */
 export const RUIMTE_TOKENS = ['sectie-s', 'sectie-m', 'sectie-l'] as const;
 export type RuimteToken = (typeof RUIMTE_TOKENS)[number];

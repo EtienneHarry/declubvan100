@@ -49,6 +49,7 @@ secties:
       knop:
         label: Ik zoek personeel
         href: /opdrachtgevers
+      knopKleur: vuur
       tweedeKnop:
         label: Ik wil bij jullie werken
         href: /de-100

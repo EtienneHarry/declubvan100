@@ -58,6 +58,7 @@ secties:
       knop:
         label: Ik wil bij jullie werken
         href: mailto:contact@declubvan.nl
+      knopKleur: inkt
       tweedeKnop:
         label: ""
         href: ""
