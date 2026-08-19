@@ -105,11 +105,11 @@ hebt.
 
 ```
 oxlint  →  check-tokens  →  astro check  →  astro build
-        →  check-csp  →  check-nesting  →  check-koppen
+        →  check-csp  →  check-nesting  →  check-koppen  →  check-onthul
 ```
 
-De laatste drie staan achter de build omdat ze de gebouwde HTML lezen. Ze
-bewaken alle drie iets dat stil misgaat: geen foutmelding, geen kapotte pagina,
+De laatste vier staan achter de build omdat ze de gebouwde uitvoer lezen. Ze
+bewaken alle vier iets dat stil misgaat: geen foutmelding, geen kapotte pagina,
 en lokaal zie je er niets van.
 
 Dezelfde `check` draait in GitHub Actions bij elke push en pull request.
@@ -128,6 +128,7 @@ Wie bewaakt wat:
 | Vertraging per element zonder `style`-attribuut | `scripts/check-csp.mjs` |
 | Blokelement binnen een inline-element | `scripts/check-nesting.mjs` |
 | Eén `<h1>` vooraan, geen overgeslagen kopniveau | `scripts/check-koppen.mjs` |
+| Verborgen onthul-inhoud heeft altijd een uitweg | `scripts/check-onthul.mjs` |
 
 `_adherence.oxlintrc.json` is samengevoegd uit de adherence-config van De Club
 van 100 en die van het Kick&Work-sjabloon. Twee blokken uit die bronnen konden
