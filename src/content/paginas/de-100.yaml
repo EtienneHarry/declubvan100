@@ -9,9 +9,9 @@ secties:
         achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
-      bovenkop: De 100
+      bovenkop: ""
       kop: Voor wie is de club?
-      tekst: Honderd plekken. Je hoort erbij of je hoort er niet bij.
+      tekst: ""
       knop:
         label: ""
         href: ""
@@ -33,24 +33,26 @@ secties:
         alt: Iemand maakt een cocktail achter de buitenbar
       verhouding: breed
       beeldPositie: rechts
-  - discriminant: kop-tekst
+  - discriminant: rijke-tekst
     value:
       weergave:
         achtergrond: bruin
         ruimte: sectie-m
-        breedte: basis
-      bovenkop: ""
+        breedte: smal
       # Twee letterrollen in één kop. Het typemachinedeel is korter dan in de
       # mockup: alleen de slotwoorden, niet de halve zin. Dat is een bewuste
-      # afwijking — zie bron/mockup-notities.md.
+      # afwijking — zie bron/mockup-notities.md. De drie alinea's eronder zijn
+      # letterlijk pagina 4 van de mockup, uit bron/mockup-teksten.md.
       kop: >-
         Voor mensen die graag werken, maar niet willen dat hun *[hele agenda]
         wordt bepaald door hun bijbaan.*
-      # Letterlijk uit de FAQ in de brief; er is niets bijverzonnen.
-      tekst: >-
-        Geen vast rooster, geen minimum aantal diensten, geen verplicht aantal
-        uren. Je kiest zelf welke diensten je aanneemt — maar een aangenomen
-        dienst is wel een afspraak.
+      schichtLijst: false
+      inhoud: |
+        Je bent sociaal, representatief en vindt het leuk om tussen de mensen te staan. Horeca-ervaring is mooi meegenomen, maar je houding vinden we minstens zo belangrijk.
+
+        Je komt opdagen als je zegt dat je komt. Je steekt je handen uit de mouwen. En je snapt dat werken ook gewoon gezellig kan zijn.
+
+        Klinkt logisch? Dan zou je zomaar bij De Club kunnen passen.
   - discriminant: drie-kolommen
     value:
       weergave:
@@ -147,12 +149,12 @@ secties:
         ruimte: sectie-l
         breedte: basis
       bovenkop: Meld je
-      kop: Omdat groter niet altijd {beter is.}
+      kop: "*Omdat groter niet altijd {beter is.}*"
       tekst: >-
         Denk je dat jij een van de betere achter de bar van de stad bent, laat
         het weten.
       knop:
-        label: Ik wil bij jullie werken
+        label: Aanmelden
         href: /contact
       tweedeKnop:
         label: ""

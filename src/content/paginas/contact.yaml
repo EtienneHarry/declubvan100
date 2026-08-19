@@ -33,10 +33,14 @@ secties:
           tekst: contact@declubvan.nl
           href: mailto:contact@declubvan.nl
         - nummer: "02"
+          kop: Instagram
+          tekst: "@declubvanhonderd"
+          href: https://instagram.com/declubvanhonderd
+        - nummer: "03"
           kop: Bellen
           tekst: +31 6 19004878
           href: tel:+31619004878
-        - nummer: "03"
+        - nummer: "04"
           kop: Werkgebied
           tekst: In en rond Groningen.
           href: ""

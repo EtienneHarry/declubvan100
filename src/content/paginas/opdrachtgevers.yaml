@@ -9,11 +9,9 @@ secties:
         achtergrond: bruin
         ruimte: sectie-l
         breedte: basis
-      bovenkop: Opdrachtgevers
-      kop: Voor ondernemers
-      tekst: >-
-        Jij hebt een avond te draaien. Wij regelen de mensen en zorgen dat er
-        niets misgaat.
+      bovenkop: ""
+      kop: Voor ondernemers.
+      tekst: ""
       knop:
         label: ""
         href: ""
@@ -21,19 +19,21 @@ secties:
         label: ""
         href: ""
       schicht: true
-  - discriminant: kop-tekst
+  - discriminant: rijke-tekst
     value:
       weergave:
         achtergrond: bruin
         ruimte: sectie-m
-        breedte: basis
-      bovenkop: ""
-      kop: Geen nummertjes, maar [1 van de 100]
-      # Stond op de home in de splitscreen-deur; die sectie is met de
-      # landingspagina vervallen en de zin hoort hier.
-      tekst: >-
-        Je krijgt geen willekeurige invalkracht. Je krijgt iemand die weet hoe
-        een tap onder druk werkt.
+        breedte: smal
+      # De aanhef en de twee alinea's van pagina 2 van de mockup, letterlijk;
+      # zie bron/mockup-teksten.md. Rijke tekst en geen kop-tekst, want een
+      # tekstveld rendert één alinea en dit zijn er twee.
+      kop: Echte mensen. *Geen nummertjes, maar [1 van de 100].*
+      schichtLijst: false
+      inhoud: |
+        Een vol terras. Een groot evenement. Iemand die onverwacht uitvalt. Of simpelweg een weekend waarin je nét wat extra handen kunt gebruiken. De Club van 100 koppelt horecazaken en evenementen aan een vaste community van flexibele horecamedewerkers.
+
+        Geen eindeloze zoektocht naar personeel, maar toegang tot een club mensen die graag werkt en zelf kiest wanneer ze beschikbaar zijn.
   - discriminant: drie-kolommen
     value:
       weergave:
@@ -130,7 +130,7 @@ secties:
       kop: Goede mensen op het moment dat je ze {nodig hebt.}
       tekst: Mail wat het is en wanneer. Je hoort binnen een dag van ons.
       knop:
-        label: Ik zoek personeel
+        label: Inhuren
         href: /contact
       tweedeKnop:
         label: ""
