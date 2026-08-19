@@ -85,7 +85,13 @@ Tekst óp `vuur`: `krijt` 5,65 · `papier` 5,41 · `cream` 3,69 · `inkt` 3,48 �
 Daaruit volgen zes regels, en die zijn niet onderhandelbaar:
 
 - **`vuur` is nooit tekstkleur op `bruin`.** 3,18:1 haalt AA niet, ook niet voor
-  groot. Het is een vlak: een knop, een klein blok. Nooit een woord.
+  groot. Het is een vlak — een knop, een klein blok — of een **decoratieve
+  lijn**: de ovaal en het onderstreepje staan sinds B10 op `vuur`. Dat mag omdat
+  een haal geen tekst is en op `aria-hidden` staat; de tekstcontrasteis geldt er
+  niet, en als lijn haalt vuur op elk vlak van de site de 3:1 die WCAG aan
+  niet-tekstuele onderdelen stelt (3,18 op bruin, 5,41 op papier). Nooit een
+  woord — het verschil tussen een lijn en een letter is precies het verschil
+  tussen mogen en niet mogen.
 - **Knoptekst op `vuur` is wit.** 5,65:1, en dat geldt voor elke maat. De mockup
   zet er cream-typemachinetekst op; die haalt 3,69:1 en dus alleen de
   groot-tekstdrempel, en alleen zolang die knop groot en gespatieerd blijft.
@@ -484,6 +490,8 @@ begin. Kaarten en citaten lopen in datzelfde ritme door.
 De mockup introduceert twee met de hand getekende vormen naast de
 bliksemschicht: een ellips om een woordgroep ("1 van de 100", "hele agenda") en
 een losse, licht scheve streep onder een kop ("NODIG HEBT.", "BETER IS."). Ze
+staan op `vuur` — de brief noemde papier-op-donker, maar een witte haal om een
+witte kop loopt dwars door de letters; zie de vuur-regel in het kleurhoofdstuk. Ze
 horen bij dezelfde familie als de schicht — één beweging, geen constructie — en
 zijn dus een verwantschap en geen stijlbreuk. De rollen van de schicht blijven
 zoals ze waren.

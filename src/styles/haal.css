@@ -51,11 +51,23 @@
 
 [data-haal] [data-haal-lijn] {
   /*
-   * Op --tekst en niet op currentColor. De haal is een merkteken en geen tekst:
-   * in een gedempte alinea zou currentColor hem mee laten verbleken, en dan
-   * staat er een grijze krabbel in plaats van een streep van de hand.
+   * Op --vuur, en dat mag omdat de haal geen tekst is. Hij stond eerst op
+   * --tekst en dat was op papier logisch — maar een witte ovaal om een witte
+   * kop loopt dwars door de letters en maakt ze onleesbaar; gezien op de 100
+   * in de openingskop. Het accent legt de lijn naast de tekst in plaats van
+   * erdoorheen.
+   *
+   * De contrasteis voor tekst geldt hier niet: de haal is decoratief en staat
+   * op aria-hidden. Wat wel moet, is dat de líjn zichtbaar is, en dat haalt
+   * vuur op elk vlak van de site — 3,18:1 op bruin en 5,41:1 op papier, beide
+   * boven de 3:1 die WCAG aan niet-tekstuele onderdelen stelt, en dit hoeft
+   * niet eens dat: het is versiering. Zie het kleurhoofdstuk van
+   * design-system.md.
+   *
+   * Eén vaste kleur en geen thema-alias, want het accent kantelt niet mee met
+   * licht en donker — vuur is vuur, op elk vlak.
    */
-  stroke: var(--tekst);
+  stroke: var(--vuur);
   stroke-width: var(--haal-dikte);
   visibility: hidden;
 }
