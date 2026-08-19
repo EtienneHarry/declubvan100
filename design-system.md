@@ -466,6 +466,14 @@ omhoog schuift. Hij loopt 12% onder de kop door, want een displaykop staat op
 een regelhoogte onder 1 en op precies 100% knipt het masker de staarten van de
 `p` en de `g` af.
 
+**De opening van de pagina animeert, wat er al staat niet.** De
+scrollonthulling slaat over wat bij het laden in beeld staat — wie de pagina
+opent, kijkt naar iets dat er is. De hero die de pagina opent is daar de
+uitzondering op: zijn binnenkomst ís het moment, dus zijn elementen lopen het
+gewone ritme met `--aanloop` (300ms) ervoor, zodat de pagina eerst staat en dan
+pas de klap valt. Eén uitzondering, aan het sectietype gebonden, en alleen op
+kopniveau 1: een tweede hero gedraagt zich als elke andere sectie.
+
 **De ploeg is 70ms.** Elk aanwezig onderdeel van een sectie schuift één stap op:
 bovenkop, kop, tekst, dan de items. Onderdelen die er niet zijn tellen niet mee,
 dus een sectie zonder bovenkop begint gewoon op nul en heeft geen gat aan het

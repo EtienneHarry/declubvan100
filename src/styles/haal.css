@@ -82,6 +82,11 @@
     transition-duration: var(--duur-haal-ovaal);
   }
 
+  /* Een haal in de opening wacht de aanloop mee af, net als de kop eromheen. */
+  [data-beweging='aan'] [data-onthul-entree] [data-onthul='haal'] [data-haal-lijn] {
+    transition-delay: calc(var(--stap-vertraging, 0ms) + var(--aanloop) + var(--haal-wacht));
+  }
+
   /*
    * In beeld gekomen: de waarnemer laat hem los en de offset gaat naar 0. Een
    * CSS-declaratie wint van een presentatie-attribuut, dus deze 0 verslaat de

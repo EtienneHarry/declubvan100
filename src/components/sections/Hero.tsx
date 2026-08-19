@@ -107,6 +107,19 @@ export default function Hero({
   const heeftBeeld = Boolean(beeld?.bron.trim());
   const toontSchicht = schicht && !heeftBeeld;
 
+  /*
+   * De opening van de pagina animeert wél, ook al staat hij bij het laden in
+   * beeld. De regel "geen animatie voor wat er al staat" blijft gelden voor de
+   * scrollonthulling van secties; de hero is geen sectie die voorbij komt maar
+   * het eerste dat de bezoeker ziet, en die binnenkomst ís het moment. Het
+   * attribuut hieronder zondert hem uit in OnthulScript, en beweging.css telt
+   * er --aanloop bij op zodat de pagina eerst even staat.
+   *
+   * Alleen op kopNiveau 1: een tweede hero is geen opening en gedraagt zich
+   * als elke andere sectie.
+   */
+  const entree = kopNiveau === 1 ? '' : undefined;
+
   // Opent deze hero de pagina, dan is hij de <h1> en de enige display-xl.
   // Staat er al een kop boven, dan is dit gewoon een sectie.
   const Kop = kopNiveau === 1 ? 'h1' : 'h2';
@@ -206,6 +219,7 @@ export default function Hero({
       <section
         className={achtergrondKlasse[achtergrond]}
         data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+        data-onthul-entree={entree}
       >
         <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="vlak" vullend>
           <div className={`w-full ${breedteKlasse[breedte]}`}>{inhoud}</div>
@@ -219,6 +233,7 @@ export default function Hero({
       <section
         className={`${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
         data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+        data-onthul-entree={entree}
       >
         <div className={breedteKlasse[breedte]}>
           <Beeldvlak bron={beeld.bron} alt={beeld.alt} sluier="vlak" verhouding="breed">
@@ -233,6 +248,7 @@ export default function Hero({
     <section
       className={`relative overflow-hidden ${achtergrondKlasse[achtergrond]} ${ruimteKlasse[ruimte]}`}
       data-thema={isLichteAchtergrond[achtergrond] ? 'licht' : undefined}
+      data-onthul-entree={entree}
     >
       {/*
         De schicht hangt buiten het raster en mag aflopen over de rand; de

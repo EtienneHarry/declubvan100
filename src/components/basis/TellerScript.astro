@@ -22,22 +22,7 @@
     // Niet "heel snel tellen" — dat is precies wat deze bezoeker niet vraagt.
     const rustig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /*
-     * Eén keer per bezoek, niet één keer per paginalading. Wie tijdens dezelfde
-     * sessie terugkomt op de home heeft de telling al gezien; dan staat er
-     * meteen 100. sessionStorage en niet localStorage, want een nieuw bezoek
-     * mag hem wél opnieuw krijgen — en het zit in een try, want in een privé-
-     * venster kan elke toegang gooien en dan telt hij gewoon weer.
-     */
-    const alGeteld = (() => {
-      try {
-        return window.sessionStorage.getItem('teller-geteld') === 'ja';
-      } catch {
-        return false;
-      }
-    })();
-
-    if (Number.isFinite(doel) && !rustig && !alGeteld) {
+    if (Number.isFinite(doel) && !rustig) {
       /*
        * Duur en curve komen uit de tokenlaag, niet uit dit bestand. --duur-4 is
        * in het design system de duur voor "beeld dat in beeld komt", en dat is
@@ -46,6 +31,10 @@
       const stijl = getComputedStyle(document.documentElement);
       const duur = Number.parseFloat(stijl.getPropertyValue('--duur-4'));
       const curve = stijl.getPropertyValue('--soepel-uit');
+      // De aanloop van de opening: de kop staat bij het laden al in beeld, dus
+      // zonder dit begint de telling terwijl de pagina nog aan het opbouwen
+      // is. Zelfde token als de scrollonthulling van de hero gebruikt.
+      const aanloop = Number.parseFloat(stijl.getPropertyValue('--aanloop')) || 0;
 
       /**
        * Dezelfde curve als de CSS, maar dan in JavaScript. We animeren tekst en
@@ -87,12 +76,6 @@
       let gestart = false;
 
       function tel() {
-        try {
-          window.sessionStorage.setItem('teller-geteld', 'ja');
-        } catch {
-          // Geen opslag is geen bezwaar; dan telt hij volgende keer opnieuw.
-        }
-
         const begin = performance.now();
 
         function stap(nu: number) {
@@ -118,7 +101,14 @@
             if (!ingang.isIntersecting || gestart) continue;
             gestart = true;
             waarnemer.disconnect();
-            tel();
+            /*
+             * Elke lading telt — er is met opzet geen onthouden vlag. De teller
+             * is de opening van de home; wie herlaadt, krijgt de opening.
+             *
+             * Het getal blijft op 100 staan tot de aanloop om is: pas in tel()
+             * gaat het naar 0. Zo staat er nooit een 0 te wachten.
+             */
+            window.setTimeout(tel, aanloop);
           }
         },
         { threshold: 0.5 },

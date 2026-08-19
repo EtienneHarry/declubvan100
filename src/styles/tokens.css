@@ -150,6 +150,10 @@
   --inslag-masker: 112%;
   --zoom-beeld: 1.05; /* hover op een beeld dat ergens heen gaat */
   --duur-zoom: 700ms; /* diezelfde zoom, trager dan de binnenkomst */
+  /* De aanloop van de opening: wat in de hero bij het laden al in beeld staat,
+     wacht dit even en komt dan alsnog binnen. Lang genoeg dat de pagina er
+     eerst staat, kort genoeg dat het geen wachten wordt. */
+  --aanloop: 300ms;
 
   /*
    * De haal: de ovaal om een woordgroep en het onderstreepje onder een kop.
@@ -522,6 +526,7 @@
     --ploeg: 0ms;
     --inslag-hef: 0px;
     --zoom-beeld: 1;
+    --aanloop: 0ms;
 
     /* De haal net zo. haal.css staat binnen dezelfde no-preference, dus de
        ovaal staat er bij gereduceerde beweging meteen en volledig — hij tekent

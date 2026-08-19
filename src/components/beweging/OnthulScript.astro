@@ -60,8 +60,18 @@
     elementen.forEach((element, index) => {
       const kader = kaders[index];
 
-      if (kader && genoegInBeeld(kader)) element.dataset.onthulStaat = 'klaar';
-      else wachtenden.push(element);
+      /*
+       * De opening is de uitzondering op "wat er al staat, staat er meteen".
+       * Elementen binnen [data-onthul-entree] gaan naar de waarnemer, ook al
+       * staan ze in beeld: die vuurt voor een zichtbaar element direct, dus ze
+       * krijgen 'loopt' en animeren — met de --aanloop die beweging.css er
+       * voor deze groep bij optelt, zodat de pagina eerst even staat.
+       */
+      if (kader && genoegInBeeld(kader) && !element.closest('[data-onthul-entree]')) {
+        element.dataset.onthulStaat = 'klaar';
+      } else {
+        wachtenden.push(element);
+      }
     });
 
     document.documentElement.dataset.beweging = 'aan';

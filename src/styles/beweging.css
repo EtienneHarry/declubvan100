@@ -113,6 +113,17 @@
     --stap-vertraging: calc(8 * var(--ploeg));
     animation-delay: var(--stap-vertraging);
   }
+
+  /*
+   * De opening. Binnen [data-onthul-entree] — de hero die de pagina opent —
+   * komt er --aanloop bij elke stap: die elementen staan bij het laden al in
+   * beeld en animeren tóch, en zonder aanloop zou de klap vallen terwijl de
+   * pagina nog aan het opbouwen is. Drie attribuutselectors, dus dit wint van
+   * de stapregels hierboven en leest hun --stap-vertraging gewoon mee.
+   */
+  [data-beweging='aan'] [data-onthul-entree] [data-onthul] {
+    animation-delay: calc(var(--stap-vertraging, 0ms) + var(--aanloop));
+  }
 }
 
 /*

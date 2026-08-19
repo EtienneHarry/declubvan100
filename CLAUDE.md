@@ -444,6 +444,13 @@ Vijf dingen die je niet moet weghalen:
   JavaScript blijft het weg en staat er dus niets verborgen. Een begintoestand
   die niet aan dat vlagje hangt, maakt van een uitgevallen script een lege
   pagina.
+- **De opening animeert wél, met een aanloop.** Elementen binnen
+  `[data-onthul-entree]` — de hero op kopniveau 1 zet dat attribuut — worden
+  bij het laden níet op klaar gezet maar aan de waarnemer gegeven, die voor een
+  zichtbaar element direct vuurt. `beweging.css` telt er `--aanloop` (300ms)
+  bij op, zodat de pagina eerst even staat. De teller wacht diezelfde aanloop.
+  De regel "wat er al staat, staat er meteen" blijft gelden voor elke gewone
+  sectie die toevallig in beeld is.
 - **Het script meet eerst alles en zet daarna pas het vlagje.** In die volgorde
   krijgt wat al in beeld staat de verborgen toestand nooit te zien: op het
   moment dat `beweging.css` gaat gelden, staat er al `klaar` op. Andersom
