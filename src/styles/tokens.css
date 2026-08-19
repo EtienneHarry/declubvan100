@@ -463,6 +463,19 @@
     margin: 0;
   }
 
+  /*
+   * Een sectie knipt horizontaal af wat eruit steekt, zonder schuifbalk en
+   * zonder de verticale as te raken (clip, geen hidden: hidden zou de andere
+   * as meenemen). De aanleiding is de haal: de ovaal is 138% zo breed als
+   * zijn woordgroep, en staat die woordgroep aan het eind van een regel, dan
+   * prikt de lijn de sectie uit — gemeten op /secties: 24px horizontale
+   * overloop op 375. Binnen de sectie mag hij alles; erbuiten wordt hij
+   * afgesneden in plaats van dat de hele pagina een schuifbalk krijgt.
+   */
+  main > section {
+    overflow-x: clip;
+  }
+
   img,
   svg {
     display: block;

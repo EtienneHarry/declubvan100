@@ -49,6 +49,26 @@
  * het beweegt niets.
  */
 
+/*
+ * De svg bestaat pas als de pasvorm rond is. Niet alleen de lijn onzichtbaar
+ * (dat stond er al), maar het hele vlak uit de layout: de definitieve ovaal
+ * is 138% zo breed als zijn tekst, en om een woordgroep die over meerdere
+ * regels breekt werd dat een onzichtbaar vlak dat 90px buiten het venster
+ * stak — gemeten op /secties op 768, een horizontale schuifbalk zonder dat er
+ * iets te zien was. display en geen visibility, want een verborgen vlak telt
+ * nog steeds mee in de scrollbreedte.
+ *
+ * HaalScript zet daarom eerst de pasvorm en meet pas daarna de schermlengte:
+ * een svg op display none heeft geen schermmatrix om over te meten.
+ */
+[data-haal] svg {
+  display: none;
+}
+
+[data-haal][data-haal-staat='past'] svg {
+  display: block;
+}
+
 [data-haal] [data-haal-lijn] {
   visibility: hidden;
 }

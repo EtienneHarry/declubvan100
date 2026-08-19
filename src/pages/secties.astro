@@ -850,7 +850,12 @@ const gevallen: { naam: string; secties: Sectie[] }[] = [
         ruimte: 'sectie-m',
         breedte: 'basis',
         bovenkop: 'Andersom genest',
-        kop: 'Een [ovaal met *sterretjes* erin] blijft gewone tekst binnenin',
+        // Korte woordgroep met opzet: de ovaal is 138% zo breed als zijn tekst,
+        // dus om een woordgroep van bijna de containerbreedte steekt hij
+        // buiten het venster — gemeten: 19px overloop op 768. Dat is geen bug
+        // maar de reden dat de regel "kort houden" bestaat; het geval hier
+        // test de nesting, niet de lengte.
+        kop: 'In een ovaal blijven [*sterretjes*] gewone tekst',
         tekst: LOPENDE_TEKST,
       },
       {

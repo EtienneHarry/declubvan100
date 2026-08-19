@@ -74,9 +74,13 @@
     }
 
     /*
-     * Eerst alles meten, dan pas alles zetten. Andersom wisselt elke meting af
-     * met een stijlwijziging en rekent de browser de pagina per haal opnieuw
-     * door. Dezelfde volgorde als in OnthulScript, om dezelfde reden.
+     * Twee slagen, en de volgorde is niet vrij. Eerst de pasvorm op álle halen,
+     * dan pas de schermlengtes: de svg staat op display none tot de pasvorm
+     * "past" zegt (anders steekt een onzichtbaar vlak van 138% buiten het
+     * venster bij een woordgroep die breekt), en een svg zonder display heeft
+     * geen schermmatrix om over te meten. Binnen elke slag geldt wel: eerst
+     * alle metingen, dan alle wijzigingen — anders rekent de browser de pagina
+     * per haal opnieuw door.
      */
     function meet() {
       /*
@@ -89,23 +93,27 @@
        */
       const beweegt = document.documentElement.dataset.beweging === 'aan';
 
-      const uitkomsten = halen.map((haal) => {
-        const lijn = haal.querySelector<SVGGeometryElement & SVGPathElement>('[data-haal-lijn]');
+      // Slag één: de pasvorm. Meten, dan zetten.
+      const past = halen.map(pastOpEenRegel);
 
-        return {
-          past: pastOpEenRegel(haal),
-          lijn,
-          lengte: beweegt && lijn ? schermLengte(lijn) : 0,
-        };
+      halen.forEach((haal, index) => {
+        haal.dataset.haalStaat = past[index] ? 'past' : 'breekt';
+      });
+
+      if (!beweegt) return;
+
+      // Slag twee: de schermlengte, nu de passende svg's er echt staan.
+      const lengtes = halen.map((haal, index) => {
+        if (!past[index]) return 0;
+        const lijn = haal.querySelector<SVGGeometryElement>('[data-haal-lijn]');
+        return lijn ? schermLengte(lijn) : 0;
       });
 
       halen.forEach((haal, index) => {
-        const uitkomst = uitkomsten[index];
-        if (!uitkomst) return;
-
-        haal.dataset.haalStaat = uitkomst.past ? 'past' : 'breekt';
-
-        if (!beweegt || !uitkomst.lijn || uitkomst.lengte === 0) return;
+        const lengte = lengtes[index];
+        if (lengte === 0) return;
+        const lijn = haal.querySelector<SVGGeometryElement>('[data-haal-lijn]');
+        if (!lijn) return;
 
         /*
          * Presentatie-attributen, geen style-attribuut: de CSP blokkeert
@@ -118,9 +126,9 @@
          * losgelaten: wie hem daarna nog zet, trekt een getekende lijn weer
          * leeg.
          */
-        uitkomst.lijn.setAttribute('stroke-dasharray', String(uitkomst.lengte));
+        lijn.setAttribute('stroke-dasharray', String(lengte));
         if (haal.dataset.onthulStaat === undefined) {
-          uitkomst.lijn.setAttribute('stroke-dashoffset', String(uitkomst.lengte));
+          lijn.setAttribute('stroke-dashoffset', String(lengte));
         }
       });
     }
